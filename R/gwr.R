@@ -1,0 +1,242 @@
+# Copyright 2001-2005 Roger Bivand and Danlin Yu
+# 
+
+gwr <- function(formula, data = list(), coords, bandwidth, 
+	gweight=gwr.gauss, adapt=NULL, hatmatrix=FALSE, fit.points, 
+	longlat=FALSE) {
+	this.call <- match.call()
+	p4s <- as.character(NA)
+	Polys <- NULL
+	coords.given <- NULL
+	if (!missing(coords)) coords.given <- TRUE
+	coords.extra <- NULL
+	if (is(data, "SpatialPolygonsDataFrame")) {
+		Polys <- as(data, "SpatialPolygons")
+		if (missing(coords)) {
+			coords <- getSpPPolygonsLabptSlots(data)
+			coords.given <- FALSE
+		} else {
+			coords.extra <- getSpPPolygonsLabptSlots(data)
+		}
+		p4s <- proj4string(data)
+		data <- as(data, "data.frame")
+	}
+	if (is(data, "SpatialPointsDataFrame")) {
+		if (missing(coords)) {
+			coords <- coordinates(data)
+			coords.given <- FALSE
+		} else {
+			coords.extra <- coordinates(data)
+		}
+		p4s <- proj4string(data)
+		data <- as(data, "data.frame")
+	}
+	if (missing(coords))
+		stop("Observation coordinates have to be given")
+	if (is.null(colnames(coords))) 
+		colnames(coords) <- c("coord.x", "coord.y")
+	mt <- terms(formula, data = data)
+	mf <- lm(formula, data, method="model.frame")
+	lm <- lm(formula, data, x=TRUE, y=TRUE)
+	if (missing(fit.points)) {
+		fp.given <- FALSE
+		fit.points <- coords
+		colnames(fit.points) <- colnames(coords)
+	} else fp.given <- TRUE
+	gridded <- FALSE
+	if (is(fit.points, "Spatial")) {
+		Polys <- NULL
+		if (is(fit.points, "SpatialPolygonsDataFrame")) {
+			Polys <- Polygons(fit.points)
+			fit.points <- getSpPPolygonsLabptSlots(fit.points)
+		} else {
+			gridded <- gridded(fit.points)
+			fit.points <- coordinates(fit.points)
+		}
+	}
+
+	n <- NROW(fit.points)
+	if (is.null(colnames(fit.points))) colnames(fit.points) <- c("x", "y")
+#	if (is.null(fit.points)) fit.points <- coords
+	y <- model.extract(mf, "response")
+	x <- model.matrix(mt, mf)
+	m <- NCOL(x)
+	if (NROW(x) != NROW(coords))
+		stop("Input data and coordinates have different dimensions")
+	if (is.null(adapt)) {
+		if (!missing(bandwidth)) {
+			bw <- bandwidth
+			bandwidth <- rep(bandwidth, n)
+		} else stop("Bandwidth must be given for non-adaptive weights")
+	} else {
+		bandwidth <- gw.adapt(dp=coords, fp=fit.points, quant=adapt,
+			longlat=longlat)
+		bw <- bandwidth
+	}
+	if (any(bandwidth < 0)) stop("Invalid bandwidth")
+	gwr.b <- matrix(nrow=n, ncol=m)
+	gwr.se <- matrix(nrow=n, ncol=m)
+	gwr.R2 <- numeric(n)
+	yiybar <- (y - mean(y))
+	colnames(gwr.b) <- colnames(x)
+	lhat <- NA
+	if (!fp.given && hatmatrix) lhat <- matrix(nrow=n, ncol=n)
+	sum.w <- numeric(n)
+	for (i in 1:n) {
+		dxs <- spDistsN1(coords, fit.points[i,], longlat=longlat)
+		if (any(!is.finite(dxs)))
+			dxs[which(!is.finite(dxs))] <- 0
+#		if (!is.finite(dxs[i])) dxs[i] <- 0
+		w.i <- gweight(dxs^2, bandwidth[i])
+		if (any(w.i < 0 | is.na(w.i)))
+        		stop(paste("Invalid weights for i:", i))
+		lm.i <- lm.wfit(y=y, x=x, w=w.i)
+		sum.w[i] <- sum(w.i)
+		gwr.b[i,] <- coefficients(lm.i)
+		ei <- residuals(lm.i)
+# use of diag(w.i) dropped to avoid forming n by n matrix
+# bug report: Ilka Afonso Reis, July 2005
+		rss <- sum(ei * w.i * ei)
+		gwr.R2[i] <- 1 - (rss / sum(yiybar * w.i * yiybar))
+		p <- lm.i$rank
+		p1 <- 1:p
+		inv.Z <- chol2inv(lm.i$qr$qr[p1, p1, drop=FALSE])
+		gwr.se[i,] <- sqrt(diag(inv.Z) * (rss/(n-p)))
+		if (!fp.given && hatmatrix) 
+			lhat[i,] <- t(x[i,]) %*% inv.Z %*% t(x) %*% diag(w.i)
+	}
+	results <- NULL
+	if (!fp.given && hatmatrix){
+	#This section calculates the effective degree of freedoms, edf;
+	#the normalized residual sum of square, sigma2; the model
+	#residual of squares, rss; and various version of AICs
+	
+	#As long as the hat matrix is obtained, many statistics can be 
+	#calculated, such as the effective degree of freedom, AIC, etc.
+	#Now calculate the effective degree of freedom of the residual
+	#Reference: GWR book, page 55
+	#obtain v1 and v2:
+	
+		v1 <- sum(diag(lhat))
+		B2 <- t(lhat)%*%lhat
+		v2 <- sum(diag(B2))
+	
+	#effective d.f. is n - 2*v1 + v2
+	
+		edf <- n - 2*v1 + v2
+	
+	#Follow Leung et al. EPA 2000 page 15, the estimate of sigma square
+	#can be obtained through rss and delta1 (which is actually edf)
+	#Calculate rss:
+	
+		B1 <- t(diag(n)-lhat)%*%(diag(n)-lhat)
+		rss <- c(t(y)%*%B1%*%y)
+		delta1 <- sum (diag (B1))
+		sigma2 <- rss/delta1 #line 77
+	
+	#Now the problem is, there are several version of AIC's calculation
+	#formula, the GWR book's (page 61,96), Brunsdon's handouts, 
+	#and the one from Hurvich, Simonoff and Tsai (1998, page 276)
+	#I will implement all of them, and called them
+	#AICb, from the book, AICh, from Brunsdon, and AICc, from Hurvich et al.
+	
+	#AICb <- n*log(sigma2) + n*log(2*3.14) + (n * (n + v1) / (n - 2 - v1))
+	#AICh <- n*log(sigma2) + ((n + v1) / (n + 2 - v1))
+	
+	#To calculate AICc, there are several interal parameters
+	#delta1 has already been calculated, detailed formula see
+	#Hurvich et al. 1998, page 275, 276
+	#B1 (above) and B2, delta2, nu1, nu2:
+	
+		delta2 <- sum(diag(B1)^2)
+		nu1 <- sum(diag(B2))
+	#nu2 <- sum(diag(B2^)2)
+	
+	#AICc is from the formula in Hurvich et al. 1998 page 276
+	#AICc1:
+	
+	#AICc <- n*log(sigma2) + n * ((delta1/delta2)*(n + nu1))/((delta1^2/delta2)-2)
+	
+	#One thing that I did not notice is that the sigma2 here I used is not
+	#the same sigma2 used in the GWR book (detailed reference in page 96).
+	#The sigma2 I used is from Leung et al (2000, p 15), calculated in line 77
+	#The sigma2 in the GWR book is a maximum likelihood estimate
+	#It should be: sigma2 <- rss/n instead of sigma2 <- rss/delta1
+	#For this reason, a corrected AICb.b, AICh.b, AICc.b are therefore provided
+	#followed by creating the sigam sqare used in the book, termed here sigma2.b
+	#All the above unncessary calculation is then commented out.
+	
+		sigma2.b <- rss / n
+		AICb.b <- 2*n*log(sqrt(sigma2.b)) + n*log(2*pi) + 
+			(n * (n + v1) / (n - 2 - v1))
+# NOTE 2* and sqrt() inserted for legibility
+		AICh.b <- 2*n*log(sqrt(sigma2.b)) + n*log(2*pi) + n + v1
+		AICc.b <- 2*n*log(sqrt(sigma2.b)) + n * 
+			((delta1/delta2)*(n + nu1))/((delta1^2/delta2)-2)
+		results <- list(v1=v1, v2=v2, delta1=delta1, delta2=delta2, 
+			sigma2=sigma2, sigma2.b=sigma2.b, AICb=AICb.b, 
+			AICh=AICh.b, AICc=AICc.b, edf=edf, rss=rss, nu1=nu1)
+	}
+	if (coords.given) {
+		if (is.null(coords.extra)) {
+			SDF <- SpatialPointsDataFrame(coords=fit.points,
+				data=data.frame(sum.w=sum.w, gwr.b, gwr.R2, 
+				gwr.se), proj4string=CRS(p4s))
+		} else {
+			SDF <- SpatialPointsDataFrame(coords=coords.extra,
+				data=data.frame(fit.points, sum.w=sum.w, 
+				gwr.b, gwr.R2, gwr.se), proj4string=CRS(p4s))
+		}		
+	} else {
+		
+		SDF <- SpatialPointsDataFrame(coords=fit.points, 
+		data=data.frame(sum.w=sum.w, gwr.b, gwr.R2, gwr.se, 
+			fit.points), proj4string=CRS(p4s))
+	}
+	if (gridded) gridded(SDF) <- TRUE
+	else if (!is.null(Polys)) {
+		df <- data.frame(SDF@data)
+		rownames(df) <- getSpPPolygonsIDSlots(Polys)
+		SDF <- SpatialPolygonsDataFrame(Sr=Polys, data=df)
+	}
+	z <- list(SDF=SDF, lhat=lhat, lm=lm, results=results, 
+		bandwidth=bw, adapt=adapt, hatmatrix=hatmatrix, 
+		gweight=deparse(substitute(gweight)), this.call=this.call)
+	class(z) <- "gwr"
+	invisible(z)
+}
+
+#eval(parse(text=deparse(substitute(gwr.gauss)))
+#function (dist2, bandwidth) 
+#{
+#    w <- exp((-dist2)/(bandwidth^2))
+#    w
+#}
+
+print.gwr <- function(x, ...) {
+	if(class(x) != "gwr") stop("not a gwr object")
+	cat("Call:\n")
+	print(x$this.call)
+	cat("Kernel function:", x$gweight, "\n")
+	n <- NROW(x$lm$x)
+	if (is.null(x$adapt)) cat("Fixed bandwidth:", x$bandwidth, "\n")
+	else cat("Adaptive quantile: ", x$adapt, " (about ", 
+		floor(x$adapt*n), " of ", n, ")\n", sep="")
+	m <- NCOL(x$lm$x)
+	cat("Summary of GWR coefficient estimates:\n")
+	CM <- t(apply(as(x$SDF, "data.frame")[,(1+(1:m))], 2, summary))[,c(1:3,5,6)]
+	CM <- cbind(CM, coefficients(x$lm))
+	colnames(CM) <- c(colnames(CM)[1:5], "Global OLS")
+	printCoefmat(CM)
+	if (x$hatmatrix) {
+		cat("Number of data points:", n, "\n")
+		cat("Effective number of parameters:", 2*x$results$v1 -
+			x$results$v2, "\n")
+		cat("Effective degrees of freedom:", x$results$edf, "\n")
+		cat("Sigma squared (ML):", x$results$sigma2.b, "\n")
+		cat("AICc (GWR p. 61, eq 2.33; p. 96, eq. 4.21):", x$results$AICb, "\n")
+		cat("AIC (GWR p. 96, eq. 4.22):", x$results$AICh, "\n")
+		cat("Residual sum of squares:", x$results$rss, "\n")
+	}
+	invisible(x)
+}

@@ -1,0 +1,12 @@
+columbus                Columbus, OH crime data
+georgia                 Georgia census data set
+                        (SpatialDataFramePolygons)
+gw.adapt                Adaptive kernel for GWR
+gw.cov                  Geographically weighted local statistics
+gwr                     Geographically weighted regression
+gwr.bisquare            GWR bisquare weights function
+gwr.gauss               GWR Gaussian weights function
+gwr.sel                 Crossvalidation of bandwidth for geographically
+                        weighted regression
+LMZ.F3GWR.test          Global tests of geographical weighted
+                        regressions
