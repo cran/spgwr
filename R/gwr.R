@@ -1,4 +1,4 @@
-# Copyright 2001-2005 Roger Bivand and Danlin Yu
+# Copyright 2001-2007 Roger Bivand and Danlin Yu
 # 
 
 gwr <- function(formula, data = list(), coords, bandwidth, 
@@ -7,50 +7,35 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	this.call <- match.call()
 	p4s <- as.character(NA)
 	Polys <- NULL
-	coords.given <- NULL
-	if (!missing(coords)) coords.given <- TRUE
-	coords.extra <- NULL
-	if (is(data, "SpatialPolygonsDataFrame")) {
+	if (is(data, "Spatial")) {
+		if (!missing(coords))
+		    warning("data is Spatial* object, ignoring coords argument")
+		coords <- coordinates(data)
+		p4s <- proj4string(data)
+		data <- as(data, "data.frame")
+	}
+	if (is(data, "SpatialPolygonsDataFrame")) 
 		Polys <- as(data, "SpatialPolygons")
-		if (missing(coords)) {
-			coords <- getSpPPolygonsLabptSlots(data)
-			coords.given <- FALSE
-		} else {
-			coords.extra <- getSpPPolygonsLabptSlots(data)
-		}
-		p4s <- proj4string(data)
-		data <- as(data, "data.frame")
-	}
-	if (is(data, "SpatialPointsDataFrame")) {
-		if (missing(coords)) {
-			coords <- coordinates(data)
-			coords.given <- FALSE
-		} else {
-			coords.extra <- coordinates(data)
-		}
-		p4s <- proj4string(data)
-		data <- as(data, "data.frame")
-	}
 	if (missing(coords))
 		stop("Observation coordinates have to be given")
 	if (is.null(colnames(coords))) 
 		colnames(coords) <- c("coord.x", "coord.y")
 	mt <- terms(formula, data = data)
-	mf <- lm(formula, data, method="model.frame")
+	mf <- lm(formula, data, method="model.frame", na.action=na.fail)
 	lm <- lm(formula, data, x=TRUE, y=TRUE)
 	if (missing(fit.points)) {
 		fp.given <- FALSE
 		fit.points <- coords
 		colnames(fit.points) <- colnames(coords)
 	} else fp.given <- TRUE
-	gridded <- FALSE
+	griddedObj <- FALSE
 	if (is(fit.points, "Spatial")) {
 		Polys <- NULL
 		if (is(fit.points, "SpatialPolygonsDataFrame")) {
 			Polys <- Polygons(fit.points)
 			fit.points <- getSpPPolygonsLabptSlots(fit.points)
 		} else {
-			gridded <- gridded(fit.points)
+			griddedObj <- gridded(fit.points)
 			fit.points <- coordinates(fit.points)
 		}
 	}
@@ -77,6 +62,7 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	gwr.b <- matrix(nrow=n, ncol=m)
 	gwr.se <- matrix(nrow=n, ncol=m)
 	gwr.R2 <- numeric(n)
+	gwr.e <- numeric(n)
 	yiybar <- (y - mean(y))
 	colnames(gwr.b) <- colnames(x)
 	lhat <- NA
@@ -94,6 +80,7 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 		sum.w[i] <- sum(w.i)
 		gwr.b[i,] <- coefficients(lm.i)
 		ei <- residuals(lm.i)
+		gwr.e[i] <- ei[i]
 # use of diag(w.i) dropped to avoid forming n by n matrix
 # bug report: Ilka Afonso Reis, July 2005
 		rss <- sum(ei * w.i * ei)
@@ -177,27 +164,19 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 			sigma2=sigma2, sigma2.b=sigma2.b, AICb=AICb.b, 
 			AICh=AICh.b, AICc=AICc.b, edf=edf, rss=rss, nu1=nu1)
 	}
-	if (coords.given) {
-		if (is.null(coords.extra)) {
-			SDF <- SpatialPointsDataFrame(coords=fit.points,
-				data=data.frame(sum.w=sum.w, gwr.b, gwr.R2, 
-				gwr.se), proj4string=CRS(p4s))
-		} else {
-			SDF <- SpatialPointsDataFrame(coords=coords.extra,
-				data=data.frame(fit.points, sum.w=sum.w, 
-				gwr.b, gwr.R2, gwr.se), proj4string=CRS(p4s))
-		}		
-	} else {
+	df <- data.frame(sum.w=sum.w, gwr.b, gwr.R2, gwr.se, gwr.e)
 		
-		SDF <- SpatialPointsDataFrame(coords=fit.points, 
-		data=data.frame(sum.w=sum.w, gwr.b, gwr.R2, gwr.se, 
-			fit.points), proj4string=CRS(p4s))
-	}
-	if (gridded) gridded(SDF) <- TRUE
-	else if (!is.null(Polys)) {
-		df <- data.frame(SDF@data)
-		rownames(df) <- getSpPPolygonsIDSlots(Polys)
-		SDF <- SpatialPolygonsDataFrame(Sr=Polys, data=df)
+	SDF <- SpatialPointsDataFrame(coords=fit.points, 
+		data=df, proj4string=CRS(p4s))
+
+	if (griddedObj) {
+		gridded(SDF) <- TRUE
+	} else {
+		if (!is.null(Polys)) {
+			df <- data.frame(SDF@data)
+			rownames(df) <- getSpPPolygonsIDSlots(Polys)
+			SDF <- SpatialPolygonsDataFrame(Sr=Polys, data=df)
+		}
 	}
 	z <- list(SDF=SDF, lhat=lhat, lm=lm, results=results, 
 		bandwidth=bw, adapt=adapt, hatmatrix=hatmatrix, 
@@ -218,15 +197,15 @@ print.gwr <- function(x, ...) {
 	cat("Call:\n")
 	print(x$this.call)
 	cat("Kernel function:", x$gweight, "\n")
-	n <- NROW(x$lm$x)
+	n <- nrow(coordinates(x$SDF))
 	if (is.null(x$adapt)) cat("Fixed bandwidth:", x$bandwidth, "\n")
 	else cat("Adaptive quantile: ", x$adapt, " (about ", 
 		floor(x$adapt*n), " of ", n, ")\n", sep="")
-	m <- NCOL(x$lm$x)
+	m <- length(x$lm$coefficients)
 	cat("Summary of GWR coefficient estimates:\n")
-	CM <- t(apply(as(x$SDF, "data.frame")[,(1+(1:m))], 2, summary))[,c(1:3,5,6)]
+	CM <- t(apply(as(x$SDF, "data.frame")[,(1+(1:m)), drop=FALSE], 2, summary))[,c(1:3,5,6)]
 	CM <- cbind(CM, coefficients(x$lm))
-	colnames(CM) <- c(colnames(CM)[1:5], "Global OLS")
+	colnames(CM) <- c(colnames(CM)[1:5], "Global")
 	printCoefmat(CM)
 	if (x$hatmatrix) {
 		cat("Number of data points:", n, "\n")

@@ -7,7 +7,7 @@
 \title{Crossvalidation of bandwidth for geographically weighted regression}
 \description{
 The function finds a bandwidth for a given geographically weighted regression
-by optimzing a selected function. Fro cross-validation, this scores the root mean square
+by optimzing a selected function. For cross-validation, this scores the root mean square
 prediction error for the geographically weighted regressions, choosing the
 bandwidth minimizing this quantity. 
 }

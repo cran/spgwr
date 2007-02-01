@@ -1,0 +1,128 @@
+2007-02-01 15:14  rsbivand
+
+	* DESCRIPTION, man/ggwr.Rd, man/ggwr.sel.Rd, man/gwr.Rd: 0.4-01
+	  release
+
+2007-01-31 15:53  rsbivand
+
+	* DESCRIPTION, INDEX, R/gwr.R, R/gwr.cv.R, R/gwr1.R, R/gwr1.cv.R,
+	  man/gwr.Rd, man/gwr.cv.Rd, man/ggwr.Rd, man/ggwr.sel.Rd,
+	  ChangeLog, inst/ChangeLog: generalised GWR
+
+2007-01-09 08:58  rsbivand
+
+	* ChangeLog, DESCRIPTION, R/gwr.R, R/gwr.cv.R, inst/ChangeLog:
+	  ChangeLog
+
+2006-05-02 09:08  rsbivand
+
+	* R/gwr.R, man/georgia.Rd, R/gwr1.R, R/gwr1.cv.R: glm extension
+
+2006-01-08 19:30  rsbivand
+
+	* DESCRIPTION, R/gwe.R, R/gwr.R, R/gwr.cv.R, man/gw.cov.Rd: release
+
+2006-01-02 20:54  rsbivand
+
+	* R/: gwe.R, gwr.cv.R, gwr.whole.test.R: release
+
+2006-01-02 20:31  rsbivand
+
+	* DESCRIPTION, INDEX, R/gwe.R, R/gwr.R, R/gwr.cv.R,
+	  R/gwr.whole.test.R, man/gw.adapt.Rd, man/gw.cov.Rd, man/gwr.Rd,
+	  man/gwr.cv.Rd, src/gwe.c, R/gwr.morantest.R, man/gw.dists.Rd,
+	  man/gwr.morantest.Rd: release
+
+2005-09-27 19:29  rsbivand
+
+	* DESCRIPTION, data/georgia.R, man/gwr.bisquare.Rd,
+	  man/gwr.gauss.Rd: 0.3-6, remove spmaptools
+
+2005-09-05 11:02  rsbivand
+
+	* data/georgia.R: _ changes
+
+2005-08-29 15:21  rsbivand
+
+	* R/gwe.R, R/gwr.R, R/gwr.cv.R, man/georgia.Rd, man/gw.cov.Rd,
+	  man/gwr.Rd, man/gwr.cv.Rd: new Polygons
+
+2005-08-29 14:25  rsbivand
+
+	* DESCRIPTION, R/gwe.R, R/gwr.R, R/gwr.cv.R, data/georgia.R,
+	  inst/shapes/georgia.dbf, inst/shapes/georgia.shp,
+	  inst/shapes/georgia.shx, man/georgia.Rd: adding Georgia shapefile
+
+2005-08-23 11:40  rsbivand
+
+	* R/: gwr.R, gwr.cv.R: return adaptive bw
+
+2005-07-27 20:00  rsbivand
+
+	* DESCRIPTION, R/gwr.R, man/gwr.cv.Rd: remove n by n matrix for
+	  hatmatrix=FALSE
+
+2005-06-25 15:13  rsbivand
+
+	* DESCRIPTION, R/gwr.R, src/gwe.c: fix infinite zero latlon
+	  distance
+
+2005-05-27 21:13  rsbivand
+
+	* DESCRIPTION, R/gwe.R, R/gwr.R: to 0.7-7
+
+2005-05-07 21:55  rsbivand
+
+	* INDEX: release candidate
+
+2005-05-07 21:52  rsbivand
+
+	* DESCRIPTION, R/gwe.R, R/gwr.R, man/LMZ.F3GWR.test.Rd,
+	  man/display.gw.cov.Rd, man/gw.adapt.Rd, man/gw.cov.Rd,
+	  man/gw.dists.Rd, man/gwr.Rd, man/gwr.cv.Rd, man/sem.gw.cov.Rd:
+	  release candidate
+
+2005-05-05 21:40  rsbivand
+
+	* R/gwe.R, R/gwr.R, R/gwr.cv.R, R/gwr.mc.R, man/fp.grid.Rd,
+	  man/georgia.Rd, man/gwr.mc.Rd, src/gwe.c: lonlat
+
+2005-04-07 10:14  rsbivand
+
+	* R/gwr.R: merging older changes
+
+2005-03-18 16:19  rsbivand
+
+	* DESCRIPTION, R/gwr.R, R/gwr.cv.R, data/georgia.R,
+	  man/display.gw.cov.Rd, man/fp.grid.Rd, man/georgia.Rd,
+	  man/gw.adapt.Rd, man/gw.cov.Rd, man/gw.dists.Rd, man/gwr.Rd,
+	  man/gwr.morantest.Rd, man/sem.gw.cov.Rd: matching sp
+
+2004-11-01 16:15  rsbivand
+
+	* src/gwe.c: pre lancs
+
+2004-06-10 08:33  rsbivand
+
+	* DESCRIPTION, INDEX, TITLE, data/00Index, data/columbus.R,
+	  data/georgia.R, man/LMZ.F3GWR.test.Rd, man/columbus.Rd,
+	  man/display.gw.cov.Rd, man/fp.grid.Rd, man/georgia.Rd,
+	  man/gw.adapt.Rd, man/gw.cov.Rd, man/gw.dists.Rd, man/gwr.Rd,
+	  man/gwr.bisquare.Rd, man/gwr.cv.Rd, man/gwr.gauss.Rd,
+	  man/gwr.mc.Rd, man/gwr.morantest.Rd, man/sem.gw.cov.Rd, R/gwe.R,
+	  R/gwr.R, R/gwr.bisquare.R, R/gwr.cv.R, R/gwr.gauss.R, R/gwr.mc.R,
+	  R/gwr.morantest.R, R/gwr.whole.test.R, R/zzz.R, src/gwe.c:
+	  Initial import.
+
+2004-06-10 08:33  rsbivand
+
+	* DESCRIPTION, INDEX, TITLE, data/00Index, data/columbus.R,
+	  data/georgia.R, man/LMZ.F3GWR.test.Rd, man/columbus.Rd,
+	  man/display.gw.cov.Rd, man/fp.grid.Rd, man/georgia.Rd,
+	  man/gw.adapt.Rd, man/gw.cov.Rd, man/gw.dists.Rd, man/gwr.Rd,
+	  man/gwr.bisquare.Rd, man/gwr.cv.Rd, man/gwr.gauss.Rd,
+	  man/gwr.mc.Rd, man/gwr.morantest.Rd, man/sem.gw.cov.Rd, R/gwe.R,
+	  R/gwr.R, R/gwr.bisquare.R, R/gwr.cv.R, R/gwr.gauss.R, R/gwr.mc.R,
+	  R/gwr.morantest.R, R/gwr.whole.test.R, R/zzz.R, src/gwe.c:
+	  Initial revision
+

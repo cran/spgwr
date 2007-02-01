@@ -1,6 +1,9 @@
 columbus                Columbus, OH crime data
 georgia                 Georgia census data set
                         (SpatialDataFramePolygons)
+ggwr                    Generalised geographically weighted regression
+ggwr.sel                Crossvalidation of bandwidth for generalised
+                        GWR
 gw.adapt                Adaptive kernel for GWR
 gw.cov                  Geographically weighted local statistics
 gwr                     Geographically weighted regression

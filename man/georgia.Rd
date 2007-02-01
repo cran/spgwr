@@ -8,7 +8,7 @@
 }
 \usage{data(georgia)}
 \format{
- A SpatialPolygonsDataFrame object (proj4string set to "+proj=latlong +datum=NAD27").
+ A SpatialPolygonsDataFrame object (proj4string set to "+proj=longlat +datum=NAD27").
 
   The "data" slot is a data frame with 159 observations on the following 13 variables.
   \describe{

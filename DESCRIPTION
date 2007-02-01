@@ -1,6 +1,6 @@
 Package: spgwr
-Version: 0.3-12
-Date: 2006-01-08
+Version: 0.4-01
+Date: 2007-02-01
 Title: Geographically weighted regression
 Author: Roger Bivand and Danlin Yu
 Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
@@ -11,4 +11,4 @@ Description: Functions for computing geographically weighted
   http://ncg.nuim.ie/ncg/GWR/index.htm
 License: GPL version 2 or newer
 URL: http://ncg.nuim.ie/ncg/GWR/index.htm
-Packaged: Sun Jan  8 16:28:04 2006; rsb
+Packaged: Thu Feb  1 15:13:25 2007; rsb
