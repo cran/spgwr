@@ -3,7 +3,7 @@
 
 gwr <- function(formula, data = list(), coords, bandwidth, 
 	gweight=gwr.gauss, adapt=NULL, hatmatrix=FALSE, fit.points, 
-	longlat=FALSE) {
+	longlat=FALSE, se.fit=FALSE, cl=NULL) {
 	this.call <- match.call()
 	p4s <- as.character(NA)
 	Polys <- NULL
@@ -45,55 +45,62 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 #	if (is.null(fit.points)) fit.points <- coords
 	y <- model.extract(mf, "response")
 	x <- model.matrix(mt, mf)
+	yiybar <- (y - mean(y))
 	m <- NCOL(x)
 	if (NROW(x) != NROW(coords))
 		stop("Input data and coordinates have different dimensions")
-	if (is.null(adapt)) {
-		if (!missing(bandwidth)) {
-			bw <- bandwidth
-			bandwidth <- rep(bandwidth, n)
-		} else stop("Bandwidth must be given for non-adaptive weights")
-	} else {
-		bandwidth <- gw.adapt(dp=coords, fp=fit.points, quant=adapt,
-			longlat=longlat)
-		bw <- bandwidth
-	}
-	if (any(bandwidth < 0)) stop("Invalid bandwidth")
-	gwr.b <- matrix(nrow=n, ncol=m)
-	gwr.se <- matrix(nrow=n, ncol=m)
-	gwr.R2 <- numeric(n)
-	gwr.e <- numeric(n)
-	yiybar <- (y - mean(y))
-	colnames(gwr.b) <- colnames(x)
+	if (missing(bandwidth) && is.null(adapt))
+	    stop("Bandwidth must be given for non-adaptive weights")
+	if (missing(bandwidth)) bandwidth <- NULL
+	if (hatmatrix) se.fit <- TRUE
 	lhat <- NA
-	if (!fp.given && hatmatrix) lhat <- matrix(nrow=n, ncol=n)
-	sum.w <- numeric(n)
-	for (i in 1:n) {
-		dxs <- spDistsN1(coords, fit.points[i,], longlat=longlat)
-		if (any(!is.finite(dxs)))
-			dxs[which(!is.finite(dxs))] <- 0
-#		if (!is.finite(dxs[i])) dxs[i] <- 0
-		w.i <- gweight(dxs^2, bandwidth[i])
-		if (any(w.i < 0 | is.na(w.i)))
-        		stop(paste("Invalid weights for i:", i))
-		lm.i <- lm.wfit(y=y, x=x, w=w.i)
-		sum.w[i] <- sum(w.i)
-		gwr.b[i,] <- coefficients(lm.i)
-		ei <- residuals(lm.i)
-		gwr.e[i] <- ei[i]
-# use of diag(w.i) dropped to avoid forming n by n matrix
-# bug report: Ilka Afonso Reis, July 2005
-		rss <- sum(ei * w.i * ei)
-		gwr.R2[i] <- 1 - (rss / sum(yiybar * w.i * yiybar))
-		p <- lm.i$rank
-		p1 <- 1:p
-		inv.Z <- chol2inv(lm.i$qr$qr[p1, p1, drop=FALSE])
-		gwr.se[i,] <- sqrt(diag(inv.Z) * (rss/(n-p)))
-		if (!fp.given && hatmatrix) 
-			lhat[i,] <- t(x[i,]) %*% inv.Z %*% t(x) %*% diag(w.i)
-	}
-	results <- NULL
-	if (!fp.given && hatmatrix){
+
+
+	GWR_args <- list(fp.given=fp.given, hatmatrix=hatmatrix, 
+	    longlat=longlat, bandwidth=bandwidth, adapt=adapt, se.fit=se.fit)
+
+	if (!is.null(cl) && length(cl) > 1 && fp.given && !hatmatrix) {
+	    if (length(grep("cluster", class(cl))) > 0 && 
+		.Platform$OS.type == "unix" && require(snow)) {
+		l_fp <- lapply(splitIndices(nrow(fit.points), length(cl)), 
+		    function(i) fit.points[i,])
+		clusterEvalQ(cl, library(spgwr))
+
+		clusterExport_l <- function(cl, list) {
+                    gets <- function(n, v) {
+                        assign(n, v, env = .GlobalEnv)
+                        NULL
+                    }
+                    for (name in list) {
+                        clusterCall(cl, gets, name, get(name))
+                    }
+		}
+
+		clusterExport_l(cl, list("GWR_args", "coords", "gweight", "y",
+		    "x", "yiybar"))
+
+		res <- parLapply(cl, l_fp, function(fp) .GWR_int(fit.points=fp,
+		    coords=coords, gweight=gweight, y=y, x=x, yiybar=yiybar,
+		    GWR_args=GWR_args))
+		clusterEvalQ(cl, rm(list=c("GWR_args", "coords", "gweight", "y",
+		    "x", "yiybar")))
+		df <- as.data.frame(do.call("rbind", 
+		    lapply(res, function(x) x$df)))
+		bw <- do.call("c", lapply(res, function(x) x$bw))
+	        results <- NULL
+	    }
+	} else { # cl
+
+	    df <- .GWR_int(fit.points=fit.points, coords=coords, 
+		gweight=gweight, y=y, x=x, yiybar=yiybar, GWR_args=GWR_args)
+	    if (!fp.given && hatmatrix) lhat <- df$lhat
+	    bw <- df$bw
+	    df <- as.data.frame(df$df)
+	    results <- NULL
+
+	} # cl
+	if (!fp.given && hatmatrix) {
+
 	#This section calculates the effective degree of freedoms, edf;
 	#the normalized residual sum of square, sigma2; the model
 	#residual of squares, rss; and various version of AICs
@@ -164,7 +171,7 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 			sigma2=sigma2, sigma2.b=sigma2.b, AICb=AICb.b, 
 			AICh=AICh.b, AICc=AICc.b, edf=edf, rss=rss, nu1=nu1)
 	}
-	df <- data.frame(sum.w=sum.w, gwr.b, gwr.R2, gwr.se, gwr.e)
+#	df <- data.frame(sum.w=sum.w, gwr.b, gwr.R2, gwr.se, gwr.e)
 		
 	SDF <- SpatialPointsDataFrame(coords=fit.points, 
 		data=df, proj4string=CRS(p4s))
@@ -219,3 +226,59 @@ print.gwr <- function(x, ...) {
 	}
 	invisible(x)
 }
+
+.GWR_int <- function(fit.points, coords, gweight, y, x, yiybar, GWR_args) {
+	    n <- nrow(fit.points)
+ 	    m <- NCOL(x)
+	    if (GWR_args$se.fit) {
+		df <- matrix(nrow=n, ncol=(2*m + 3))
+	        colnames(df) <- c("sum.w", colnames(x), "R2", "gwr.e", 
+		    paste(colnames(x), "se", sep="_"))
+	    } else {
+		df <- matrix(nrow=n, ncol=(m + 3))
+	    	colnames(df) <- c("sum.w", colnames(x), "R2", "gwr.e")
+	    }
+	    if (!GWR_args$fp.given && GWR_args$hatmatrix) 
+	        lhat <- matrix(nrow=n, ncol=n)
+	    if (is.null(GWR_args$adapt)) {
+		    bw <- GWR_args$bandwidth
+		    bandwidth <- rep(GWR_args$bandwidth, n)
+	    } else {
+		bandwidth <- gw.adapt(dp=coords, fp=fit.points, 
+		    quant=GWR_args$adapt, longlat=GWR_args$longlat)
+		bw <- bandwidth
+	    }
+	    if (any(bandwidth < 0)) stop("Invalid bandwidth")
+	    for (i in 1:n) {
+		dxs <- spDistsN1(coords, fit.points[i,], 
+		    longlat=GWR_args$longlat)
+		if (any(!is.finite(dxs)))
+			dxs[which(!is.finite(dxs))] <- 0
+#		if (!is.finite(dxs[i])) dxs[i] <- 0
+		w.i <- gweight(dxs^2, bandwidth[i])
+		if (any(w.i < 0 | is.na(w.i)))
+        		stop(paste("Invalid weights for i:", i))
+		lm.i <- lm.wfit(x, y, w.i)
+		df[i, 1] <- sum(w.i)
+		df[i, 2:(m+1)] <- coefficients(lm.i)
+		ei <- residuals(lm.i)
+		df[i, (m+3)] <- ei[i]
+# use of diag(w.i) dropped to avoid forming n by n matrix
+# bug report: Ilka Afonso Reis, July 2005
+		rss <- sum(ei * w.i * ei)
+		df[i, (m+2)] <- 1 - (rss / sum(yiybar * w.i * yiybar))
+	        if (GWR_args$se.fit) {
+		    p <- lm.i$rank
+		    p1 <- 1:p
+		    inv.Z <- chol2inv(lm.i$qr$qr[p1, p1, drop=FALSE])
+		    df[i,(m+4):(2*m + 3)] <- sqrt(diag(inv.Z) * (rss/(n-p)))
+		}
+		if (!GWR_args$fp.given && GWR_args$hatmatrix) 
+			lhat[i,] <- t(x[i,]) %*% inv.Z %*% t(x) %*% diag(w.i)
+	    }
+	    if (!GWR_args$fp.given && GWR_args$hatmatrix) 
+		return(list(df=df, lhat=lhat, bw=bw))
+	    else return(list(df=df, bw=bw))
+} # GWR_int
+
+

@@ -76,6 +76,33 @@ BFC99.gwr.test <- function(x) {
 	res
 }
 
+# implemented from 2002 book pp. 91-2
+
+BFC02.gwr.test <- function(x) {
+  if(class(x) != "gwr") stop("not a gwr object")
+  if (!x$hatmatrix) stop("Fit GWR model with argument hatmatrix=TRUE")
+  n <- ncol(x$lhat)
+  R <- t(diag(n) - x$lhat) %*% (diag(n) - x$lhat)
+  RSSg <- as.vector(t(x$lm$y) %*% R %*% x$lm$y)
+  DFg1 <- sum(diag(x$lhat))
+  DFg2 <- sum(diag(t(x$lhat) %*% x$lhat))
+  DFg <- n - (2*DFg1 - DFg2)
+  RSSo <- deviance(x$lm)
+  DFo <- df.residual(x$lm)
+  statistic <- RSSo/RSSg
+  names(statistic) <- "F"
+  parameter <- c(DFo, DFg)
+  names(parameter) <- c("df1", "df2")
+  ests <- c(RSSo, RSSg)
+  names(ests) <- c("SS OLS residuals", "SS GWR residuals")
+  pv <- pf(statistic, parameter[1], parameter[2], lower.tail=FALSE)
+  res <- list(statistic=statistic, parameter=parameter, p.value=pv,
+    method="Brunsdon, Fotheringham & Charlton (2002, pp. 91-2) ANOVA", 
+    data.name=deparse(substitute(x)), estimates=ests,
+    alternative="greater")
+  class(res) <- "htest"
+  res
+}
 
 #This section tests the coefficient non-stationarity using Leung et al
 #(2000)'s F3 test.

@@ -10,7 +10,7 @@ weighting scheme.
 \usage{
 gwr(formula, data=list(), coords, bandwidth, gweight=gwr.gauss, 
 	adapt=NULL, hatmatrix = FALSE, fit.points, 
-	longlat=FALSE)
+	longlat=FALSE, se.fit=FALSE, cl=NULL)
 \method{print}{gwr}(x, \dots)
 }
 
@@ -27,15 +27,16 @@ gwr(formula, data=list(), coords, bandwidth, gweight=gwr.gauss,
   \item{hatmatrix}{if TRUE, return the hatmatrix as a component of the result}
   \item{fit.points}{an object containing the coordinates of fit points; often an object from package \pkg{sp}; if missing, the coordinates given through the data argument object, or the coords argument are used}
   \item{longlat}{if TRUE, use distances on an ellipse with WGS84 parameters}
+  \item{se.fit}{if TRUE, return local coefficient standard errors}
+  \item{cl}{if NULL, ignored, otherwise \code{cl} must be an object describing a \dQuote{cluster} created using \code{makeCluster} in the snow package. The cluster will then be used to hand off the calculation of local coefficients to cluster nodes, if fit points have been given as an argument, and \code{hatmatrix=FALSE}}
   \item{x}{an object of class "gwr" returned by the \code{gwr} function}
   \item{...}{arguments to be passed to other functions}
 }
 \details{
 The function applies the weighting function in turn to each of the 
 observations, or fit points if given, calculating a weighted regression 
-for each point. The
-results may be explored to see if coefficient values vary over space.
-}
+for each point. The results may be explored to see if coefficient values vary over space. The local coefficient estimates may be made on a multi-node cluster using the \code{cl} argument to pass through a \dQuote{snow} cluster. The function will then divide the fit points (which must be given separately) between the clusters for fitting. Note that each node will need to have the \dQuote{spgwr} package present, so initiating by \code{clusterEvalQ(cl, library(spgwr))} may save a little time per node. The function clears the global environment on the node of objects sent. Using two nodes reduces timings to a little over half the time for a single node.}
+
 \value{
 A list of class \dQuote{gwr}:
   \item{SDF}{a SpatialPointsDataFrame (may be gridded) or SpatialPolygonsDataFrame object (see package "sp") with fit.points, weights, GWR coefficient estimates, R-squared, and coefficient standard errors in its "data" slot.}
@@ -82,18 +83,24 @@ plot(res.adpt$SDF, col=cols[findInterval(res.adpt$SDF$PctBlack, brks, all.inside
   pairs(as(res.bw$SDF, "data.frame")[,2:8], pch=".")
   plot(res.bw$SDF, col=cols[findInterval(res.bw$SDF$PctBlack, brks, all.inside=TRUE)])
   g.bw.gauss <- gwr.sel(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov + PctBlack, data=gSRDF, longlat=TRUE)
-  if (require(maptools) && require(gpclib)) {
+  if (suppressWarnings(require(maptools)) &&
+    suppressWarnings(require(gpclib))) {
     gSR <- as(gSRDF, "SpatialPolygons")
     length(getSpPpolygonsSlot(gSR))
     gSRouter <- unionSpatialPolygons(gSR, IDs=rep("Georgia", 159))
-    gGrid <- sample.Polygons(getSpPpolygonsSlot(gSRouter)[[1]], 5000,
-      type="regular")
-    gridded(gGrid) <- TRUE
-    summary(gGrid)
-    res.bw <- gwr(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov + PctBlack, data=gSRDF, bandwidth=g.bw.gauss, fit.points=gGrid, longlat=TRUE)
+    SG <- GE_SpatialGrid(gSRouter, maxPixels = 100)
+    SPxMASK0 <- overlay(gSRouter, SG$SG)
+    SGDF <- SpatialGridDataFrame(slot(SG$SG, "grid"),
+      data=data.frame(SPxMASK0=SPxMASK0),
+      proj4string=CRS(proj4string(gSRouter)))
+    SPxDF <- as(SGDF, "SpatialPixelsDataFrame")
+    res.bw <- gwr(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov +
+      PctBlack, data=gSRDF, bandwidth=g.bw.gauss, fit.points=SPxDF,
+      longlat=TRUE)
     res.bw
     spplot(res.bw$SDF, "PctBlack")
-}}
+  }
+}
 }
 \keyword{spatial}
 
