@@ -6,12 +6,12 @@
   The function returns Leung et al. (2000) three moment approximation for Moran's I, for a gwr object calculated with argument hatmatrix=TRUE. This implementation should not be regarded as authoritative, as it involves assumptions about implied methods and about estimated degrees of freedom.
 }
 \usage{
-gwr.morantest(x, listw, zero.policy = FALSE)
+gwr.morantest(x, lw, zero.policy = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{a \code{gwr} object returned by \code{gwr()} with argument hatmatrix=TRUE}
-  \item{listw}{a \code{listw} object created for example by \code{nb2listw} in the spdep package}
+  \item{lw}{a \code{listw} object created for example by \code{nb2listw} in the spdep package}
   \item{zero.policy}{if TRUE assign zero to the lagged value of zones without 
 neighbours, if FALSE (default) assign NA}
 }

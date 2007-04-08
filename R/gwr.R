@@ -61,7 +61,8 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 
 	if (!is.null(cl) && length(cl) > 1 && fp.given && !hatmatrix) {
 	    if (length(grep("cluster", class(cl))) > 0 && 
-		.Platform$OS.type == "unix" && require(snow)) {
+		.Platform$OS.type == "unix" && exists("splitIndices")) {
+#		&& require(snow)) 
 		l_fp <- lapply(splitIndices(nrow(fit.points), length(cl)), 
 		    function(i) fit.points[i,])
 		clusterEvalQ(cl, library(spgwr))
@@ -88,7 +89,7 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 		    lapply(res, function(x) x$df)))
 		bw <- do.call("c", lapply(res, function(x) x$bw))
 	        results <- NULL
-	    }
+	    } else stop("snow package not loaded")
 	} else { # cl
 
 	    df <- .GWR_int(fit.points=fit.points, coords=coords, 

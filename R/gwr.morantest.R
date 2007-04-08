@@ -1,14 +1,14 @@
-gwr.morantest <- function(x, listw, zero.policy = FALSE) {
+gwr.morantest <- function(x, lw, zero.policy = FALSE) {
 	if(class(x) != "gwr") stop(paste(deparse(substitute(x)),
 		"not a gwr object"))
 	if (is.null(x$lhat)) stop("hatmatrix=TRUE needed in gwr fit")
-	if (!inherits(listw, "listw")) 
-		stop(paste(deparse(substitute(listw)), "is not a listw object"))
+	if (!inherits(lw, "listw")) 
+		stop(paste(deparse(substitute(lw)), "is not a listw object"))
 	n <- ncol(x$lhat)
-	if (n != length(listw$neighbours)) stop("objects of different length")
-	if (listw$style != "W") warning(deparse(substitute(listw)),
+	if (n != length(lw$neighbours)) stop("objects of different length")
+	if (lw$style != "W") warning(deparse(substitute(lw)),
 		"not row standardised")
-	W <- listw2mat(listw2U(listw))
+	W <- listw2mat(listw2U(lw))
 	N <- diag(n) - x$lhat
 	e.gwr <- N %*% x$lm$y
 	I0.gwr <- c((t(e.gwr) %*% W %*% e.gwr) / (t(e.gwr) %*% e.gwr))
