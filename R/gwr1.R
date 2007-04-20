@@ -7,6 +7,8 @@ ggwr <- function(formula, data = list(), coords, bandwidth,
 	this.call <- match.call()
 	p4s <- as.character(NA)
 	Polys <- NULL
+	if (is(data, "SpatialPolygonsDataFrame")) 
+		Polys <- as(data, "SpatialPolygons")
 	if (is(data, "Spatial")) {
 		if (!missing(coords))
 		    warning("data is Spatial* object, ignoring coords argument")
@@ -14,8 +16,6 @@ ggwr <- function(formula, data = list(), coords, bandwidth,
 		p4s <- proj4string(data)
 		data <- as(data, "data.frame")
 	}
-	if (is(data, "SpatialPolygonsDataFrame")) 
-		Polys <- as(data, "SpatialPolygons")
 	if (missing(coords))
 		stop("Observation coordinates have to be given")
 	if (is.null(colnames(coords))) 
