@@ -1,7 +1,32 @@
+2007-08-08 20:41  rsbivand
+
+	* DESCRIPTION, R/gwr.whole.test.R: df1 in BFC99
+
+2007-04-21 06:27  rsbivand
+
+	* DESCRIPTION, INDEX, R/gwr.R, R/gwr.morantest.R, R/gwr1.R,
+	  man/gwr.morantest.Rd: GE dimnames
+
+2007-03-23 20:21  rsbivand
+
+	* DESCRIPTION, INDEX, R/gwr.R: snow
+
+2007-03-09 19:44  rsbivand
+
+	* R/gwr.whole.test.R, man/LMZ.F3GWR.test.Rd: new tests
+
+2007-02-28 20:52  rsbivand
+
+	* DESCRIPTION, R/gwr.morantest.R, man/gwr.morantest.Rd: GWR moran
+
+2007-02-28 13:27  rsbivand
+
+	* R/gwr.R, man/gwr.Rd: cluster GWR
+
 2007-02-01 15:14  rsbivand
 
-	* DESCRIPTION, man/ggwr.Rd, man/ggwr.sel.Rd, man/gwr.Rd: 0.4-01
-	  release
+	* DESCRIPTION, man/ggwr.Rd, man/ggwr.sel.Rd, man/gwr.Rd, ChangeLog,
+	  inst/ChangeLog: 0.4-01 release
 
 2007-01-31 15:53  rsbivand
 

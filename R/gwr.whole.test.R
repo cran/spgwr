@@ -62,12 +62,17 @@ BFC99.gwr.test <- function(x) {
 	DFo <- df.residual(x$lm)
 	statistic <- ((RSSo - RSSg)/(DFo-DFg1))/(RSSg/DFg1)
 	names(statistic) <- "F"
-	parameter <- c(((DFo-DFg1)^2)/(DFo-2*DFg1+DFg2), (DFg1^2)/DFg2)
+#	parameter <- c(((DFo-DFg1)^2)/(DFo-2*DFg1+DFg2), (DFg1^2)/DFg2)
+# df1 modified to (tr(R_0 - R_1)^2) / tr((R_0 - R_1)^2) as 
+# (DFo-2*DFg1+DFg2) != sum(((1-hatvalues(x$lm)) - diag(R))^2)
+# but (DFo-DFg1)^2 == (sum((1-hatvalues(x$lm)) - diag(R)))^2
+# reported by Deny Kurniawan 070804
+	parameter <- c(((DFo-DFg1)^2)/(sum(((1-hatvalues(x$lm)) - diag(R))^2)),
+		(DFg1^2)/DFg2)
 	names(parameter) <- c("df1", "df2")
 	ests <- c((RSSo - RSSg), RSSg)
 	names(ests) <- c("SS GWR improvement", "SS GWR residuals")
-	pv <- pf(statistic, ((DFo-DFg1)^2)/(DFo-2*DFg1+DFg2), (DFg1^2)/DFg2, 
-		lower.tail=FALSE)
+	pv <- pf(statistic, parameter[1], parameter[2], lower.tail=FALSE)
 	res <- list(statistic=statistic, parameter=parameter, p.value=pv,
 		method="Brunsdon, Fotheringham & Charlton (1999) ANOVA", 
 		data.name=deparse(substitute(x)), estimates=ests,
