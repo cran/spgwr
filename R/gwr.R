@@ -213,6 +213,7 @@ print.gwr <- function(x, ...) {
 	m <- length(x$lm$coefficients)
 	cat("Summary of GWR coefficient estimates:\n")
 	CM <- t(apply(as(x$SDF, "data.frame")[,(1+(1:m)), drop=FALSE], 2, summary))[,c(1:3,5,6)]
+	if (is.null(dim(CM))) CM <- t(as.matrix(CM))
 	CM <- cbind(CM, coefficients(x$lm))
 	colnames(CM) <- c(colnames(CM)[1:5], "Global")
 	printCoefmat(CM)
