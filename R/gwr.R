@@ -3,7 +3,7 @@
 
 gwr <- function(formula, data = list(), coords, bandwidth, 
 	gweight=gwr.gauss, adapt=NULL, hatmatrix=FALSE, fit.points, 
-	longlat=FALSE, se.fit=FALSE, cl=NULL) {
+	longlat=FALSE, se.fit=FALSE, weights, cl=NULL) {
 	this.call <- match.call()
 	p4s <- as.character(NA)
 	Polys <- NULL
@@ -21,9 +21,32 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 		stop("Observation coordinates have to be given")
 	if (is.null(colnames(coords))) 
 		colnames(coords) <- c("coord.x", "coord.y")
-	mt <- terms(formula, data = data)
-	mf <- lm(formula, data, method="model.frame", na.action=na.fail)
-	lm <- lm(formula, data, x=TRUE, y=TRUE)
+
+    	mf <- match.call(expand.dots = FALSE)
+    	m <- match(c("formula", "data", "weights"), names(mf), 0)
+    	mf <- mf[c(1, m)]
+    	mf$drop.unused.levels <- TRUE
+    	mf[[1]] <- as.name("model.frame")
+    	mf <- eval(mf, parent.frame())
+    	mt <- attr(mf, "terms")
+	dp.n <- length(model.extract(mf, "response"))
+
+#	mt <- terms(formula, data = data)
+#	mf <- lm(formula, data, method="model.frame", na.action=na.fail)
+
+    	weights <- as.vector(model.extract(mf, "weights"))
+# set up default weights
+    	if (!is.null(weights) && !is.numeric(weights)) 
+        	stop("'weights' must be a numeric vector")
+    	if (is.null(weights)) weights <- rep(as.numeric(1), dp.n)
+    	if (any(is.na(weights))) stop("NAs in weights")
+    	if (any(weights < 0)) stop("negative weights")
+	y <- model.extract(mf, "response")
+	x <- model.matrix(mt, mf)
+
+	lm <- lm.wfit(x, y, w=weights)
+	lm$x <- x
+	lm$y <- y
 	if (missing(fit.points)) {
 		fp.given <- FALSE
 		fit.points <- coords
@@ -44,8 +67,6 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	n <- NROW(fit.points)
 	if (is.null(colnames(fit.points))) colnames(fit.points) <- c("x", "y")
 #	if (is.null(fit.points)) fit.points <- coords
-	y <- model.extract(mf, "response")
-	x <- model.matrix(mt, mf)
 	yiybar <- (y - mean(y))
 	m <- NCOL(x)
 	if (NROW(x) != NROW(coords))
@@ -79,13 +100,13 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 		}
 
 		clusterExport_l(cl, list("GWR_args", "coords", "gweight", "y",
-		    "x", "yiybar"))
+		    "x", "yiybar", "weights"))
 
 		res <- parLapply(cl, l_fp, function(fp) .GWR_int(fit.points=fp,
 		    coords=coords, gweight=gweight, y=y, x=x, yiybar=yiybar,
-		    GWR_args=GWR_args))
+		    weights=weights, GWR_args=GWR_args))
 		clusterEvalQ(cl, rm(list=c("GWR_args", "coords", "gweight", "y",
-		    "x", "yiybar")))
+		    "x", "yiybar", "weights")))
 		df <- as.data.frame(do.call("rbind", 
 		    lapply(res, function(x) x$df)))
 		bw <- do.call("c", lapply(res, function(x) x$bw))
@@ -94,7 +115,8 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	} else { # cl
 
 	    df <- .GWR_int(fit.points=fit.points, coords=coords, 
-		gweight=gweight, y=y, x=x, yiybar=yiybar, GWR_args=GWR_args)
+		gweight=gweight, y=y, x=x, yiybar=yiybar, weights=weights,
+		GWR_args=GWR_args)
 	    if (!fp.given && hatmatrix) lhat <- df$lhat
 	    bw <- df$bw
 	    df <- as.data.frame(df$df)
@@ -230,7 +252,8 @@ print.gwr <- function(x, ...) {
 	invisible(x)
 }
 
-.GWR_int <- function(fit.points, coords, gweight, y, x, yiybar, GWR_args) {
+.GWR_int <- function(fit.points, coords, gweight, y, x, yiybar, weights, 
+	GWR_args) {
 	    n <- nrow(fit.points)
  	    m <- NCOL(x)
 	    if (GWR_args$se.fit) {
@@ -259,6 +282,7 @@ print.gwr <- function(x, ...) {
 			dxs[which(!is.finite(dxs))] <- 0
 #		if (!is.finite(dxs[i])) dxs[i] <- 0
 		w.i <- gweight(dxs^2, bandwidth[i])
+		w.i <- w.i * weights
 		if (any(w.i < 0 | is.na(w.i)))
         		stop(paste("Invalid weights for i:", i))
 		lm.i <- lm.wfit(x, y, w.i)

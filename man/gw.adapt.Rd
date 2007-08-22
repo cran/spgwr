@@ -16,7 +16,7 @@ gw.adapt(dp, fp, quant, longlat=FALSE)
   \item{longlat}{if TRUE, use distances on an ellipse with WGS84 parameters}
 }
 
-}
+
 \value{
   a vector of weights
 }

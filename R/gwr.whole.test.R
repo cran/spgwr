@@ -9,8 +9,8 @@ LMZ.F1GWR.test <- function(x) {
 	RSSg <- as.vector(t(x$lm$y) %*% R %*% x$lm$y)
 	DFg1 <- sum(diag(R))
 	DFg2 <- sum(diag(R %*% R))
-	RSSo <- deviance(x$lm)
-	DFo <- df.residual(x$lm)
+	RSSo <- sum((x$lm$residuals * sqrt(x$lm$weights))^2)
+	DFo <- x$lm$df.residual
 	statistic <- (RSSg/DFg1)/(RSSo/DFo)
 	names(statistic) <- "F"
 	parameter <- c((DFg1^2)/DFg2, DFo)
@@ -33,8 +33,8 @@ LMZ.F2GWR.test <- function(x) {
 	RSSg <- as.vector(t(x$lm$y) %*% R %*% x$lm$y)
 	DFg1 <- sum(diag(R))
 	DFg2 <- sum(diag(R %*% R))
-	RSSo <- deviance(x$lm)
-	DFo <- df.residual(x$lm)
+	RSSo <- sum((x$lm$residuals * sqrt(x$lm$weights))^2)
+	DFo <- x$lm$df.residual
 	statistic <- ((RSSo-RSSg)/(DFo-DFg1))/(RSSo/DFo)
 	names(statistic) <- "F"
 	parameter <- c(((DFo-DFg1)^2)/(DFo-2*DFg1+DFg2), DFo)
@@ -58,8 +58,9 @@ BFC99.gwr.test <- function(x) {
 	RSSg <- as.vector(t(x$lm$y) %*% R %*% x$lm$y)
 	DFg1 <- sum(diag(R))
 	DFg2 <- sum(diag(R %*% R))
-	RSSo <- deviance(x$lm)
-	DFo <- df.residual(x$lm)
+        e <- x$lm$residuals * sqrt(x$lm$weights)
+	RSSo <- sum((x$lm$residuals * sqrt(x$lm$weights))^2)
+	DFo <- x$lm$df.residual
 	statistic <- ((RSSo - RSSg)/(DFo-DFg1))/(RSSg/DFg1)
 	names(statistic) <- "F"
 #	parameter <- c(((DFo-DFg1)^2)/(DFo-2*DFg1+DFg2), (DFg1^2)/DFg2)
@@ -67,7 +68,24 @@ BFC99.gwr.test <- function(x) {
 # (DFo-2*DFg1+DFg2) != sum(((1-hatvalues(x$lm)) - diag(R))^2)
 # but (DFo-DFg1)^2 == (sum((1-hatvalues(x$lm)) - diag(R)))^2
 # reported by Deny Kurniawan 070804
-	parameter <- c(((DFo-DFg1)^2)/(sum(((1-hatvalues(x$lm)) - diag(R))^2)),
+	k <- as.integer(x$lm$qr$rank)
+	do.coef <- FALSE
+	if (paste(R.Version()$major, R.Version()$minor, sep=".") > "2.5.1") {
+	  res <- .Fortran("lminfl", x$lm$qr$qr, n, n, k, as.integer(do.coef), 
+            x$lm$qr$qraux, wt.res = e, hat = double(n), coefficients = 
+	    if (do.coef) matrix(0, n, k) else double(0), sigma = double(n), 
+            tol = 10 * .Machine$double.eps, DUP = FALSE, 
+            PACKAGE = "stats")[c("hat", "coefficients", "sigma", "wt.res")]
+	} else {
+	  res <- .Fortran("lminfl", x$lm$qr$qr, n, n, k, as.integer(do.coef), 
+            x$lm$qr$qraux, wt.res = e, hat = double(n), coefficients = 
+	    if (do.coef) matrix(0, n, k) else double(0), sigma = double(n), 
+            tol = 10 * .Machine$double.eps, DUP = FALSE, 
+            PACKAGE = "base")[c("hat", "coefficients", "sigma", "wt.res")]
+	}
+	
+	hatvalues <- res$hat
+	parameter <- c(((DFo-DFg1)^2)/(sum(((1-hatvalues) - diag(R))^2)),
 		(DFg1^2)/DFg2)
 	names(parameter) <- c("df1", "df2")
 	ests <- c((RSSo - RSSg), RSSg)
@@ -92,8 +110,8 @@ BFC02.gwr.test <- function(x) {
   DFg1 <- sum(diag(x$lhat))
   DFg2 <- sum(diag(t(x$lhat) %*% x$lhat))
   DFg <- n - (2*DFg1 - DFg2)
-  RSSo <- deviance(x$lm)
-  DFo <- df.residual(x$lm)
+  RSSo <- sum((x$lm$residuals * sqrt(x$lm$weights))^2)
+  DFo <- x$lm$df.residual
   statistic <- RSSo/RSSg
   names(statistic) <- "F"
   parameter <- c(DFo, DFg)
