@@ -1,3 +1,12 @@
+2007-10-31 14:39  rsbivand
+
+	* DESCRIPTION, R/gwe.R, R/gwr.R, R/gwr1.R, man/gw.cov.Rd,
+	  man/gwr.Rd: thingy to slot
+
+2007-09-04 14:55  rsbivand
+
+	* ChangeLog, inst/ChangeLog: Changelog
+
 2007-08-23 11:16  rsbivand
 
 	* ChangeLog, R/gwr.whole.test.R, inst/ChangeLog, man/gw.adapt.Rd:

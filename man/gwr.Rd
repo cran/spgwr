@@ -88,7 +88,7 @@ plot(res.adpt$SDF, col=cols[findInterval(res.adpt$SDF$PctBlack, brks, all.inside
   if (suppressWarnings(require(maptools)) &&
     suppressWarnings(require(gpclib))) {
     gSR <- as(gSRDF, "SpatialPolygons")
-    length(getSpPpolygonsSlot(gSR))
+    length(slot(gSR, "polygons"))
     gSRouter <- unionSpatialPolygons(gSR, IDs=rep("Georgia", 159))
     SG <- GE_SpatialGrid(gSRouter, maxPixels = 100)
     SPxMASK0 <- overlay(gSRouter, SG$SG)

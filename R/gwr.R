@@ -57,7 +57,7 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 		Polys <- NULL
 		if (is(fit.points, "SpatialPolygonsDataFrame")) {
 			Polys <- Polygons(fit.points)
-			fit.points <- getSpPPolygonsLabptSlots(fit.points)
+			fit.points <- coordinates(fit.points)
 		} else {
 			griddedObj <- gridded(fit.points)
 			fit.points <- coordinates(fit.points)
@@ -65,6 +65,7 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	}
 
 	n <- NROW(fit.points)
+	rownames(fit.points) <- NULL
 	if (is.null(colnames(fit.points))) colnames(fit.points) <- c("x", "y")
 #	if (is.null(fit.points)) fit.points <- coords
 	yiybar <- (y - mean(y))
@@ -205,7 +206,8 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	} else {
 		if (!is.null(Polys)) {
 			df <- data.frame(SDF@data)
-			rownames(df) <- getSpPPolygonsIDSlots(Polys)
+			rownames(df) <- sapply(slot(Polys, "polygons"),
+                            function(i) slot(i, "ID"))
 			SDF <- SpatialPolygonsDataFrame(Sr=Polys, data=df)
 		}
 	}
