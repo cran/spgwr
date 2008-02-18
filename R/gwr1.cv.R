@@ -1,9 +1,9 @@
-# Copyright 2006-7 Roger Bivand
+# Copyright 2006-8 Roger Bivand
 # 
 
 ggwr.sel <- function(formula, data = list(), coords, 
-	adapt=FALSE, gweight=gwr.gauss, family=gaussian, verbose=TRUE, 
-	longlat=FALSE) {
+	adapt=FALSE, gweight=gwr.Gauss, family=gaussian, verbose=TRUE, 
+	longlat=FALSE, RMSE=FALSE) {
 	if (!is.logical(adapt)) stop("adapt must be logical")
 	if (!is.logical(longlat)) stop("longlat must be logical")
 	if (is(data, "Spatial")) {
@@ -34,7 +34,8 @@ ggwr.sel <- function(formula, data = list(), coords,
 		opt <- optimize(ggwr.cv.f, lower=beta1, upper=beta2, 
 			maximum=FALSE, formula=formula, data=data, 
 			family=family, coords=coords, y=y,
-			gweight=gweight, verbose=verbose, longlat=longlat)
+			gweight=gweight, verbose=verbose, longlat=longlat, 
+			RMSE=RMSE)
 		bdwt <- opt$minimum
 		res <- bdwt
 	} else {
@@ -43,7 +44,8 @@ ggwr.sel <- function(formula, data = list(), coords,
 		opt <- optimize(ggwr.cv.adapt.f, lower=beta1, 
 			upper=beta2, maximum=FALSE, formula=formula, data=data, 
 			family=family, coords=coords, y=y,
-			gweight=gweight, verbose=verbose, longlat=longlat)
+			gweight=gweight, verbose=verbose, longlat=longlat, 
+			RMSE=RMSE)
 		q <- opt$minimum
 		res <- q
 	}
@@ -52,7 +54,7 @@ ggwr.sel <- function(formula, data = list(), coords,
 
 
 ggwr.cv.f <- function(bandwidth, formula, data, family, coords, y,
-	gweight, verbose=TRUE, longlat=FALSE) {
+	gweight, verbose=TRUE, longlat=FALSE, RMSE=FALSE) {
     n <- nrow(coords)
     cv <- numeric(n)
     options(show.error.messages = FALSE)
@@ -71,7 +73,9 @@ ggwr.cv.f <- function(bandwidth, formula, data, family, coords, y,
 		type="response")
         }
     }
-    score <- sqrt(sum(t(cv) %*% cv)/n)
+    score <- sum(t(cv) %*% cv)
+    if (RMSE) score <- sqrt(score/n)
+#    score <- sqrt(sum(t(cv) %*% cv)/n)
     options(show.error.messages = TRUE)
     if (verbose) cat("Bandwidth:", bandwidth, "CV score:", score, "\n")
     score
@@ -79,7 +83,7 @@ ggwr.cv.f <- function(bandwidth, formula, data, family, coords, y,
 
 
 ggwr.cv.adapt.f <- function(q, formula, data, family, coords, y, gweight, 
-	verbose=TRUE, longlat=FALSE) {
+	verbose=TRUE, longlat=FALSE, RMSE=FALSE) {
     n <- nrow(coords)
     cv <- numeric(n)
     bw <- gw.adapt(dp=coords, fp=coords, quant=q, longlat=longlat)
@@ -99,7 +103,9 @@ ggwr.cv.adapt.f <- function(q, formula, data, family, coords, y, gweight,
 		type="response")
         }
     }
-    score <- sqrt(sum(t(cv) %*% cv)/n)
+    score <- sum(t(cv) %*% cv)
+    if (RMSE) score <- sqrt(score/n)
+#    score <- sqrt(sum(t(cv) %*% cv)/n)
     options(show.error.messages = TRUE)
     if (verbose) cat("Adaptive q:", q, "CV score:", score, "\n")
     score

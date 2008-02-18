@@ -8,7 +8,8 @@ to exploring spatial non-stationarity for given global bandwidth and chosen
 weighting scheme.
 }
 \usage{
-ggwr(formula, data = list(), coords, bandwidth, gweight = gwr.gauss, adapt = NULL, fit.points, family = gaussian, longlat = FALSE)
+ggwr(formula, data = list(), coords, bandwidth, gweight = gwr.Gauss,
+ adapt = NULL, fit.points, family = gaussian, longlat = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,8 +19,8 @@ ggwr(formula, data = list(), coords, bandwidth, gweight = gwr.gauss, adapt = NUL
   positions of the observations}
   \item{bandwidth}{bandwidth used in the weighting function, possibly
   calculated by \code{ggwr.sel}}
-  \item{gweight}{geographical weighting function, at present only
-  \code{gwr.gauss()} or \code{gwr.bisquare()}}
+  \item{gweight}{geographical weighting function, at present 
+  \code{gwr.Gauss()} default, or \code{gwr.gauss()}, the previous default or \code{gwr.bisquare()}}
   \item{adapt}{either NULL (default) or a proportion between 0 and 1 of observations to include in weighting scheme (k-nearest neighbours)}
   \item{fit.points}{an object containing the coordinates of fit points; often an object from package \pkg{sp}; if missing, the coordinates given through the data argument object, or the coords argument are used}
   \item{family}{a description of the error distribution and link function to

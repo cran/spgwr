@@ -1,8 +1,8 @@
-# Copyright 2006-7 Roger Bivand
+# Copyright 2006-8 Roger Bivand
 # 
 
 ggwr <- function(formula, data = list(), coords, bandwidth, 
-	gweight=gwr.gauss, adapt=NULL, fit.points, family=gaussian,
+	gweight=gwr.Gauss, adapt=NULL, fit.points, family=gaussian,
 	longlat=FALSE) {
 	this.call <- match.call()
 	p4s <- as.character(NA)

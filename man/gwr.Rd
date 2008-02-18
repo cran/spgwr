@@ -8,7 +8,7 @@ to exploring spatial non-stationarity for given global bandwidth and chosen
 weighting scheme.
 }
 \usage{
-gwr(formula, data=list(), coords, bandwidth, gweight=gwr.gauss, 
+gwr(formula, data=list(), coords, bandwidth, gweight=gwr.Gauss, 
 	adapt=NULL, hatmatrix = FALSE, fit.points, 
 	longlat=FALSE, se.fit=FALSE, weights, cl=NULL)
 \method{print}{gwr}(x, \dots)
@@ -21,8 +21,8 @@ gwr(formula, data=list(), coords, bandwidth, gweight=gwr.gauss,
   positions of the observations; may be omitted if the object passed through the data argument is from package \pkg{sp}}
   \item{bandwidth}{bandwidth used in the weighting function, possibly
   calculated by \code{gwr.sel}}
-  \item{gweight}{geographical weighting function, at present only
-  \code{gwr.gauss()} or \code{gwr.bisquare()}}
+  \item{gweight}{geographical weighting function, at present 
+  \code{gwr.Gauss()} default, or \code{gwr.gauss()}, the previous default or \code{gwr.bisquare()}}
   \item{adapt}{either NULL (default) or a proportion between 0 and 1 of observations to include in weighting scheme (k-nearest neighbours)}
   \item{hatmatrix}{if TRUE, return the hatmatrix as a component of the result}
   \item{fit.points}{an object containing the coordinates of fit points; often an object from package \pkg{sp}; if missing, the coordinates given through the data argument object, or the coords argument are used}

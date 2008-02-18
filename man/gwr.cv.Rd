@@ -12,7 +12,8 @@ prediction error for the geographically weighted regressions, choosing the
 bandwidth minimizing this quantity. 
 }
 \usage{
-gwr.sel(formula, data=list(), coords, adapt=FALSE, gweight=gwr.gauss, method = "cv", verbose = TRUE, longlat=FALSE)
+gwr.sel(formula, data=list(), coords, adapt=FALSE, gweight=gwr.Gauss,
+ method = "cv", verbose = TRUE, longlat=FALSE, RMSE=FALSE)
 }
 \arguments{
   \item{formula}{regression model formula as in \code{lm}}
@@ -20,11 +21,12 @@ gwr.sel(formula, data=list(), coords, adapt=FALSE, gweight=gwr.gauss, method = "
   \item{coords}{matrix of coordinates of points representing the spatial
   positions of the observations}
   \item{adapt}{either TRUE: find the proportion between 0 and 1 of observations to include in weighting scheme (k-nearest neighbours), or FALSE --- find global bandwidth}
-  \item{gweight}{geographical weighting function, at present only
-  \code{gwr.gauss()} or \code{gwr.bisquare()}}
+  \item{gweight}{geographical weighting function, at present 
+  \code{gwr.Gauss()} default, or \code{gwr.gauss()}, the previous default or \code{gwr.bisquare()}}
   \item{method}{default "cv" for drop-1 cross-validation, or "aic" for AIC optimisation (depends on assumptions about AIC degrees of freedom)}
   \item{verbose}{if TRUE (default), reports the progress of search for bandwidth}
   \item{longlat}{if TRUE, use distances on an ellipse with WGS84 parameters}
+  \item{RMSE}{default FALSE to correspond with CV scores in newer references (sum of squared CV errors), if TRUE the previous behaviour of scoring by LOO CV RMSE}
 }
 \value{
 returns the cross-validation bandwidth.

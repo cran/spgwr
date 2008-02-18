@@ -11,7 +11,8 @@ prediction error for the generalised geographically weighted regressions, choosi
 bandwidth minimizing this quantity.
 }
 \usage{
-ggwr.sel(formula, data = list(), coords, adapt = FALSE, gweight = gwr.gauss, family = gaussian, verbose = TRUE, longlat = FALSE)
+ggwr.sel(formula, data = list(), coords, adapt = FALSE, gweight = gwr.Gauss,
+ family = gaussian, verbose = TRUE, longlat = FALSE, RMSE=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,12 +21,13 @@ ggwr.sel(formula, data = list(), coords, adapt = FALSE, gweight = gwr.gauss, fam
   \item{coords}{matrix of coordinates of points representing the spatial
   positions of the observations}
   \item{adapt}{either TRUE: find the proportion between 0 and 1 of observations to include in weighting scheme (k-nearest neighbours), or FALSE --- find global bandwidth}
-  \item{gweight}{geographical weighting function, at present only
-  \code{gwr.gauss()} or \code{gwr.bisquare()}}
+  \item{gweight}{geographical weighting function, at present 
+  \code{gwr.Gauss()} default, or \code{gwr.gauss()}, the previous default or \code{gwr.bisquare()}}
   \item{family}{a description of the error distribution and link function to
           be used in the model, see \code{glm}}
   \item{verbose}{if TRUE (default), reports the progress of search for bandwidth}
   \item{longlat}{if TRUE, use distances on an ellipse with WGS84 parameters}
+  \item{RMSE}{default FALSE to correspond with CV scores in newer references (sum of squared CV errors), if TRUE the previous behaviour of scoring by LOO CV RMSE}
 }
 
 \value{

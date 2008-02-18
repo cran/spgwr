@@ -1,8 +1,9 @@
-# Copyright 2001-2007 Roger Bivand and Danlin Yu
+# Copyright 2001-2008 Roger Bivand and Danlin Yu
 # 
 
 gwr.sel <- function(formula, data = list(), coords, adapt=FALSE, 
-	gweight=gwr.gauss, method="cv", verbose=TRUE, longlat=FALSE) {
+	gweight=gwr.Gauss, method="cv", verbose=TRUE, longlat=FALSE,
+        RMSE=FALSE) {
 	if (!is.logical(adapt)) stop("adapt must be logical")
 	if (!is.logical(longlat)) stop("longlat must be logical")
 	if (is(data, "Spatial")) {
@@ -30,7 +31,8 @@ gwr.sel <- function(formula, data = list(), coords, adapt=FALSE,
 		if (method == "cv") {
 			opt <- optimize(gwr.cv.f, lower=beta1, upper=beta2, 
 				maximum=FALSE, y=y, x=x, coords=coords, 
-				gweight=gweight, verbose=verbose, longlat=longlat)
+				gweight=gweight, verbose=verbose, 
+				longlat=longlat, RMSE=RMSE)
 		} else {
 			opt <- optimize(gwr.aic.f, lower=beta1, upper=beta2, 
 				maximum=FALSE, y=y, x=x, coords=coords, 
@@ -45,7 +47,7 @@ gwr.sel <- function(formula, data = list(), coords, adapt=FALSE,
 			opt <- optimize(gwr.cv.adapt.f, lower=beta1, 
 				upper=beta2, maximum=FALSE, y=y, x=x, 
 				coords=coords, gweight=gweight, 
-				verbose=verbose, longlat=longlat)
+				verbose=verbose, longlat=longlat, RMSE=RMSE)
 		} else {
 			opt <- optimize(gwr.aic.adapt.f, lower=beta1, 
 				upper=beta2, maximum=FALSE, y=y, x=x, 
@@ -98,8 +100,8 @@ gwr.aic.f <- function(bandwidth, y, x, coords, gweight, verbose=TRUE, longlat=FA
     score
 }
 
-gwr.cv.f <- function(bandwidth, y, x, coords, gweight, verbose=TRUE, longlat=FALSE)
-{
+gwr.cv.f <- function(bandwidth, y, x, coords, gweight, verbose=TRUE, 
+    longlat=FALSE, RMSE=FALSE) {
     n <- NROW(x)
 #    m <- NCOL(x)
     cv <- numeric(n)
@@ -119,7 +121,9 @@ gwr.cv.f <- function(bandwidth, y, x, coords, gweight, verbose=TRUE, longlat=FAL
             cv[i] <- y[i] - (t(b) %*% xx)
         }
     }
-    score <- sqrt(sum(t(cv) %*% cv)/n)
+    score <- sum(t(cv) %*% cv)
+    if (RMSE) score <- sqrt(score/n)
+#    score <- sqrt(sum(t(cv) %*% cv)/n)
     options(show.error.messages = TRUE)
     if (verbose) cat("Bandwidth:", bandwidth, "CV score:", score, "\n")
     score
@@ -166,8 +170,8 @@ gwr.aic.adapt.f <- function(q, y, x, coords, gweight, verbose=TRUE, longlat=FALS
     score
 }
 
-gwr.cv.adapt.f <- function(q, y, x, coords, gweight, verbose=TRUE, longlat=FALSE)
-{
+gwr.cv.adapt.f <- function(q, y, x, coords, gweight, verbose=TRUE, 
+    longlat=FALSE, RMSE=FALSE) {
     n <- NROW(x)
 #    m <- NCOL(x)
     cv <- real(n)
@@ -187,7 +191,9 @@ gwr.cv.adapt.f <- function(q, y, x, coords, gweight, verbose=TRUE, longlat=FALSE
             cv[i] <- y[i] - (t(b) %*% xx)
         }
     }
-    score <- sqrt(sum(t(cv) %*% cv)/n)
+    score <- sum(t(cv) %*% cv)
+    if (RMSE) score <- sqrt(score/n)
+#    score <- sqrt(sum(t(cv) %*% cv)/n)
     options(show.error.messages = TRUE)
     if (verbose) cat("Adaptive q:", q, "CV score:", score, "\n")
     score

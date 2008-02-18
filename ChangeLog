@@ -1,7 +1,15 @@
+2008-02-18 20:43  rsbivand
+
+	* DESCRIPTION, R/gwr.R, R/gwr.cv.R, R/gwr.gauss.R, R/gwr1.R,
+	  R/gwr1.cv.R, R/zzz.R, man/ggwr.Rd, man/ggwr.sel.Rd, man/gwr.Rd,
+	  man/gwr.bisquare.Rd, man/gwr.cv.Rd, man/gwr.gauss.Rd: RMSE and
+	  gwr.Gauss fixes, note default kernel changed and default CV score
+	  changed
+
 2007-10-31 14:39  rsbivand
 
 	* DESCRIPTION, R/gwe.R, R/gwr.R, R/gwr1.R, man/gw.cov.Rd,
-	  man/gwr.Rd: thingy to slot
+	  man/gwr.Rd, ChangeLog, inst/ChangeLog: thingy to slot
 
 2007-09-04 14:55  rsbivand
 

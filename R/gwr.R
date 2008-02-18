@@ -1,8 +1,8 @@
-# Copyright 2001-2007 Roger Bivand and Danlin Yu
+# Copyright 2001-2008 Roger Bivand and Danlin Yu
 # 
 
 gwr <- function(formula, data = list(), coords, bandwidth, 
-	gweight=gwr.gauss, adapt=NULL, hatmatrix=FALSE, fit.points, 
+	gweight=gwr.Gauss, adapt=NULL, hatmatrix=FALSE, fit.points, 
 	longlat=FALSE, se.fit=FALSE, weights, cl=NULL) {
 	this.call <- match.call()
 	p4s <- as.character(NA)
@@ -218,12 +218,6 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	invisible(z)
 }
 
-#eval(parse(text=deparse(substitute(gwr.gauss)))
-#function (dist2, bandwidth) 
-#{
-#    w <- exp((-dist2)/(bandwidth^2))
-#    w
-#}
 
 print.gwr <- function(x, ...) {
 	if(class(x) != "gwr") stop("not a gwr object")

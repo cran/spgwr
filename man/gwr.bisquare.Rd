@@ -2,7 +2,7 @@
 \alias{gwr.bisquare}
 \title{GWR bisquare weights function}
 \description{
-The function returns a matrix of weights using
+The function returns a vector of weights using
 the bisquare scheme:
 
 \deqn{w_{ij}(g) = (1 - (d_{ij}^2/d^2))^2 }
@@ -15,7 +15,7 @@ and \eqn{d} is the distance at which weights are set to zero.
 gwr.bisquare(dist2, d)
 }
 \arguments{
-  \item{dist2}{matrix of squared distances between observations}
+  \item{dist2}{vector of squared distances between observations}
   \item{d}{distance at which weights are set to zero}
 }
 \value{
