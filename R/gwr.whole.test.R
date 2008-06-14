@@ -160,7 +160,8 @@ LMZ.F3GWR.test <- function(go) {
 	x <- go$lm$x
 	n <- NROW(x)
 	m <- NCOL(x)
-	betas <- as.matrix(as(go$SDF, "data.frame")[,(3+(1:m))])
+	betas <- as.matrix(as(go$SDF, "data.frame")[,(1+(1:m))])
+# (3 + (1:m)) bug spotted by Leong Yin-Yee 080614
 	delta1 <- go$results$delta1
 	delta2 <- go$results$delta2
 	sigma2 <- go$results$sigma2
