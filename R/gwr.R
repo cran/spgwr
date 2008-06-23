@@ -182,12 +182,12 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	#The sigma2 in the GWR book is a maximum likelihood estimate
 	#It should be: sigma2 <- rss/n instead of sigma2 <- rss/delta1
 	#For this reason, a corrected AICb.b, AICh.b, AICc.b are therefore provided
-	#followed by creating the sigam sqare used in the book, termed here sigma2.b
+	#followed by creating the sigma sqare used in the book, termed here sigma2.b
 	#All the above unncessary calculation is then commented out.
 	
 		sigma2.b <- rss / n
 		AICb.b <- 2*n*log(sqrt(sigma2.b)) + n*log(2*pi) + 
-			(n * (n + v1) / (n - 2 - v1))
+			(n * ((n + v1) / (n - 2 - v1)))
 # NOTE 2* and sqrt() inserted for legibility
 		AICh.b <- 2*n*log(sqrt(sigma2.b)) + n*log(2*pi) + n + v1
 		AICc.b <- 2*n*log(sqrt(sigma2.b)) + n * 
@@ -284,12 +284,14 @@ print.gwr <- function(x, ...) {
 		lm.i <- lm.wfit(x, y, w.i)
 		df[i, 1] <- sum(w.i)
 		df[i, 2:(m+1)] <- coefficients(lm.i)
-		ei <- residuals(lm.i)
-		df[i, (m+3)] <- ei[i]
+		if (!GWR_args$fp.given && GWR_args$hatmatrix) {
+		    ei <- residuals(lm.i)
+		    df[i, (m+3)] <- ei[i]
 # use of diag(w.i) dropped to avoid forming n by n matrix
 # bug report: Ilka Afonso Reis, July 2005
-		rss <- sum(ei * w.i * ei)
-		df[i, (m+2)] <- 1 - (rss / sum(yiybar * w.i * yiybar))
+		    rss <- sum(ei * w.i * ei)
+		    df[i, (m+2)] <- 1 - (rss / sum(yiybar * w.i * yiybar))
+                } else is.na(df[i, (m+(2:3))]) <- TRUE
 	        if (GWR_args$se.fit) {
 		    p <- lm.i$rank
 		    p1 <- 1:p

@@ -1,7 +1,29 @@
+2008-06-23 10:28  rsbivand
+
+	* ChangeLog, DESCRIPTION, R/gwr.R, R/gwr.cv.R, R/zzz.R,
+	  inst/ChangeLog, man/gwr.Rd, man/gwr.cv.Rd: 0.5-3 release
+
+2008-06-19 06:09  rsbivand
+
+	* R/: gwr.R, gwr1.R: spurious gwr.e
+
+2008-06-15 03:47  rsbivand
+
+	* DESCRIPTION, INDEX, R/gwr.whole.test.R: bug in single coefficient
+	  tests
+
+2008-02-18 20:43  rsbivand
+
+	* DESCRIPTION, R/gwr.R, R/gwr.cv.R, R/gwr.gauss.R, R/gwr1.R,
+	  R/gwr1.cv.R, R/zzz.R, man/ggwr.Rd, man/ggwr.sel.Rd, man/gwr.Rd,
+	  man/gwr.bisquare.Rd, man/gwr.cv.Rd, man/gwr.gauss.Rd, ChangeLog:
+	  RMSE and gwr.Gauss fixes, note default kernel changed and default
+	  CV score changed
+
 2007-10-31 14:39  rsbivand
 
 	* DESCRIPTION, R/gwe.R, R/gwr.R, R/gwr1.R, man/gw.cov.Rd,
-	  man/gwr.Rd: thingy to slot
+	  man/gwr.Rd, ChangeLog, inst/ChangeLog: thingy to slot
 
 2007-09-04 14:55  rsbivand
 

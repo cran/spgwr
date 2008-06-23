@@ -3,5 +3,5 @@ require(sp)
 	library.dynam("spgwr", pkg, lib)
 	packageStartupMessage(paste(
 	"NOTE: default kernel and CV criteria changed", 
-	"see help pages for details", sep="\n"), appendLF = FALSE)
+	"see help pages for details\n", sep="\n"), appendLF = FALSE)
 }

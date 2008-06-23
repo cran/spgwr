@@ -3,7 +3,7 @@
 
 gwr.sel <- function(formula, data = list(), coords, adapt=FALSE, 
 	gweight=gwr.Gauss, method="cv", verbose=TRUE, longlat=FALSE,
-        RMSE=FALSE) {
+        RMSE=FALSE, weights) {
 	if (!is.logical(adapt)) stop("adapt must be logical")
 	if (!is.logical(longlat)) stop("longlat must be logical")
 	if (is(data, "Spatial")) {
@@ -14,9 +14,24 @@ gwr.sel <- function(formula, data = list(), coords, adapt=FALSE,
 	}
 	if (missing(coords))
 		stop("Observation coordinates have to be given")
-	mt <- terms(formula, data = data)
-	mf <- lm(formula, data, method="model.frame", na.action=na.fail)
+    	mf <- match.call(expand.dots = FALSE)
+    	m <- match(c("formula", "data", "weights"), names(mf), 0)
+    	mf <- mf[c(1, m)]
+    	mf$drop.unused.levels <- TRUE
+    	mf[[1]] <- as.name("model.frame")
+    	mf <- eval(mf, parent.frame())
+    	mt <- attr(mf, "terms")
+	dp.n <- length(model.extract(mf, "response"))
+#	mt <- terms(formula, data = data)
+#	mf <- lm(formula, data, method="model.frame", na.action=na.fail)
 #	dist2 <- (as.matrix(dist(coords)))^2
+    	weights <- as.vector(model.extract(mf, "weights"))
+# set up default weights
+    	if (!is.null(weights) && !is.numeric(weights)) 
+        	stop("'weights' must be a numeric vector")
+    	if (is.null(weights)) weights <- rep(as.numeric(1), dp.n)
+    	if (any(is.na(weights))) stop("NAs in weights")
+    	if (any(weights < 0)) stop("negative weights")
 	y <- model.extract(mf, "response")
 	x <- model.matrix(mt, mf)
 #	if (NROW(x) != NROW(dist2))
@@ -32,11 +47,12 @@ gwr.sel <- function(formula, data = list(), coords, adapt=FALSE,
 			opt <- optimize(gwr.cv.f, lower=beta1, upper=beta2, 
 				maximum=FALSE, y=y, x=x, coords=coords, 
 				gweight=gweight, verbose=verbose, 
-				longlat=longlat, RMSE=RMSE)
+				longlat=longlat, RMSE=RMSE, weights=weights)
 		} else {
 			opt <- optimize(gwr.aic.f, lower=beta1, upper=beta2, 
 				maximum=FALSE, y=y, x=x, coords=coords, 
-				gweight=gweight, verbose=verbose, longlat=longlat)
+				gweight=gweight, verbose=verbose, 
+				longlat=longlat)
 		}
 		bdwt <- opt$minimum
 		res <- bdwt
@@ -47,7 +63,8 @@ gwr.sel <- function(formula, data = list(), coords, adapt=FALSE,
 			opt <- optimize(gwr.cv.adapt.f, lower=beta1, 
 				upper=beta2, maximum=FALSE, y=y, x=x, 
 				coords=coords, gweight=gweight, 
-				verbose=verbose, longlat=longlat, RMSE=RMSE)
+				verbose=verbose, longlat=longlat, RMSE=RMSE, 
+				weights=weights)
 		} else {
 			opt <- optimize(gwr.aic.adapt.f, lower=beta1, 
 				upper=beta2, maximum=FALSE, y=y, x=x, 
@@ -91,7 +108,7 @@ gwr.aic.f <- function(bandwidth, y, x, coords, gweight, verbose=TRUE, longlat=FA
     	sigma2.b <- rss / n
 # NOTE 2* and sqrt() inserted for legibility
     	score <- 2*n*log(sqrt(sigma2.b)) + n*log(2*pi) + 
-	    (n * (n + v1) / (n - 2 - v1))
+	    (n * ((n + v1) / (n - 2 - v1)))
     } else {
 	score <- as.numeric(NA)
     }
@@ -101,7 +118,7 @@ gwr.aic.f <- function(bandwidth, y, x, coords, gweight, verbose=TRUE, longlat=FA
 }
 
 gwr.cv.f <- function(bandwidth, y, x, coords, gweight, verbose=TRUE, 
-    longlat=FALSE, RMSE=FALSE) {
+    longlat=FALSE, RMSE=FALSE, weights) {
     n <- NROW(x)
 #    m <- NCOL(x)
     cv <- numeric(n)
@@ -113,12 +130,13 @@ gwr.cv.f <- function(bandwidth, y, x, coords, gweight, verbose=TRUE,
 	w.i <- gweight(dxs^2, bandwidth)
 #	w.i <- gweight(spDistsN1(coords, coords[i,], longlat=longlat)^2, bandwidth)
         w.i[i] <- 0
+	w.i <- w.i * weights
 	if (any(w.i < 0 | is.na(w.i)))
        		stop(paste("Invalid weights for i:", i))
         lm.i <- try(lm.wfit(y = y, x = x, w = w.i))
         if(!inherits(lm.i, "try-error")) {
             b <- coefficients(lm.i)
-            cv[i] <- y[i] - (t(b) %*% xx)
+            cv[i] <- weights[i] * y[i] - (t(b) %*% (weights[i] * xx))
         }
     }
     score <- sum(t(cv) %*% cv)
@@ -171,7 +189,7 @@ gwr.aic.adapt.f <- function(q, y, x, coords, gweight, verbose=TRUE, longlat=FALS
 }
 
 gwr.cv.adapt.f <- function(q, y, x, coords, gweight, verbose=TRUE, 
-    longlat=FALSE, RMSE=FALSE) {
+    longlat=FALSE, RMSE=FALSE, weights) {
     n <- NROW(x)
 #    m <- NCOL(x)
     cv <- real(n)
@@ -183,12 +201,13 @@ gwr.cv.adapt.f <- function(q, y, x, coords, gweight, verbose=TRUE,
 	if (!is.finite(dxs[i])) dxs[i] <- 0
 	w.i <- gweight(dxs^2, bw[i])
         w.i[i] <- 0
+	w.i <- w.i * weights
 	if (any(w.i < 0 | is.na(w.i)))
        		stop(paste("Invalid weights for i:", i))
         lm.i <- try(lm.wfit(y = y, x = x, w = w.i))
         if(!inherits(lm.i, "try-error")) {
             b <- coefficients(lm.i)
-            cv[i] <- y[i] - (t(b) %*% xx)
+            cv[i] <- weights[i] * y[i] - (t(b) %*% (weights[i] * xx))
         }
     }
     score <- sum(t(cv) %*% cv)

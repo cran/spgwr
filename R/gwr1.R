@@ -99,7 +99,8 @@ ggwr <- function(formula, data = list(), coords, bandwidth,
 			family=family)
 		sum.w[i] <- sum(w.i)
 		gwr.b[i,] <- coefficients(lm.i)
-		response_resids[i] <- lm.i$residuals[i]
+		if (!fp.given) response_resids[i] <- lm.i$residuals[i]
+		else is.na(response_resids[i]) <- TRUE
     		df.r <- lm.i$df.residual
         	if (lm.i$family$family %in% c("poisson", "binomial")) 
             		dispersion[i] <- 1

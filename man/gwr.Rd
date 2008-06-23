@@ -28,7 +28,7 @@ gwr(formula, data=list(), coords, bandwidth, gweight=gwr.Gauss,
   \item{fit.points}{an object containing the coordinates of fit points; often an object from package \pkg{sp}; if missing, the coordinates given through the data argument object, or the coords argument are used}
   \item{longlat}{if TRUE, use distances on an ellipse with WGS84 parameters}
   \item{se.fit}{if TRUE, return local coefficient standard errors}
-  \item{weights}{case weights used as in weighted least squares, beware of scaling issues}
+  \item{weights}{case weights used as in weighted least squares, beware of scaling issues, probably unsafe}
   \item{cl}{if NULL, ignored, otherwise \code{cl} must be an object describing a \dQuote{cluster} created using \code{makeCluster} in the snow package. The cluster will then be used to hand off the calculation of local coefficients to cluster nodes, if fit points have been given as an argument, and \code{hatmatrix=FALSE}}
   \item{x}{an object of class "gwr" returned by the \code{gwr} function}
   \item{...}{arguments to be passed to other functions}

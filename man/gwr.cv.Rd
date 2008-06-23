@@ -13,7 +13,7 @@ bandwidth minimizing this quantity.
 }
 \usage{
 gwr.sel(formula, data=list(), coords, adapt=FALSE, gweight=gwr.Gauss,
- method = "cv", verbose = TRUE, longlat=FALSE, RMSE=FALSE)
+ method = "cv", verbose = TRUE, longlat=FALSE, RMSE=FALSE, weights)
 }
 \arguments{
   \item{formula}{regression model formula as in \code{lm}}
@@ -27,6 +27,7 @@ gwr.sel(formula, data=list(), coords, adapt=FALSE, gweight=gwr.Gauss,
   \item{verbose}{if TRUE (default), reports the progress of search for bandwidth}
   \item{longlat}{if TRUE, use distances on an ellipse with WGS84 parameters}
   \item{RMSE}{default FALSE to correspond with CV scores in newer references (sum of squared CV errors), if TRUE the previous behaviour of scoring by LOO CV RMSE}
+  \item{weights}{case weights used as in weighted least squares, beware of scaling issues --- only used with the cross-validation method, probably unsafe}
 }
 \value{
 returns the cross-validation bandwidth.
