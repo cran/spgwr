@@ -3,7 +3,9 @@
 
 ggwr <- function(formula, data = list(), coords, bandwidth, 
 	gweight=gwr.Gauss, adapt=NULL, fit.points, family=gaussian,
-	longlat=FALSE) {
+	longlat=FALSE, type=c("working", "deviance", "pearson", "response")) {
+	type <- match.arg(type)
+	resid_name <- paste(type, "resids", sep="_")
 	this.call <- match.call()
 	p4s <- as.character(NA)
 	Polys <- NULL
@@ -83,7 +85,8 @@ ggwr <- function(formula, data = list(), coords, bandwidth,
 	}
 	if (any(bandwidth < 0)) stop("Invalid bandwidth")
 	gwr.b <- matrix(nrow=n, ncol=m)
-	response_resids <- numeric(n)
+#	assign(resid_name, numeric(n))
+	v_resids <- numeric(n)
 	colnames(gwr.b) <- colnames(x)
 	lhat <- NA
 	sum.w <- numeric(n)
@@ -99,8 +102,8 @@ ggwr <- function(formula, data = list(), coords, bandwidth,
 			family=family)
 		sum.w[i] <- sum(w.i)
 		gwr.b[i,] <- coefficients(lm.i)
-		if (!fp.given) response_resids[i] <- lm.i$residuals[i]
-		else is.na(response_resids[i]) <- TRUE
+		if (!fp.given) v_resids[i] <- residuals.glm(lm.i, type=type)[i]
+		else is.na(v_resids[i]) <- TRUE
     		df.r <- lm.i$df.residual
         	if (lm.i$family$family %in% c("poisson", "binomial")) 
             		dispersion[i] <- 1
@@ -113,8 +116,8 @@ ggwr <- function(formula, data = list(), coords, bandwidth,
 			}
         	}
 	}
-	df <- data.frame(sum.w=sum.w, gwr.b, 
-		dispersion=dispersion, response_resids=response_resids)
+	df <- data.frame(sum.w=sum.w, gwr.b, dispersion=dispersion)
+	df[[resid_name]] <- v_resids
 
 	SDF <- SpatialPointsDataFrame(coords=fit.points, 
 			data=df, proj4string=CRS(p4s))

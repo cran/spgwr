@@ -9,7 +9,8 @@ weighting scheme.
 }
 \usage{
 ggwr(formula, data = list(), coords, bandwidth, gweight = gwr.Gauss,
- adapt = NULL, fit.points, family = gaussian, longlat = FALSE)
+ adapt = NULL, fit.points, family = gaussian, longlat = FALSE, type = 
+c("working", "deviance", "pearson", "response"))
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,6 +27,7 @@ ggwr(formula, data = list(), coords, bandwidth, gweight = gwr.Gauss,
   \item{family}{a description of the error distribution and link function to
           be used in the model, see \code{glm}}
   \item{longlat}{if TRUE, use distances on an ellipse with WGS84 parameters}
+  \item{type}{the type of residuals which should be returned. The alternatives are: "working" (default), "pearson", "deviance" and "response"}
 }
 
 \value{
