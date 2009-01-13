@@ -1,3 +1,11 @@
+2009-01-13 20:15  rsbivand
+
+	* ChangeLog, DESCRIPTION, R/gwr.R: move rss outside if()
+
+2008-10-02 17:04  rsbivand
+
+	* R/gwr.R: correcting DF order
+
 2008-08-07 18:59  rsbivand
 
 	* ChangeLog, DESCRIPTION, INDEX, R/gwr1.R, inst/ChangeLog,
