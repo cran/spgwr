@@ -70,19 +70,19 @@ BFC99.gwr.test <- function(x) {
 # reported by Deny Kurniawan 070804
 	k <- as.integer(x$lm$qr$rank)
 	do.coef <- FALSE
-	if (paste(R.Version()$major, R.Version()$minor, sep=".") > "2.5.1") {
+#	if (paste(R.Version()$major, R.Version()$minor, sep=".") > "2.5.1") {
 	  res <- .Fortran("lminfl", x$lm$qr$qr, n, n, k, as.integer(do.coef), 
             x$lm$qr$qraux, wt.res = e, hat = double(n), coefficients = 
 	    if (do.coef) matrix(0, n, k) else double(0), sigma = double(n), 
             tol = 10 * .Machine$double.eps, DUP = FALSE, 
             PACKAGE = "stats")[c("hat", "coefficients", "sigma", "wt.res")]
-	} else {
-	  res <- .Fortran("lminfl", x$lm$qr$qr, n, n, k, as.integer(do.coef), 
-            x$lm$qr$qraux, wt.res = e, hat = double(n), coefficients = 
-	    if (do.coef) matrix(0, n, k) else double(0), sigma = double(n), 
-            tol = 10 * .Machine$double.eps, DUP = FALSE, 
-            PACKAGE = "base")[c("hat", "coefficients", "sigma", "wt.res")]
-	}
+#	} else {
+#	  res <- .Fortran("lminfl", x$lm$qr$qr, n, n, k, as.integer(do.coef), 
+#            x$lm$qr$qraux, wt.res = e, hat = double(n), coefficients = 
+#	    if (do.coef) matrix(0, n, k) else double(0), sigma = double(n), 
+#            tol = 10 * .Machine$double.eps, DUP = FALSE, 
+#            PACKAGE = "base")[c("hat", "coefficients", "sigma", "wt.res")]
+#	}
 	
 	hatvalues <- res$hat
 	parameter <- c(((DFo-DFg1)^2)/(sum(((1-hatvalues) - diag(R))^2)),

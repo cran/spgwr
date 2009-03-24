@@ -24,7 +24,7 @@ gwr(formula, data=list(), coords, bandwidth, gweight=gwr.Gauss,
   \item{gweight}{geographical weighting function, at present 
   \code{gwr.Gauss()} default, or \code{gwr.gauss()}, the previous default or \code{gwr.bisquare()}}
   \item{adapt}{either NULL (default) or a proportion between 0 and 1 of observations to include in weighting scheme (k-nearest neighbours)}
-  \item{hatmatrix}{if TRUE, return the hatmatrix as a component of the result}
+  \item{hatmatrix}{if TRUE, return the hatmatrix as a component of the result, ignored if \code{fit.points} given}
   \item{fit.points}{an object containing the coordinates of fit points; often an object from package \pkg{sp}; if missing, the coordinates given through the data argument object, or the coords argument are used}
   \item{longlat}{if TRUE, use distances on an ellipse with WGS84 parameters}
   \item{se.fit}{if TRUE, return local coefficient standard errors}

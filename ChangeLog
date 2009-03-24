@@ -1,6 +1,16 @@
+2009-03-24 09:40  rsbivand
+
+	* DESCRIPTION, R/gwr.whole.test.R: R version >= 2.6
+
+2009-01-16 10:38  rsbivand
+
+	* DESCRIPTION, R/gwr.R, man/gwr.Rd, ChangeLog, inst/ChangeLog:
+	  fixing rss
+
 2009-01-13 20:15  rsbivand
 
-	* ChangeLog, DESCRIPTION, R/gwr.R: move rss outside if()
+	* ChangeLog, DESCRIPTION, R/gwr.R, inst/ChangeLog: move rss outside
+	  if()
 
 2008-10-02 17:04  rsbivand
 

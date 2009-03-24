@@ -288,10 +288,10 @@ print.gwr <- function(x, ...) {
 # use of diag(w.i) dropped to avoid forming n by n matrix
 # bug report: Ilka Afonso Reis, July 2005
 		rss <- sum(ei * w.i * ei)
-		if (!GWR_args$fp.given && GWR_args$hatmatrix) {
-		    df[i, (m+3)] <- ei[i]
-		    df[i, (m+2)] <- 1 - (rss / sum(yiybar * w.i * yiybar))
-                } else is.na(df[i, (m+(2:3))]) <- TRUE
+#		if (!GWR_args$fp.given && GWR_args$hatmatrix) {
+		df[i, (m+3)] <- ei[i]
+		df[i, (m+2)] <- 1 - (rss / sum(yiybar * w.i * yiybar))
+#                } else is.na(df[i, (m+(2:3))]) <- TRUE
 	        if (GWR_args$se.fit) {
 		    p <- lm.i$rank
 		    p1 <- 1:p
