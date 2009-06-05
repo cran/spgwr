@@ -9,8 +9,8 @@ weighting scheme.
 }
 \usage{
 gwr(formula, data=list(), coords, bandwidth, gweight=gwr.Gauss, 
-	adapt=NULL, hatmatrix = FALSE, fit.points, 
-	longlat=FALSE, se.fit=FALSE, weights, cl=NULL)
+	adapt=NULL, hatmatrix = FALSE, fit.points, longlat=FALSE, 
+	se.fit=FALSE, weights, cl=NULL, predictions = FALSE)
 \method{print}{gwr}(x, \dots)
 }
 
@@ -30,6 +30,7 @@ gwr(formula, data=list(), coords, bandwidth, gweight=gwr.Gauss,
   \item{se.fit}{if TRUE, return local coefficient standard errors}
   \item{weights}{case weights used as in weighted least squares, beware of scaling issues, probably unsafe}
   \item{cl}{if NULL, ignored, otherwise \code{cl} must be an object describing a \dQuote{cluster} created using \code{makeCluster} in the snow package. The cluster will then be used to hand off the calculation of local coefficients to cluster nodes, if fit points have been given as an argument, and \code{hatmatrix=FALSE}}
+  \item{predictions}{default FALSE; if TRUE and no fit points given, return GW fitted values at data points, if fit points given and are a Spatial*DataFrame object containing the RHS variables in the formula, return GW predictions at the fit points}
   \item{x}{an object of class "gwr" returned by the \code{gwr} function}
   \item{...}{arguments to be passed to other functions}
 }
@@ -78,6 +79,19 @@ pairs(as(res.adpt$SDF, "data.frame")[,2:8], pch=".")
 brks <- c(-0.25, 0, 0.01, 0.025, 0.075)
 cols <- grey(5:2/6)
 plot(res.adpt$SDF, col=cols[findInterval(res.adpt$SDF$PctBlack, brks, all.inside=TRUE)])
+data(meuse)
+coordinates(meuse) <- c("x", "y")
+meuse$ffreq <- factor(meuse$ffreq)
+data(meuse.grid)
+coordinates(meuse.grid) <- c("x", "y")
+meuse.grid$ffreq <- factor(meuse.grid$ffreq)
+gridded(meuse.grid) <- TRUE
+x <- gwr(cadmium ~ dist, meuse, bandwidth = 228, fit.points = meuse.grid, predict=TRUE, se.fit=TRUE)
+x
+library(lattice)
+trellis.par.set(sp.theme())
+spplot(x$SDF, "pred")
+spplot(x$SDF, "pred.se")
 \dontrun{
   g.bw.gauss <- gwr.sel(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov + PctBlack, data=gSRDF)
   res.bw <- gwr(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov + PctBlack, data=gSRDF, bandwidth=g.bw.gauss)

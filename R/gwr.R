@@ -1,9 +1,9 @@
-# Copyright 2001-2008 Roger Bivand and Danlin Yu
+# Copyright 2001-2009 Roger Bivand and Danlin Yu
 # 
 
 gwr <- function(formula, data = list(), coords, bandwidth, 
 	gweight=gwr.Gauss, adapt=NULL, hatmatrix=FALSE, fit.points, 
-	longlat=FALSE, se.fit=FALSE, weights, cl=NULL) {
+	longlat=FALSE, se.fit=FALSE, weights, cl=NULL, predictions=FALSE) {
 	this.call <- match.call()
 	p4s <- as.character(NA)
 	Polys <- NULL
@@ -51,9 +51,20 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 		fp.given <- FALSE
 		fit.points <- coords
 		colnames(fit.points) <- colnames(coords)
+                if (predictions) predx <- x
 	} else fp.given <- TRUE
 	griddedObj <- FALSE
 	if (is(fit.points, "Spatial")) {
+		if (predictions) {
+                    t1 <- try(slot(fit.points, "data"), silent=TRUE)
+		    if (class(t1) == "try-error") 
+			stop("No data slot in fit.points")
+                    predx <- try(model.matrix(delete.response(mt), fit.points))
+                    if (class(predx) == "try-error") 
+			stop("missing RHS variable in fit.points")
+                    if (ncol(predx) != ncol(x))
+			stop("new data matrix columns mismatch")
+                }
 		Polys <- NULL
 		if (is(fit.points, "SpatialPolygonsDataFrame")) {
 			Polys <- Polygons(fit.points)
@@ -62,11 +73,19 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 			griddedObj <- gridded(fit.points)
 			fit.points <- coordinates(fit.points)
 		}
+	} else {
+        	if (predictions)
+		    stop("predictions not available for matrix fit points")
 	}
 
 	n <- NROW(fit.points)
 	rownames(fit.points) <- NULL
 	if (is.null(colnames(fit.points))) colnames(fit.points) <- c("x", "y")
+        if (predictions) {
+             if (nrow(predx) != nrow(fit.points))
+		stop("new data matrix rows mismatch")
+            fit.points <- cbind(fit.points, predx)
+        }
 #	if (is.null(fit.points)) fit.points <- coords
 	yiybar <- (y - mean(y))
 	m <- NCOL(x)
@@ -80,7 +99,8 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 
 
 	GWR_args <- list(fp.given=fp.given, hatmatrix=hatmatrix, 
-	    longlat=longlat, bandwidth=bandwidth, adapt=adapt, se.fit=se.fit)
+	    longlat=longlat, bandwidth=bandwidth, adapt=adapt, se.fit=se.fit,
+	    predictions=predictions)
 
 	if (!is.null(cl) && length(cl) > 1 && fp.given && !hatmatrix) {
 	    if (length(grep("cluster", class(cl))) > 0 && 
@@ -190,14 +210,16 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 			(n * ((n + v1) / (n - 2 - v1)))
 # NOTE 2* and sqrt() inserted for legibility
 		AICh.b <- 2*n*log(sqrt(sigma2.b)) + n*log(2*pi) + n + v1
-		AICc.b <- 2*n*log(sqrt(sigma2.b)) + n * 
+# added ommitted n*log(2*pi) term in AICc.b
+# bug resolved by Christian Salas 090418
+		AICc.b <- 2*n*log(sqrt(sigma2.b)) + n*log(2*pi) + n * 
 			((delta1/delta2)*(n + nu1))/((delta1^2/delta2)-2)
 		results <- list(v1=v1, v2=v2, delta1=delta1, delta2=delta2, 
 			sigma2=sigma2, sigma2.b=sigma2.b, AICb=AICb.b, 
 			AICh=AICh.b, AICc=AICc.b, edf=edf, rss=rss, nu1=nu1)
 	}
 #	df <- data.frame(sum.w=sum.w, gwr.b, gwr.R2, gwr.se, gwr.e)
-		
+	if (predictions) fit.points <- fit.points[,1:2]
 	SDF <- SpatialPointsDataFrame(coords=fit.points, 
 		data=df, proj4string=CRS(p4s))
 
@@ -250,16 +272,41 @@ print.gwr <- function(x, ...) {
 
 .GWR_int <- function(fit.points, coords, gweight, y, x, yiybar, weights, 
 	GWR_args) {
+	    if (GWR_args$predictions) {
+                predx <- fit.points[, -c(1,2)]
+                fit.points <- fit.points[, c(1,2)]
+            }
 	    n <- nrow(fit.points)
  	    m <- NCOL(x)
-	    if (GWR_args$se.fit) {
+            if (!GWR_args$fp.given) {
+	      if (GWR_args$se.fit) {
 		df <- matrix(nrow=n, ncol=(2*m + 3))
 	        colnames(df) <- c("sum.w", colnames(x), "R2", "gwr.e", 
 		    paste(colnames(x), "se", sep="_"))
-	    } else {
+	      } else {
 		df <- matrix(nrow=n, ncol=(m + 3))
 	    	colnames(df) <- c("sum.w", colnames(x), "R2", "gwr.e")
-	    }
+	      }
+            } else {
+	      if (GWR_args$se.fit) {
+		df <- matrix(nrow=n, ncol=(2*m + 2))
+	        colnames(df) <- c("sum.w", colnames(x), "R2", 
+		    paste(colnames(x), "se", sep="_"))
+	      } else {
+		df <- matrix(nrow=n, ncol=(m + 2))
+	    	colnames(df) <- c("sum.w", colnames(x), "R2")
+	      }
+              if (GWR_args$predictions) {
+                if (GWR_args$se.fit) {
+                  pdf <- matrix(nrow=n, ncol=2)
+		  colnames(pdf) <- c("pred", "pred.se")
+                } else {
+                  pdf <- matrix(nrow=n, ncol=1)
+		  colnames(pdf) <- c("pred")
+                }
+                df <- cbind(df, pdf)
+              }
+            }
 	    if (!GWR_args$fp.given && GWR_args$hatmatrix) 
 	        lhat <- matrix(nrow=n, ncol=n)
 	    if (is.null(GWR_args$adapt)) {
@@ -284,20 +331,39 @@ print.gwr <- function(x, ...) {
 		lm.i <- lm.wfit(x, y, w.i)
 		df[i, 1] <- sum(w.i)
 		df[i, 2:(m+1)] <- coefficients(lm.i)
+# prediction fitted values at fit point
+                if (GWR_args$predictions) {
+                    pri <- sum(coefficients(lm.i) * predx[i,])
+		    if (GWR_args$se.fit) {
+                        df[i, (ncol(df)-1)] <- pri
+                    } else {
+                        df[i, ncol(df)] <- pri
+                    }
+                }
 		ei <- residuals(lm.i)
 # use of diag(w.i) dropped to avoid forming n by n matrix
 # bug report: Ilka Afonso Reis, July 2005
 		rss <- sum(ei * w.i * ei)
 #		if (!GWR_args$fp.given && GWR_args$hatmatrix) {
-		df[i, (m+3)] <- ei[i]
 		df[i, (m+2)] <- 1 - (rss / sum(yiybar * w.i * yiybar))
 #                } else is.na(df[i, (m+(2:3))]) <- TRUE
 	        if (GWR_args$se.fit) {
 		    p <- lm.i$rank
 		    p1 <- 1:p
 		    inv.Z <- chol2inv(lm.i$qr$qr[p1, p1, drop=FALSE])
-		    df[i,(m+4):(2*m + 3)] <- sqrt(diag(inv.Z) * (rss/(n-p)))
+                    offset <- ifelse(GWR_args$fp.given, 2, 3)
+		    df[i,(m+(offset+1)):(2*m + offset)] <- sqrt(diag(inv.Z) * 
+			(rss/(n-p)))
+# prediction "standard errors"
+                    if (GWR_args$predictions) {
+                        prise <- sqrt(c((rss/(n-p)) * 
+                            (t(predx[i,]) %*% inv.Z %*% predx[i,])))
+                        df[i, ncol(df)] <- prise
+		    }
 		}
+# assigning residual bug Torleif Markussen Lunde 090529
+		if (!GWR_args$fp.given) df[i, (m+3)] <- ei[i]
+
 		if (!GWR_args$fp.given && GWR_args$hatmatrix) 
 			lhat[i,] <- t(x[i,]) %*% inv.Z %*% t(x) %*% diag(w.i)
 	    }

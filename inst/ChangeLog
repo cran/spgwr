@@ -1,3 +1,28 @@
+2009-05-31 20:24  rsbivand
+
+	* DESCRIPTION, R/gwr.R, man/gwr.Rd, ChangeLog, inst/ChangeLog:
+	  adding prediction to gwr()
+
+2009-05-29 15:54  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2009-05-29 13:40  rsbivand
+
+	* DESCRIPTION: don't assign residuals when fit points given
+
+2009-05-29 13:34  rsbivand
+
+	* R/gwr.R: don't assign residuals when fit points given
+
+2009-04-19 11:53  rsbivand
+
+	* DESCRIPTION, R/gwr.R: added ommitted n*log(2*pi) term in AICc.b
+
+2009-03-24 12:53  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2009-03-24 09:40  rsbivand
 
 	* DESCRIPTION, R/gwr.whole.test.R: R version >= 2.6
