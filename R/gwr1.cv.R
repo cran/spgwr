@@ -3,7 +3,7 @@
 
 ggwr.sel <- function(formula, data = list(), coords, 
 	adapt=FALSE, gweight=gwr.Gauss, family=gaussian, verbose=TRUE, 
-	longlat=FALSE, RMSE=FALSE) {
+	longlat=FALSE, RMSE=FALSE, tol=.Machine$double.eps^0.25) {
 	if (!is.logical(adapt)) stop("adapt must be logical")
 	if (!is.logical(longlat)) stop("longlat must be logical")
 	if (is(data, "Spatial")) {
@@ -35,7 +35,7 @@ ggwr.sel <- function(formula, data = list(), coords,
 			maximum=FALSE, formula=formula, data=data, 
 			family=family, coords=coords, y=y,
 			gweight=gweight, verbose=verbose, longlat=longlat, 
-			RMSE=RMSE)
+			RMSE=RMSE, tol=tol)
 		bdwt <- opt$minimum
 		res <- bdwt
 	} else {
@@ -45,7 +45,7 @@ ggwr.sel <- function(formula, data = list(), coords,
 			upper=beta2, maximum=FALSE, formula=formula, data=data, 
 			family=family, coords=coords, y=y,
 			gweight=gweight, verbose=verbose, longlat=longlat, 
-			RMSE=RMSE)
+			RMSE=RMSE, tol=tol)
 		q <- opt$minimum
 		res <- q
 	}

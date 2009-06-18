@@ -55,13 +55,14 @@ BFC99.gwr.test <- function(x) {
 	if (!x$hatmatrix) stop("Fit GWR model with argument hatmatrix=TRUE")
 	n <- ncol(x$lhat)
 	R <- t(diag(n) - x$lhat) %*% (diag(n) - x$lhat)
+        trS <- sum(diag(x$lhat))
 	RSSg <- as.vector(t(x$lm$y) %*% R %*% x$lm$y)
 	DFg1 <- sum(diag(R))
 	DFg2 <- sum(diag(R %*% R))
         e <- x$lm$residuals * sqrt(x$lm$weights)
-	RSSo <- sum((x$lm$residuals * sqrt(x$lm$weights))^2)
+	RSSo <- sum(e^2)
 	DFo <- x$lm$df.residual
-	statistic <- ((RSSo - RSSg)/(DFo-DFg1))/(RSSg/DFg1)
+        statistic <- ((RSSo - RSSg)/(DFo-DFg1))/(RSSg/DFg1)
 	names(statistic) <- "F"
 #	parameter <- c(((DFo-DFg1)^2)/(DFo-2*DFg1+DFg2), (DFg1^2)/DFg2)
 # df1 modified to (tr(R_0 - R_1)^2) / tr((R_0 - R_1)^2) as 
@@ -70,19 +71,11 @@ BFC99.gwr.test <- function(x) {
 # reported by Deny Kurniawan 070804
 	k <- as.integer(x$lm$qr$rank)
 	do.coef <- FALSE
-#	if (paste(R.Version()$major, R.Version()$minor, sep=".") > "2.5.1") {
-	  res <- .Fortran("lminfl", x$lm$qr$qr, n, n, k, as.integer(do.coef), 
-            x$lm$qr$qraux, wt.res = e, hat = double(n), coefficients = 
-	    if (do.coef) matrix(0, n, k) else double(0), sigma = double(n), 
-            tol = 10 * .Machine$double.eps, DUP = FALSE, 
-            PACKAGE = "stats")[c("hat", "coefficients", "sigma", "wt.res")]
-#	} else {
-#	  res <- .Fortran("lminfl", x$lm$qr$qr, n, n, k, as.integer(do.coef), 
-#            x$lm$qr$qraux, wt.res = e, hat = double(n), coefficients = 
-#	    if (do.coef) matrix(0, n, k) else double(0), sigma = double(n), 
-#            tol = 10 * .Machine$double.eps, DUP = FALSE, 
-#            PACKAGE = "base")[c("hat", "coefficients", "sigma", "wt.res")]
-#	}
+	res <- .Fortran("lminfl", x$lm$qr$qr, n, n, k, as.integer(do.coef), 
+          x$lm$qr$qraux, wt.res = e, hat = double(n), coefficients = 
+	  if (do.coef) matrix(0, n, k) else double(0), sigma = double(n), 
+          tol = 10 * .Machine$double.eps, DUP = FALSE, 
+          PACKAGE = "stats")[c("hat", "coefficients", "sigma", "wt.res")]
 	
 	hatvalues <- res$hat
 	parameter <- c(((DFo-DFg1)^2)/(sum(((1-hatvalues) - diag(R))^2)),
@@ -99,9 +92,41 @@ BFC99.gwr.test <- function(x) {
 	res
 }
 
+anova.gwr <- function(object, ..., approx=FALSE) {
+    if(class(object) != "gwr") stop("not a gwr object")
+    if (!object$hatmatrix) stop("Fit GWR model with argument hatmatrix=TRUE")
+    n <- ncol(object$lhat)
+    R <- t(diag(n) - object$lhat) %*% (diag(n) - object$lhat)
+    trS <- sum(diag(object$lhat))
+    RSSg <- as.vector(t(object$lm$y) %*% R %*% object$lm$y)
+    DFg1 <- sum(diag(R))
+    e <- object$lm$residuals * sqrt(object$lm$weights)
+    RSSo <- sum(e^2)
+    DFo <- object$lm$df.residual
+    if (approx) {
+        ss <- c(RSSo, (RSSo - RSSg), RSSg)
+        df <- c(n-DFo, trS - (n-DFo), n - trS)
+    } else {
+        ss <- c(RSSo, (RSSo - RSSg), RSSg)
+        df <- c(n-DFo, n - DFg1 - (n - DFo), DFg1)
+    }
+    ms <- ss/df
+    ms[1] <- NA
+    f <- numeric(3)
+    f <- NA
+    f[3] <- ms[2]/ms[3]
+    table <- data.frame(df, ss, ms, f)
+    tlabels <- c("OLS Residuals", "GWR Improvement", "GWR Residuals")
+    dimnames(table) <- list(tlabels, c("Df", 
+        "Sum Sq", "Mean Sq", "F value"))
+    structure(table, heading = paste("Analysis of Variance Table", 
+        ifelse(approx, "\napproximate degrees of freedom (only tr(S))", "")),
+        class = c("anova", "data.frame"))
+}
+
 # implemented from 2002 book pp. 91-2
 
-BFC02.gwr.test <- function(x) {
+BFC02.gwr.test <- function(x, approx=FALSE) {
   if(class(x) != "gwr") stop("not a gwr object")
   if (!x$hatmatrix) stop("Fit GWR model with argument hatmatrix=TRUE")
   n <- ncol(x$lhat)
@@ -109,7 +134,11 @@ BFC02.gwr.test <- function(x) {
   RSSg <- as.vector(t(x$lm$y) %*% R %*% x$lm$y)
   DFg1 <- sum(diag(x$lhat))
   DFg2 <- sum(diag(t(x$lhat) %*% x$lhat))
-  DFg <- n - (2*DFg1 - DFg2)
+  if (approx) {
+    DFg <- n - DFg1
+  } else {
+    DFg <- n - (2*DFg1 - DFg2)
+  }
   RSSo <- sum((x$lm$residuals * sqrt(x$lm$weights))^2)
   DFo <- x$lm$df.residual
   statistic <- RSSo/RSSg
@@ -120,7 +149,8 @@ BFC02.gwr.test <- function(x) {
   names(ests) <- c("SS OLS residuals", "SS GWR residuals")
   pv <- pf(statistic, parameter[1], parameter[2], lower.tail=FALSE)
   res <- list(statistic=statistic, parameter=parameter, p.value=pv,
-    method="Brunsdon, Fotheringham & Charlton (2002, pp. 91-2) ANOVA", 
+    method=paste("Brunsdon, Fotheringham & Charlton (2002, pp. 91-2) ANOVA",
+    ifelse(approx, "(approximate degrees of freedom - only tr(S))", "")), 
     data.name=deparse(substitute(x)), estimates=ests,
     alternative="greater")
   class(res) <- "htest"

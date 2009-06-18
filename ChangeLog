@@ -1,3 +1,17 @@
+2009-06-18 13:42  rsbivand
+
+	* DESCRIPTION, R/gwr.R, R/gwr.whole.test.R, man/LMZ.F3GWR.test.Rd:
+	  checking against GWR3.0.1
+
+2009-06-05 15:44  rsbivand
+
+	* DESCRIPTION, R/gwr.cv.R, R/gwr1.cv.R, man/ggwr.sel.Rd,
+	  man/gwr.cv.Rd: pass tol= to optimize
+
+2009-06-05 14:39  rsbivand
+
+	* ChangeLog, DESCRIPTION, inst/ChangeLog: tidy
+
 2009-05-31 20:24  rsbivand
 
 	* DESCRIPTION, R/gwr.R, man/gwr.Rd, ChangeLog, inst/ChangeLog:

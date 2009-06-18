@@ -74,7 +74,7 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 			fit.points <- coordinates(fit.points)
 		}
 	} else {
-        	if (predictions)
+        	if (predictions && fp.given)
 		    stop("predictions not available for matrix fit points")
 	}
 
@@ -187,7 +187,10 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	#Hurvich et al. 1998, page 275, 276
 	#B1 (above) and B2, delta2, nu1, nu2:
 	
-		delta2 <- sum(diag(B1)^2)
+
+		odelta2 <- sum(diag(B1)^2)
+# Patrick Zimmerman 090617
+		delta2 <- sum(diag(B1 %*% B1))
 		nu1 <- sum(diag(B2))
 	#nu2 <- sum(diag(B2^)2)
 	
@@ -210,13 +213,14 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 			(n * ((n + v1) / (n - 2 - v1)))
 # NOTE 2* and sqrt() inserted for legibility
 		AICh.b <- 2*n*log(sqrt(sigma2.b)) + n*log(2*pi) + n + v1
-# added ommitted n*log(2*pi) term in AICc.b
+# added omitted n*log(2*pi) term in AICc.b
 # bug resolved by Christian Salas 090418
 		AICc.b <- 2*n*log(sqrt(sigma2.b)) + n*log(2*pi) + n * 
 			((delta1/delta2)*(n + nu1))/((delta1^2/delta2)-2)
 		results <- list(v1=v1, v2=v2, delta1=delta1, delta2=delta2, 
 			sigma2=sigma2, sigma2.b=sigma2.b, AICb=AICb.b, 
-			AICh=AICh.b, AICc=AICc.b, edf=edf, rss=rss, nu1=nu1)
+			AICh=AICh.b, AICc=AICc.b, edf=edf, rss=rss, nu1=nu1,
+                        odelta2=odelta2, n=n)
 	}
 #	df <- data.frame(sum.w=sum.w, gwr.b, gwr.R2, gwr.se, gwr.e)
 	if (predictions) fit.points <- fit.points[,1:2]
@@ -260,10 +264,19 @@ print.gwr <- function(x, ...) {
 	if (x$hatmatrix) {
 		cat("Number of data points:", n, "\n")
 		cat("Effective number of parameters:", 2*x$results$v1 -
-			x$results$v2, "\n")
+		    x$results$v2, "\n")
 		cat("Effective degrees of freedom:", x$results$edf, "\n")
-		cat("Sigma squared (ML):", x$results$sigma2.b, "\n")
-		cat("AICc (GWR p. 61, eq 2.33; p. 96, eq. 4.21):", x$results$AICb, "\n")
+		cat("Sigma (full EDF):",
+                    sqrt(x$results$rss/x$results$edf), "\n")
+                cat("Approximate effective # parameters (tr(S)):",
+                    x$results$v1, "\n")
+		cat("Approximate EDF (GWR p. 55, 92, tr(S)):",
+                    (x$results$n - x$results$v1), "\n")
+		cat("Sigma (approximate EDF, tr(S)):",
+                    sqrt(x$results$rss/(x$results$n - x$results$v1)), "\n")
+		cat("Sigma (ML):", sqrt(x$results$sigma2.b), "\n")
+		cat("AICc (GWR p. 61, eq 2.33; p. 96, eq. 4.21):",
+                    x$results$AICb, "\n")
 		cat("AIC (GWR p. 96, eq. 4.22):", x$results$AICh, "\n")
 		cat("Residual sum of squares:", x$results$rss, "\n")
 	}
@@ -296,16 +309,16 @@ print.gwr <- function(x, ...) {
 		df <- matrix(nrow=n, ncol=(m + 2))
 	    	colnames(df) <- c("sum.w", colnames(x), "R2")
 	      }
-              if (GWR_args$predictions) {
-                if (GWR_args$se.fit) {
-                  pdf <- matrix(nrow=n, ncol=2)
-		  colnames(pdf) <- c("pred", "pred.se")
-                } else {
-                  pdf <- matrix(nrow=n, ncol=1)
-		  colnames(pdf) <- c("pred")
-                }
-                df <- cbind(df, pdf)
+            }
+            if (GWR_args$predictions) {
+              if (GWR_args$se.fit) {
+                pdf <- matrix(nrow=n, ncol=2)
+	        colnames(pdf) <- c("pred", "pred.se")
+              } else {
+                pdf <- matrix(nrow=n, ncol=1)
+		colnames(pdf) <- c("pred")
               }
+              df <- cbind(df, pdf)
             }
 	    if (!GWR_args$fp.given && GWR_args$hatmatrix) 
 	        lhat <- matrix(nrow=n, ncol=n)

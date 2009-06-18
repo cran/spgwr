@@ -3,7 +3,7 @@
 
 gwr.sel <- function(formula, data = list(), coords, adapt=FALSE, 
 	gweight=gwr.Gauss, method="cv", verbose=TRUE, longlat=FALSE,
-        RMSE=FALSE, weights) {
+        RMSE=FALSE, weights, tol=.Machine$double.eps^0.25) {
 	if (!is.logical(adapt)) stop("adapt must be logical")
 	if (!is.logical(longlat)) stop("longlat must be logical")
 	if (is(data, "Spatial")) {
@@ -47,12 +47,13 @@ gwr.sel <- function(formula, data = list(), coords, adapt=FALSE,
 			opt <- optimize(gwr.cv.f, lower=beta1, upper=beta2, 
 				maximum=FALSE, y=y, x=x, coords=coords, 
 				gweight=gweight, verbose=verbose, 
-				longlat=longlat, RMSE=RMSE, weights=weights)
+				longlat=longlat, RMSE=RMSE, weights=weights,
+				tol=tol)
 		} else {
 			opt <- optimize(gwr.aic.f, lower=beta1, upper=beta2, 
 				maximum=FALSE, y=y, x=x, coords=coords, 
 				gweight=gweight, verbose=verbose, 
-				longlat=longlat)
+				longlat=longlat, tol=tol)
 		}
 		bdwt <- opt$minimum
 		res <- bdwt
@@ -64,12 +65,12 @@ gwr.sel <- function(formula, data = list(), coords, adapt=FALSE,
 				upper=beta2, maximum=FALSE, y=y, x=x, 
 				coords=coords, gweight=gweight, 
 				verbose=verbose, longlat=longlat, RMSE=RMSE, 
-				weights=weights)
+				weights=weights, tol=tol)
 		} else {
 			opt <- optimize(gwr.aic.adapt.f, lower=beta1, 
 				upper=beta2, maximum=FALSE, y=y, x=x, 
 				coords=coords, gweight=gweight, 
-				verbose=verbose, longlat=longlat)
+				verbose=verbose, longlat=longlat, tol=tol)
 		}
 		q <- opt$minimum
 		res <- q

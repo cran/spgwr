@@ -12,7 +12,8 @@ bandwidth minimizing this quantity.
 }
 \usage{
 ggwr.sel(formula, data = list(), coords, adapt = FALSE, gweight = gwr.Gauss,
- family = gaussian, verbose = TRUE, longlat = FALSE, RMSE=FALSE)
+ family = gaussian, verbose = TRUE, longlat = FALSE, RMSE=FALSE,
+ tol=.Machine$double.eps^0.25)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -28,6 +29,7 @@ ggwr.sel(formula, data = list(), coords, adapt = FALSE, gweight = gwr.Gauss,
   \item{verbose}{if TRUE (default), reports the progress of search for bandwidth}
   \item{longlat}{if TRUE, use distances on an ellipse with WGS84 parameters}
   \item{RMSE}{default FALSE to correspond with CV scores in newer references (sum of squared CV errors), if TRUE the previous behaviour of scoring by LOO CV RMSE}
+  \item{tol}{the desired accuracy to be passed to \code{optimize}}
 }
 
 \value{
