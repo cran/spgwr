@@ -10,7 +10,8 @@ weighting scheme.
 \usage{
 gwr(formula, data=list(), coords, bandwidth, gweight=gwr.Gauss, 
 	adapt=NULL, hatmatrix = FALSE, fit.points, longlat=FALSE, 
-	se.fit=FALSE, weights, cl=NULL, predictions = FALSE)
+	se.fit=FALSE, weights, cl=NULL, predictions = FALSE, 
+        fittedGWRobject = NULL, se.fit.CCT = TRUE)
 \method{print}{gwr}(x, \dots)
 }
 
@@ -27,10 +28,12 @@ gwr(formula, data=list(), coords, bandwidth, gweight=gwr.Gauss,
   \item{hatmatrix}{if TRUE, return the hatmatrix as a component of the result, ignored if \code{fit.points} given}
   \item{fit.points}{an object containing the coordinates of fit points; often an object from package \pkg{sp}; if missing, the coordinates given through the data argument object, or the coords argument are used}
   \item{longlat}{if TRUE, use distances on an ellipse with WGS84 parameters}
-  \item{se.fit}{if TRUE, return local coefficient standard errors}
+  \item{se.fit}{if TRUE, return local coefficient standard errors - if \code{hatmatrix} is TRUE and no fit.points are given, two effective degrees of freedom sigmas will be used to generate alternative coefficient standard errors}
   \item{weights}{case weights used as in weighted least squares, beware of scaling issues, probably unsafe}
   \item{cl}{if NULL, ignored, otherwise \code{cl} must be an object describing a \dQuote{cluster} created using \code{makeCluster} in the snow package. The cluster will then be used to hand off the calculation of local coefficients to cluster nodes, if fit points have been given as an argument, and \code{hatmatrix=FALSE}}
   \item{predictions}{default FALSE; if TRUE and no fit points given, return GW fitted values at data points, if fit points given and are a Spatial*DataFrame object containing the RHS variables in the formula, return GW predictions at the fit points}
+  \item{fittedGWRobject}{a fitted \code{gwr} object with a hatmatrix (optional), if given, and if fit.points are given and if \code{se.fit} is TRUE, two effective degrees of freedom sigmas will be used to generate alternative coefficient standard errors}
+  \item{se.fit.CCT}{default TRUE, compute local coefficient standard errors using formula (2.14), p. 55, in the GWR book}
   \item{x}{an object of class "gwr" returned by the \code{gwr} function}
   \item{...}{arguments to be passed to other functions}
 }
@@ -86,7 +89,9 @@ data(meuse.grid)
 coordinates(meuse.grid) <- c("x", "y")
 meuse.grid$ffreq <- factor(meuse.grid$ffreq)
 gridded(meuse.grid) <- TRUE
-x <- gwr(cadmium ~ dist, meuse, bandwidth = 228, fit.points = meuse.grid, predict=TRUE, se.fit=TRUE)
+xx <- gwr(cadmium ~ dist, meuse, bandwidth = 228, hatmatrix=TRUE)
+xx
+x <- gwr(cadmium ~ dist, meuse, bandwidth = 228, fit.points = meuse.grid, predict=TRUE, se.fit=TRUE, fittedGWRobject=xx)
 x
 library(lattice)
 trellis.par.set(sp.theme())

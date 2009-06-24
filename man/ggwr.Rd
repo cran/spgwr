@@ -52,8 +52,11 @@ Geographically Weighted Regression, Chichester: Wiley;
 library(maptools)
 xx <- readShapePoly(system.file("shapes/sids.shp", package="maptools")[1], 
   IDvar="FIPSNO", proj4string=CRS("+proj=longlat +ellps=clrk66"))
+bw <- 144.4813
+\dontrun{
 bw <- ggwr.sel(SID74 ~ I(NWBIR74/BIR74) + offset(log(BIR74)), data=xx,
   family=poisson(), longlat=TRUE)
+}
 nc <- ggwr(SID74 ~ I(NWBIR74/BIR74) + offset(log(BIR74)), data=xx,
   family=poisson(), longlat=TRUE, bandwidth=bw)
 nc

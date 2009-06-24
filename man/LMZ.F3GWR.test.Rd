@@ -40,13 +40,19 @@ Geographically Weighted Regression, Chichester: Wiley;
 \seealso{\code{\link{gwr}}}
 
 \examples{
-example(gwr)
+data(columbus)
+col.bw <- gwr.sel(crime ~ income + housing, data=columbus,
+  coords=cbind(columbus$x, columbus$y))
+col.gauss <- gwr(crime ~ income + housing, data=columbus,
+  coords=cbind(columbus$x, columbus$y), bandwidth=col.bw, hatmatrix=TRUE)
 BFC99.gwr.test(col.gauss)
 BFC02.gwr.test(col.gauss)
 BFC02.gwr.test(col.gauss, approx=TRUE)
 anova(col.gauss)
 anova(col.gauss, approx=TRUE)
+\dontrun{
 BFC99.gwr.test(col.bisq)
+}
 }
 
 \keyword{spatial}

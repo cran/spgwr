@@ -45,7 +45,9 @@ Geographically Weighted Regression, Chichester: Wiley;
 data(columbus)
 gwr.sel(crime ~ income + housing, data=columbus,
   coords=cbind(columbus$x, columbus$y))
+\dontrun{
 gwr.sel(crime ~ income + housing, data=columbus,
   coords=cbind(columbus$x, columbus$y), gweight=gwr.bisquare)
+}
 }
 \keyword{spatial}

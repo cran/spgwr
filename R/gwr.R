@@ -3,7 +3,8 @@
 
 gwr <- function(formula, data = list(), coords, bandwidth, 
 	gweight=gwr.Gauss, adapt=NULL, hatmatrix=FALSE, fit.points, 
-	longlat=FALSE, se.fit=FALSE, weights, cl=NULL, predictions=FALSE) {
+	longlat=FALSE, se.fit=FALSE, weights, cl=NULL, predictions=FALSE,
+        fittedGWRobject=NULL, se.fit.CCT=TRUE) {
 	this.call <- match.call()
 	p4s <- as.character(NA)
 	Polys <- NULL
@@ -31,9 +32,6 @@ gwr <- function(formula, data = list(), coords, bandwidth,
     	mt <- attr(mf, "terms")
 	dp.n <- length(model.extract(mf, "response"))
 
-#	mt <- terms(formula, data = data)
-#	mf <- lm(formula, data, method="model.frame", na.action=na.fail)
-
     	weights <- as.vector(model.extract(mf, "weights"))
 # set up default weights
     	if (!is.null(weights) && !is.numeric(weights)) 
@@ -47,11 +45,16 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	lm <- lm.wfit(x, y, w=weights)
 	lm$x <- x
 	lm$y <- y
+	if (hatmatrix) se.fit <- TRUE
+	if (hatmatrix) predictions <- TRUE
+
 	if (missing(fit.points)) {
 		fp.given <- FALSE
+		fittedGWRobject <- NULL
+		predictions <- TRUE
 		fit.points <- coords
 		colnames(fit.points) <- colnames(coords)
-                if (predictions) predx <- x
+                predx <- x
 	} else fp.given <- TRUE
 	griddedObj <- FALSE
 	if (is(fit.points, "Spatial")) {
@@ -87,20 +90,22 @@ gwr <- function(formula, data = list(), coords, bandwidth,
             fit.points <- cbind(fit.points, predx)
         }
 #	if (is.null(fit.points)) fit.points <- coords
-	yiybar <- (y - mean(y))
 	m <- NCOL(x)
 	if (NROW(x) != NROW(coords))
 		stop("Input data and coordinates have different dimensions")
 	if (missing(bandwidth) && is.null(adapt))
 	    stop("Bandwidth must be given for non-adaptive weights")
 	if (missing(bandwidth)) bandwidth <- NULL
-	if (hatmatrix) se.fit <- TRUE
 	lhat <- NA
+        yhat <- NULL
+	if (!is.null(fittedGWRobject)) {
+            yhat <- fittedGWRobject$SDF$pred
+        }
 
 
 	GWR_args <- list(fp.given=fp.given, hatmatrix=hatmatrix, 
 	    longlat=longlat, bandwidth=bandwidth, adapt=adapt, se.fit=se.fit,
-	    predictions=predictions)
+	    predictions=predictions, se.fit.CCT=se.fit.CCT)
 
 	if (!is.null(cl) && length(cl) > 1 && fp.given && !hatmatrix) {
 	    if (length(grep("cluster", class(cl))) > 0 && 
@@ -121,13 +126,13 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 		}
 
 		clusterExport_l(cl, list("GWR_args", "coords", "gweight", "y",
-		    "x", "yiybar", "weights"))
+		    "x", "weights", "yhat"))
 
 		res <- parLapply(cl, l_fp, function(fp) .GWR_int(fit.points=fp,
-		    coords=coords, gweight=gweight, y=y, x=x, yiybar=yiybar,
-		    weights=weights, GWR_args=GWR_args))
+		    coords=coords, gweight=gweight, y=y, x=x,
+		    weights=weights, yhat=yhat, GWR_args=GWR_args))
 		clusterEvalQ(cl, rm(list=c("GWR_args", "coords", "gweight", "y",
-		    "x", "yiybar", "weights")))
+		    "x", "weights", "yhat")))
 		df <- as.data.frame(do.call("rbind", 
 		    lapply(res, function(x) x$df)))
 		bw <- do.call("c", lapply(res, function(x) x$bw))
@@ -136,11 +141,11 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	} else { # cl
 
 	    df <- .GWR_int(fit.points=fit.points, coords=coords, 
-		gweight=gweight, y=y, x=x, yiybar=yiybar, weights=weights,
+		gweight=gweight, y=y, x=x, weights=weights, yhat=yhat,
 		GWR_args=GWR_args)
 	    if (!fp.given && hatmatrix) lhat <- df$lhat
 	    bw <- df$bw
-	    df <- as.data.frame(df$df)
+#	    df <- as.data.frame(df$df)
 	    results <- NULL
 
 	} # cl
@@ -162,13 +167,13 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	
 	#effective d.f. is n - 2*v1 + v2
 	
-		edf <- n - 2*v1 + v2
+		edf <- dp.n - 2*v1 + v2
 	
 	#Follow Leung et al. EPA 2000 page 15, the estimate of sigma square
 	#can be obtained through rss and delta1 (which is actually edf)
 	#Calculate rss:
 	
-		B1 <- t(diag(n)-lhat)%*%(diag(n)-lhat)
+		B1 <- t(diag(dp.n)-lhat)%*%(diag(dp.n)-lhat)
 		rss <- c(t(y)%*%B1%*%y)
 		delta1 <- sum (diag (B1))
 		sigma2 <- rss/delta1 #line 77
@@ -208,22 +213,94 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	#followed by creating the sigma sqare used in the book, termed here sigma2.b
 	#All the above unncessary calculation is then commented out.
 	
-		sigma2.b <- rss / n
-		AICb.b <- 2*n*log(sqrt(sigma2.b)) + n*log(2*pi) + 
-			(n * ((n + v1) / (n - 2 - v1)))
+		sigma2.b <- rss / dp.n
+		AICb.b <- 2*dp.n*log(sqrt(sigma2.b)) + dp.n*log(2*pi) + 
+			(dp.n * ((n + v1) / (dp.n - 2 - v1)))
 # NOTE 2* and sqrt() inserted for legibility
-		AICh.b <- 2*n*log(sqrt(sigma2.b)) + n*log(2*pi) + n + v1
+		AICh.b <- 2*dp.n*log(sqrt(sigma2.b)) + dp.n*log(2*pi) + dp.n + v1
 # added omitted n*log(2*pi) term in AICc.b
 # bug resolved by Christian Salas 090418
-		AICc.b <- 2*n*log(sqrt(sigma2.b)) + n*log(2*pi) + n * 
-			((delta1/delta2)*(n + nu1))/((delta1^2/delta2)-2)
+		AICc.b <- 2*dp.n*log(sqrt(sigma2.b)) + dp.n*log(2*pi) + dp.n * 
+			((delta1/delta2)*(dp.n + nu1))/((delta1^2/delta2)-2)
 		results <- list(v1=v1, v2=v2, delta1=delta1, delta2=delta2, 
 			sigma2=sigma2, sigma2.b=sigma2.b, AICb=AICb.b, 
 			AICh=AICh.b, AICc=AICc.b, edf=edf, rss=rss, nu1=nu1,
-                        odelta2=odelta2, n=n)
+                        odelta2=odelta2, n=dp.n)
 	}
 #	df <- data.frame(sum.w=sum.w, gwr.b, gwr.R2, gwr.se, gwr.e)
+	if (!fp.given && is.null(fittedGWRobject)) {
+	    localR2 <- numeric(n)	    
+	    if (is.null(adapt)) {
+		    bw <- bandwidth
+		    bandwidthR2 <- rep(bandwidth, n)
+	    } else {
+		bandwidthR2 <- gw.adapt(dp=coords, fp=fit.points[,1:2], 
+		    quant=adapt, longlat=longlat)
+		bw <- bandwidthR2
+	    }
+	    if (any(bandwidth < 0)) stop("Invalid bandwidth")
+	    for (i in 1:n) {
+		dxs <- spDistsN1(coords, fit.points[i,1:2], 
+		    longlat=GWR_args$longlat)
+		if (any(!is.finite(dxs)))
+			dxs[which(!is.finite(dxs))] <- 0
+#		if (!is.finite(dxs[i])) dxs[i] <- 0
+		w.i <- gweight(dxs^2, bandwidthR2[i])
+		w.i <- w.i * weights
+		if (any(w.i < 0 | is.na(w.i)))
+        		stop(paste("Invalid weights for i:", i))
+                RSS <- sum(w.i * (y - df$df[,"pred"])^2)
+		yss <- sum(w.i * (y - weighted.mean(y, w.i))^2)
+                localR2[i] <- 1 - (RSS/yss)
+            }
+            df$df <- cbind(df$df, localR2)
+        }
+        if (se.fit) {
+            EDFS <- NULL
+            normSigmaS <- NULL
+            EDF <- NULL
+            normSigma <- NULL
+	    if (fp.given && !is.null(fittedGWRobject)) {
+                if (fittedGWRobject$hatmatrix) {
+		    EDF <- fittedGWRobject$results$edf
+                    normSigma <- sqrt(fittedGWRobject$results$rss/EDF)
+		    EDFS <- fittedGWRobject$results$n - 
+                        fittedGWRobject$results$v1
+                    normSigmaS <- sqrt(fittedGWRobject$results$rss/EDFS)
+	        } 
+	    }
+	    if (!fp.given && hatmatrix) {
+                EDFS <- results$n - results$v1
+                normSigmaS <- sqrt(results$rss/EDFS)
+                EDF <- results$edf
+                normSigma <- sqrt(results$rss/EDF)
+            }
+            ses <- grep("_se", colnames(df$df))
+            senms <- colnames(df$df)[ses]
+            betase <- df$df[, ses]
+            df$df[, ses] <- NA
+            if (predictions) {
+                pred.se <- df$df[, "pred.se"]
+		df$df[, "pred.se"] <- NA
+            }
+            if (!is.null(EDF)) {
+                betaseEDF <- normSigma * sqrt(betase)
+                colnames(betaseEDF) <- paste(senms, "EDF", sep="_")
+                df$df[, ses] <- normSigmaS * sqrt(betase)
+                df$df <- cbind(df$df, betaseEDF)
+                if (predictions) {
+                    pred.se_EDF <- normSigma * sqrt(pred.se)
+                    df$df[, "pred.se"] <- normSigmaS * sqrt(pred.se)
+                    df$df <- cbind(df$df, pred.se_EDF)
+                }
+            } else {
+                warning("standard errors set to NA, normalised RSS not available")
+            }
+        }
+
+	df <- as.data.frame(df$df)
 	if (predictions) fit.points <- fit.points[,1:2]
+        row.names(fit.points) <- row.names(df)
 	SDF <- SpatialPointsDataFrame(coords=fit.points, 
 		data=df, proj4string=CRS(p4s))
 
@@ -283,43 +360,47 @@ print.gwr <- function(x, ...) {
 	invisible(x)
 }
 
-.GWR_int <- function(fit.points, coords, gweight, y, x, yiybar, weights, 
+.GWR_int <- function(fit.points, coords, gweight, y, x, weights, yhat, 
 	GWR_args) {
 	    if (GWR_args$predictions) {
                 predx <- fit.points[, -c(1,2)]
                 fit.points <- fit.points[, c(1,2)]
             }
+            
 	    n <- nrow(fit.points)
  	    m <- NCOL(x)
-            if (!GWR_args$fp.given) {
-	      if (GWR_args$se.fit) {
-		df <- matrix(nrow=n, ncol=(2*m + 3))
-	        colnames(df) <- c("sum.w", colnames(x), "R2", "gwr.e", 
-		    paste(colnames(x), "se", sep="_"))
-	      } else {
-		df <- matrix(nrow=n, ncol=(m + 3))
-	    	colnames(df) <- c("sum.w", colnames(x), "R2", "gwr.e")
-	      }
+            x1 <- matrix(1, nrow=nrow(x), ncol=1)
+	    sum.w <- numeric(n)
+            betas <- matrix(nrow=n, ncol=m)
+	    colnames(betas) <- colnames(x)
+            if(!GWR_args$fp.given) {
+		gwr.e <- numeric(n)
+	    } else {
+		gwr.e <- NULL
+	    }
+	    if (GWR_args$se.fit) {
+                betase <- matrix(nrow=n, ncol=m)
+		colnames(betase) <- paste(colnames(x), "se", sep="_")
             } else {
-	      if (GWR_args$se.fit) {
-		df <- matrix(nrow=n, ncol=(2*m + 2))
-	        colnames(df) <- c("sum.w", colnames(x), "R2", 
-		    paste(colnames(x), "se", sep="_"))
-	      } else {
-		df <- matrix(nrow=n, ncol=(m + 2))
-	    	colnames(df) <- c("sum.w", colnames(x), "R2")
-	      }
+                betase <- NULL
             }
             if (GWR_args$predictions) {
-              if (GWR_args$se.fit) {
-                pdf <- matrix(nrow=n, ncol=2)
-	        colnames(pdf) <- c("pred", "pred.se")
-              } else {
-                pdf <- matrix(nrow=n, ncol=1)
-		colnames(pdf) <- c("pred")
-              }
-              df <- cbind(df, pdf)
+                pred <- numeric(n)
+                if (GWR_args$se.fit) {
+                    pred.se <- numeric(n)
+                } else {
+                    pred.se <- NULL
+                }
+            } else {
+                pred <- NULL
+		pred.se <- NULL
             }
+	    if (is.null(yhat)) {
+                localR2 <- NULL
+            } else {
+                localR2 <- numeric(n)
+            }
+
 	    if (!GWR_args$fp.given && GWR_args$hatmatrix) 
 	        lhat <- matrix(nrow=n, ncol=n)
 	    if (is.null(GWR_args$adapt)) {
@@ -342,44 +423,56 @@ print.gwr <- function(x, ...) {
 		if (any(w.i < 0 | is.na(w.i)))
         		stop(paste("Invalid weights for i:", i))
 		lm.i <- lm.wfit(x, y, w.i)
-		df[i, 1] <- sum(w.i)
-		df[i, 2:(m+1)] <- coefficients(lm.i)
+		sum.w[i] <- sum(w.i)
+		betas[i,] <- coefficients(lm.i)
+		ei <- residuals(lm.i)
 # prediction fitted values at fit point
                 if (GWR_args$predictions) {
-                    pri <- sum(coefficients(lm.i) * predx[i,])
-		    if (GWR_args$se.fit) {
-                        df[i, (ncol(df)-1)] <- pri
-                    } else {
-                        df[i, ncol(df)] <- pri
-                    }
+                    pred[i] <- sum(predx[i,] * betas[i,])
                 }
-		ei <- residuals(lm.i)
 # use of diag(w.i) dropped to avoid forming n by n matrix
 # bug report: Ilka Afonso Reis, July 2005
-		rss <- sum(ei * w.i * ei)
-#		if (!GWR_args$fp.given && GWR_args$hatmatrix) {
-		df[i, (m+2)] <- 1 - (rss / sum(yiybar * w.i * yiybar))
-#                } else is.na(df[i, (m+(2:3))]) <- TRUE
+
+# local R-squared as explained by Tomoki Nakaya, 090624 (in GWR4)
+# differs from local weighted regression R-squared
+
+		if (!is.null(yhat)) {
+		    RSS <- sum(w.i * (y - yhat)^2)
+                    yss <- sum(w.i * (y - weighted.mean(y, w.i))^2)
+		    localR2[i] <- 1 - (RSS/yss)
+		}
+
 	        if (GWR_args$se.fit) {
 		    p <- lm.i$rank
 		    p1 <- 1:p
 		    inv.Z <- chol2inv(lm.i$qr$qr[p1, p1, drop=FALSE])
-                    offset <- ifelse(GWR_args$fp.given, 2, 3)
-		    df[i,(m+(offset+1)):(2*m + offset)] <- sqrt(diag(inv.Z) * 
-			(rss/(n-p)))
+# p. 55 CC definition 
+                    if (GWR_args$se.fit.CCT) {
+                        C <- inv.Z %*% t(x) %*% diag(w.i)
+                        CC <- C %*% t(C)
+# only return coefficient covariance matrix diagonal raw values
+# for post-processing
+                        betase[i,] <- diag(CC)
+                    } else {
+                        betase[i,] <- diag(inv.Z)
+                    }
 # prediction "standard errors"
+# only return raw values for post-processing
                     if (GWR_args$predictions) {
-                        prise <- sqrt(c((rss/(n-p)) * 
-                            (t(predx[i,]) %*% inv.Z %*% predx[i,])))
-                        df[i, ncol(df)] <- prise
+                        if (GWR_args$se.fit.CCT) {
+                            pred.se[i] <- t(predx[i,]) %*% CC %*% predx[i,]
+                        } else {
+                            pred.se[i] <- t(predx[i,]) %*% inv.Z %*% predx[i,]
+                        }
 		    }
 		}
 # assigning residual bug Torleif Markussen Lunde 090529
-		if (!GWR_args$fp.given) df[i, (m+3)] <- ei[i]
+		if (!GWR_args$fp.given) gwr.e[i] <- ei[i]
 
 		if (!GWR_args$fp.given && GWR_args$hatmatrix) 
 			lhat[i,] <- t(x[i,]) %*% inv.Z %*% t(x) %*% diag(w.i)
 	    }
+	    df <- cbind(sum.w, betas, betase, gwr.e, pred, pred.se, localR2)
 	    if (!GWR_args$fp.given && GWR_args$hatmatrix) 
 		return(list(df=df, lhat=lhat, bw=bw))
 	    else return(list(df=df, bw=bw))

@@ -1,7 +1,12 @@
+2009-06-22 22:38  rsbivand
+
+	* DESCRIPTION, R/gwr.R, man/LMZ.F3GWR.test.Rd, man/gwr.Rd: changed
+	  SE to use CC^t, added EDF SE
+
 2009-06-18 13:42  rsbivand
 
-	* DESCRIPTION, R/gwr.R, R/gwr.whole.test.R, man/LMZ.F3GWR.test.Rd:
-	  checking against GWR3.0.1
+	* DESCRIPTION, R/gwr.R, R/gwr.whole.test.R, man/LMZ.F3GWR.test.Rd,
+	  ChangeLog, inst/ChangeLog: checking against GWR3.0.1
 
 2009-06-05 15:44  rsbivand
 
