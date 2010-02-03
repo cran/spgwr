@@ -1,7 +1,16 @@
+2010-02-03 15:22  rsbivand
+
+	* DESCRIPTION, R/tricube.R, man/gwr.tricube.Rd: adding tricube
+
+2009-06-29 14:15  rsbivand
+
+	* DESCRIPTION, R/gwr.R, ChangeLog, inst/ChangeLog: changed text in
+	  gwr print method
+
 2009-06-24 13:03  rsbivand
 
-	* DESCRIPTION, R/gwr.R, man/ggwr.Rd, man/gwr.cv.Rd: updated localR2
-	  to GWR4
+	* DESCRIPTION, R/gwr.R, man/ggwr.Rd, man/gwr.cv.Rd, ChangeLog:
+	  updated localR2 to GWR4
 
 2009-06-23 14:08  rsbivand
 

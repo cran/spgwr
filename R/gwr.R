@@ -340,16 +340,16 @@ print.gwr <- function(x, ...) {
 	printCoefmat(CM)
 	if (x$hatmatrix) {
 		cat("Number of data points:", n, "\n")
-		cat("Effective number of parameters:", 2*x$results$v1 -
+		cat("Effective number of parameters (residual: 2traceS - traceS'S):", 2*x$results$v1 -
 		    x$results$v2, "\n")
-		cat("Effective degrees of freedom:", x$results$edf, "\n")
-		cat("Sigma (full EDF):",
+		cat("Effective degrees of freedom (residual: 2traceS - traceS'S):", x$results$edf, "\n")
+		cat("Sigma (residual: 2traceS - traceS'S):",
                     sqrt(x$results$rss/x$results$edf), "\n")
-                cat("Approximate effective # parameters (tr(S)):",
+                cat("Effective number of parameters (model: traceS):",
                     x$results$v1, "\n")
-		cat("Approximate EDF (GWR p. 55, 92, tr(S)):",
+		cat("Effective degrees of freedom (model: traceS):",
                     (x$results$n - x$results$v1), "\n")
-		cat("Sigma (approximate EDF, tr(S)):",
+		cat("Sigma (model: traceS):",
                     sqrt(x$results$rss/(x$results$n - x$results$v1)), "\n")
 		cat("Sigma (ML):", sqrt(x$results$sigma2.b), "\n")
 		cat("AICc (GWR p. 61, eq 2.33; p. 96, eq. 4.21):",
