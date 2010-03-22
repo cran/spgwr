@@ -1,3 +1,19 @@
+2010-03-22 14:53  rsbivand
+
+	* DESCRIPTION, R/gwr.R: fix cluster bug
+
+2010-03-22 13:36  rsbivand
+
+	* R/gwr.R: fix cluster bug
+
+2010-02-03 15:47  rsbivand
+
+	* INDEX: adding tricube
+
+2010-02-03 15:30  rsbivand
+
+	* ChangeLog, inst/ChangeLog: adding tricube
+
 2010-02-03 15:22  rsbivand
 
 	* DESCRIPTION, R/tricube.R, man/gwr.tricube.Rd: adding tricube

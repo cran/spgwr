@@ -108,14 +108,12 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	    predictions=predictions, se.fit.CCT=se.fit.CCT)
 
 	if (!is.null(cl) && length(cl) > 1 && fp.given && !hatmatrix) {
-	    if (length(grep("cluster", class(cl))) > 0 && 
-		.Platform$OS.type == "unix" && exists("splitIndices")) {
-#		&& require(snow)) 
-		l_fp <- lapply(splitIndices(nrow(fit.points), length(cl)), 
-		    function(i) fit.points[i,])
-		clusterEvalQ(cl, library(spgwr))
+            require(snow)
+	    l_fp <- lapply(splitIndices(nrow(fit.points), length(cl)), 
+	        function(i) fit.points[i,])
+	    clusterEvalQ(cl, library(spgwr))
 
-		clusterExport_l <- function(cl, list) {
+	    clusterExport_l <- function(cl, list) {
                     gets <- function(n, v) {
                         assign(n, v, env = .GlobalEnv)
                         NULL
@@ -123,21 +121,21 @@ gwr <- function(formula, data = list(), coords, bandwidth,
                     for (name in list) {
                         clusterCall(cl, gets, name, get(name))
                     }
-		}
+	    }
 
-		clusterExport_l(cl, list("GWR_args", "coords", "gweight", "y",
-		    "x", "weights", "yhat"))
+	    clusterExport_l(cl, list("GWR_args", "coords", "gweight", "y",
+	        "x", "weights", "yhat"))
 
-		res <- parLapply(cl, l_fp, function(fp) .GWR_int(fit.points=fp,
-		    coords=coords, gweight=gweight, y=y, x=x,
-		    weights=weights, yhat=yhat, GWR_args=GWR_args))
-		clusterEvalQ(cl, rm(list=c("GWR_args", "coords", "gweight", "y",
-		    "x", "weights", "yhat")))
-		df <- as.data.frame(do.call("rbind", 
-		    lapply(res, function(x) x$df)))
-		bw <- do.call("c", lapply(res, function(x) x$bw))
-	        results <- NULL
-	    } else stop("snow package not loaded")
+	    res <- parLapply(cl, l_fp, function(fp) .GWR_int(fit.points=fp,
+	        coords=coords, gweight=gweight, y=y, x=x,
+	        weights=weights, yhat=yhat, GWR_args=GWR_args))
+	    clusterEvalQ(cl, rm(list=c("GWR_args", "coords", "gweight", "y",
+	        "x", "weights", "yhat")))
+            df <- list()
+	    df$df <- as.data.frame(do.call("rbind", 
+	        lapply(res, function(x) x$df)))
+	    bw <- do.call("c", lapply(res, function(x) x$bw))
+	    results <- NULL
 	} else { # cl
 
 	    df <- .GWR_int(fit.points=fit.points, coords=coords, 
