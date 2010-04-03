@@ -1,6 +1,14 @@
+2010-04-03 20:58  rsbivand
+
+	* DESCRIPTION, man/gw.cov.Rd, man/gwr.Rd: maptools gpclib changes
+
+2010-03-22 15:32  rsbivand
+
+	* DESCRIPTION, R/gwr.R: add timing
+
 2010-03-22 14:53  rsbivand
 
-	* DESCRIPTION, R/gwr.R: fix cluster bug
+	* DESCRIPTION, R/gwr.R, ChangeLog, inst/ChangeLog: fix cluster bug
 
 2010-03-22 13:36  rsbivand
 

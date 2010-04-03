@@ -5,6 +5,8 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	gweight=gwr.Gauss, adapt=NULL, hatmatrix=FALSE, fit.points, 
 	longlat=FALSE, se.fit=FALSE, weights, cl=NULL, predictions=FALSE,
         fittedGWRobject=NULL, se.fit.CCT=TRUE) {
+        timings <- list()
+        .ptime_start <- proc.time()
 	this.call <- match.call()
 	p4s <- as.character(NA)
 	Polys <- NULL
@@ -106,6 +108,8 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	GWR_args <- list(fp.given=fp.given, hatmatrix=hatmatrix, 
 	    longlat=longlat, bandwidth=bandwidth, adapt=adapt, se.fit=se.fit,
 	    predictions=predictions, se.fit.CCT=se.fit.CCT)
+        timings[["set_up"]] <- proc.time() - .ptime_start
+        .ptime_start <- proc.time()
 
 	if (!is.null(cl) && length(cl) > 1 && fp.given && !hatmatrix) {
             require(snow)
@@ -147,6 +151,8 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	    results <- NULL
 
 	} # cl
+        timings[["run_gwr"]] <- proc.time() - .ptime_start
+        .ptime_start <- proc.time()
 	if (!fp.given && hatmatrix) {
 
 	#This section calculates the effective degree of freedoms, edf;
@@ -224,6 +230,8 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 			sigma2=sigma2, sigma2.b=sigma2.b, AICb=AICb.b, 
 			AICh=AICh.b, AICc=AICc.b, edf=edf, rss=rss, nu1=nu1,
                         odelta2=odelta2, n=dp.n)
+            timings[["postprocess_hatmatrix"]] <- proc.time() - .ptime_start
+            .ptime_start <- proc.time()
 	}
 #	df <- data.frame(sum.w=sum.w, gwr.b, gwr.R2, gwr.se, gwr.e)
 	if (!fp.given && is.null(fittedGWRobject)) {
@@ -252,6 +260,8 @@ gwr <- function(formula, data = list(), coords, bandwidth,
                 localR2[i] <- 1 - (RSS/yss)
             }
             df$df <- cbind(df$df, localR2)
+            timings[["postprocess_localR2"]] <- proc.time() - .ptime_start
+            .ptime_start <- proc.time()
         }
         if (se.fit) {
             EDFS <- NULL
@@ -294,6 +304,8 @@ gwr <- function(formula, data = list(), coords, bandwidth,
             } else {
                 warning("standard errors set to NA, normalised RSS not available")
             }
+            timings[["postprocess_SE"]] <- proc.time() - .ptime_start
+            .ptime_start <- proc.time()
         }
 
 	df <- as.data.frame(df$df)
@@ -312,9 +324,11 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 			SDF <- SpatialPolygonsDataFrame(Sr=Polys, data=df)
 		}
 	}
+        timings[["final_postprocess"]] <- proc.time() - .ptime_start
 	z <- list(SDF=SDF, lhat=lhat, lm=lm, results=results, 
 		bandwidth=bw, adapt=adapt, hatmatrix=hatmatrix, 
-		gweight=deparse(substitute(gweight)), this.call=this.call)
+		gweight=deparse(substitute(gweight)), this.call=this.call,
+                timings=do.call("rbind", timings)[, c(1, 3)])
 	class(z) <- "gwr"
 	invisible(z)
 }

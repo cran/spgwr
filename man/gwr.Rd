@@ -108,6 +108,7 @@ spplot(x$SDF, "pred.se")
     suppressWarnings(require(gpclib))) {
     gSR <- as(gSRDF, "SpatialPolygons")
     length(slot(gSR, "polygons"))
+    gpclibPermit()
     gSRouter <- unionSpatialPolygons(gSR, IDs=rep("Georgia", 159))
     SG <- GE_SpatialGrid(gSRouter, maxPixels = 100)
     SPxMASK0 <- overlay(gSRouter, SG$SG)

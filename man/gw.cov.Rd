@@ -53,6 +53,7 @@ if (suppressWarnings(require(maptools)) &&
      suppressWarnings(require(gpclib))) {
   gSR <- as(gSRDF, "SpatialPolygons")
   length(slot(gSR, "polygons"))
+  gpclibPermit()
   gSRouter <- unionSpatialPolygons(gSR, IDs=rep("Georgia", 159))
   gGrid <- sample.Polygons(slot(gSRouter, "polygons")[[1]], 5000,
     type="regular")
