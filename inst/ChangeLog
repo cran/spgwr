@@ -1,3 +1,20 @@
+2010-05-12 17:41  rsbivand
+
+	* R/gwr.R: error on non-numeric adapt in gwr
+
+2010-05-11 19:10  rsbivand
+
+	* R/gwr.R, ChangeLog, inst/ChangeLog: adding quasi-global R2
+
+2010-05-11 19:03  rsbivand
+
+	* DESCRIPTION, R/gwr.R, ChangeLog, inst/ChangeLog: adding
+	  quasi-global R2
+
+2010-04-03 21:23  rsbivand
+
+	* ChangeLog, inst/ChangeLog: maptools gpclib changes
+
 2010-04-03 20:58  rsbivand
 
 	* DESCRIPTION, man/gw.cov.Rd, man/gwr.Rd: maptools gpclib changes

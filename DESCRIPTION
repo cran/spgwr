@@ -1,6 +1,6 @@
 Package: spgwr
-Version: 0.6-7
-Date: 2010-04-03
+Version: 0.6-8
+Date: 2010-05-12
 Title: Geographically weighted regression
 Author: Roger Bivand and Danlin Yu, contributions by Tomoki Nakaya,
         tricube function based on a contribution by Miquel-Angel
@@ -13,6 +13,6 @@ Description: Functions for computing geographically weighted
         and Stewart Fortheringham, http://ncg.nuim.ie/ncg/GWR/index.htm
 License: GPL (>= 2)
 URL: http://ncg.nuim.ie/ncg/GWR/index.htm
-Packaged: 2010-04-03 19:25:37 UTC; rsb
+Packaged: 2010-05-12 16:06:57 UTC; rsb
 Repository: CRAN
-Date/Publication: 2010-04-04 15:43:20
+Date/Publication: 2010-05-16 16:22:41
