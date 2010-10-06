@@ -1,6 +1,7 @@
 \name{georgia}
 \alias{georgia}
 \alias{gSRDF}
+\alias{gSRouter}
 \docType{data}
 \title{Georgia census data set (SpatialDataFramePolygons)}
 \description{
@@ -39,5 +40,6 @@ Variables are from GWR3 file GeorgiaData.csv.
 \examples{
 data(georgia)
 plot(gSRDF)
+data(gSRouter)
 }
 \keyword{datasets}

@@ -13,15 +13,17 @@
 gw.adapt <- function(dp, fp, quant, longlat=FALSE) {
 	n1 <- nrow(dp)
 	n2 <- nrow(fp)
+        storage.mode(dp) <- "double"
+        storage.mode(fp) <- "double"
 	dists <- numeric(n1)
 	bw <- numeric(n2)
 	if (quant > 1) {
 		factor <- quant
 		quant <- 1
-		res <- .C("gw_adapt", as.double(dp[,1]), as.double(dp[,2]),
-			as.double(fp[,1]), as.double(fp[,2]), as.integer(n1),
+		res <- .C("gw_adapt", dp[,1], dp[,2],
+			fp[,1], fp[,2], as.integer(n1),
 			as.integer(n2), as.double(bw), as.double(quant),
-			as.double(dists), as.integer(longlat), 
+			dists, as.integer(longlat), 
 			PACKAGE="spgwr")[[7]]
 		res <- res*factor
 	} else {
@@ -30,15 +32,15 @@ gw.adapt <- function(dp, fp, quant, longlat=FALSE) {
 		n.higher <- n.lower+1
 		q1 <- n.lower/n1
 		q2 <- n.higher/n1
-		res1 <- .C("gw_adapt", as.double(dp[,1]), as.double(dp[,2]),
-			as.double(fp[,1]), as.double(fp[,2]), as.integer(n1),
+		res1 <- .C("gw_adapt", dp[,1], dp[,2],
+			fp[,1], fp[,2], as.integer(n1),
 			as.integer(n2), as.double(bw), as.double(q1),
-			as.double(dists), as.integer(longlat), 
+			dists, as.integer(longlat), 
 			PACKAGE="spgwr")[[7]]
-		res2 <- .C("gw_adapt", as.double(dp[,1]), as.double(dp[,2]),
-			as.double(fp[,1]), as.double(fp[,2]), as.integer(n1),
+		res2 <- .C("gw_adapt", dp[,1], dp[,2],
+			fp[,1], fp[,2], as.integer(n1),
 			as.integer(n2), as.double(bw), as.double(q2),
-			as.double(dists), as.integer(longlat), 
+			dists, as.integer(longlat), 
 			PACKAGE="spgwr")[[7]]
 
 		res <- (n.ideal - n.lower)*res2 + (n.higher - n.ideal)*res1

@@ -49,23 +49,17 @@ spplot(SRgwls$SDF, "sd.PctPov")
 spplot(SRgwls$SDF, "sem.PctPov")
 spplot(SRgwls$SDF, "diff.PctPov")
 spplot(SRgwls$SDF, "cor.PctPov.PctBlack.")
-if (suppressWarnings(require(maptools)) &&
-     suppressWarnings(require(gpclib))) {
-  gSR <- as(gSRDF, "SpatialPolygons")
-  length(slot(gSR, "polygons"))
-  gpclibPermit()
-  gSRouter <- unionSpatialPolygons(gSR, IDs=rep("Georgia", 159))
-  gGrid <- sample.Polygons(slot(gSRouter, "polygons")[[1]], 5000,
-    type="regular")
-  gridded(gGrid) <- TRUE
-  SGgwls <- gw.cov(gSRDF, vars=6:11, fp=gGrid, bw=150, longlat=TRUE)
-  names(SGgwls$SDF)
-  spplot(SGgwls$SDF, "mean.PctPov")
-  spplot(SGgwls$SDF, "sd.PctPov")
-  spplot(SGgwls$SDF, "sem.PctPov")
-  spplot(SGgwls$SDF, "diff.PctPov")
-  spplot(SGgwls$SDF, "cor.PctPov.PctBlack.")
-}
+data(gSRouter)
+gGrid <- sample.Polygons(slot(gSRouter, "polygons")[[1]], 5000,
+  type="regular")
+gridded(gGrid) <- TRUE
+SGgwls <- gw.cov(gSRDF, vars=6:11, fp=gGrid, bw=150, longlat=TRUE)
+names(SGgwls$SDF)
+spplot(SGgwls$SDF, "mean.PctPov")
+spplot(SGgwls$SDF, "sd.PctPov")
+spplot(SGgwls$SDF, "sem.PctPov")
+spplot(SGgwls$SDF, "diff.PctPov")
+spplot(SGgwls$SDF, "cor.PctPov.PctBlack.")
 }
 \keyword{spatial}
 

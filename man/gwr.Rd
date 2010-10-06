@@ -93,8 +93,6 @@ xx <- gwr(cadmium ~ dist, meuse, bandwidth = 228, hatmatrix=TRUE)
 xx
 x <- gwr(cadmium ~ dist, meuse, bandwidth = 228, fit.points = meuse.grid, predict=TRUE, se.fit=TRUE, fittedGWRobject=xx)
 x
-library(lattice)
-trellis.par.set(sp.theme())
 spplot(x$SDF, "pred")
 spplot(x$SDF, "pred.se")
 \dontrun{
@@ -104,24 +102,18 @@ spplot(x$SDF, "pred.se")
   pairs(as(res.bw$SDF, "data.frame")[,2:8], pch=".")
   plot(res.bw$SDF, col=cols[findInterval(res.bw$SDF$PctBlack, brks, all.inside=TRUE)])
   g.bw.gauss <- gwr.sel(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov + PctBlack, data=gSRDF, longlat=TRUE)
-  if (suppressWarnings(require(maptools)) &&
-    suppressWarnings(require(gpclib))) {
-    gSR <- as(gSRDF, "SpatialPolygons")
-    length(slot(gSR, "polygons"))
-    gpclibPermit()
-    gSRouter <- unionSpatialPolygons(gSR, IDs=rep("Georgia", 159))
-    SG <- GE_SpatialGrid(gSRouter, maxPixels = 100)
-    SPxMASK0 <- overlay(gSRouter, SG$SG)
-    SGDF <- SpatialGridDataFrame(slot(SG$SG, "grid"),
-      data=data.frame(SPxMASK0=SPxMASK0),
-      proj4string=CRS(proj4string(gSRouter)))
-    SPxDF <- as(SGDF, "SpatialPixelsDataFrame")
-    res.bw <- gwr(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov +
-      PctBlack, data=gSRDF, bandwidth=g.bw.gauss, fit.points=SPxDF,
-      longlat=TRUE)
-    res.bw
-    spplot(res.bw$SDF, "PctBlack")
-  }
+  data(gSRouter)
+  SG <- GE_SpatialGrid(gSRouter, maxPixels = 100)
+  SPxMASK0 <- overlay(gSRouter, SG$SG)
+  SGDF <- SpatialGridDataFrame(slot(SG$SG, "grid"),
+    data=data.frame(SPxMASK0=SPxMASK0),
+    proj4string=CRS(proj4string(gSRouter)))
+  SPxDF <- as(SGDF, "SpatialPixelsDataFrame")
+  res.bw <- gwr(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov +
+    PctBlack, data=gSRDF, bandwidth=g.bw.gauss, fit.points=SPxDF,
+    longlat=TRUE)
+  res.bw
+  spplot(res.bw$SDF, "PctBlack")
 }
 }
 \keyword{spatial}
