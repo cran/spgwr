@@ -2,16 +2,20 @@
 # 
 
 gwr.sel <- function(formula, data = list(), coords, adapt=FALSE, 
-	gweight=gwr.Gauss, method="cv", verbose=TRUE, longlat=FALSE,
+	gweight=gwr.Gauss, method="cv", verbose=TRUE, longlat=NULL,
         RMSE=FALSE, weights, tol=.Machine$double.eps^0.25) {
 	if (!is.logical(adapt)) stop("adapt must be logical")
-	if (!is.logical(longlat)) stop("longlat must be logical")
 	if (is(data, "Spatial")) {
 		if (!missing(coords))
 		    warning("data is Spatial* object, ignoring coords argument")
 		coords <- coordinates(data)
+                if ((is.null(longlat) || !is.logical(longlat)) 
+	            && !is.na(is.projected(data)) && !is.projected(data)) {
+                    longlat <- TRUE
+                } else longlat <- FALSE
 		data <- as(data, "data.frame")
 	}
+        if (is.null(longlat) || !is.logical(longlat)) longlat <- FALSE
 	if (missing(coords))
 		stop("Observation coordinates have to be given")
     	mf <- match.call(expand.dots = FALSE)
@@ -87,7 +91,7 @@ gwr.aic.f <- function(bandwidth, y, x, coords, gweight, verbose=TRUE, longlat=FA
     for (i in 1:n) {
 #        xx <- x[i, ]
 	dxs <- spDistsN1(coords, coords[i,], longlat=longlat)
-	if (!is.finite(dxs[i])) dxs[i] <- 0
+	if (!is.finite(dxs[i])) dxs[i] <- .Machine$double.xmax/2
 	w.i <- gweight(dxs^2, bandwidth)
 #	w.i <- gweight(spDistsN1(coords, coords[i,], longlat=longlat)^2, bandwidth)
 	if (any(w.i < 0 | is.na(w.i)))
@@ -127,7 +131,7 @@ gwr.cv.f <- function(bandwidth, y, x, coords, gweight, verbose=TRUE,
     for (i in 1:n) {
         xx <- x[i, ]
 	dxs <- spDistsN1(coords, coords[i,], longlat=longlat)
-	if (!is.finite(dxs[i])) dxs[i] <- 0
+	if (!is.finite(dxs[i])) dxs[i] <- .Machine$double.xmax/2
 	w.i <- gweight(dxs^2, bandwidth)
 #	w.i <- gweight(spDistsN1(coords, coords[i,], longlat=longlat)^2, bandwidth)
         w.i[i] <- 0
@@ -158,7 +162,7 @@ gwr.aic.adapt.f <- function(q, y, x, coords, gweight, verbose=TRUE, longlat=FALS
     for (i in 1:n) {
 #        xx <- x[i, ]
 	dxs <- spDistsN1(coords, coords[i,], longlat=longlat)
-	if (!is.finite(dxs[i])) dxs[i] <- 0
+	if (!is.finite(dxs[i])) dxs[i] <- .Machine$double.xmax/2
 	w.i <- gweight(dxs^2, bw[i])
 #	w.i <- gweight(spDistsN1(coords, coords[i,], longlat=longlat)^2, bw[i])
 	if (any(w.i < 0 | is.na(w.i)))
@@ -199,7 +203,7 @@ gwr.cv.adapt.f <- function(q, y, x, coords, gweight, verbose=TRUE,
     for (i in 1:n) {
         xx <- x[i, ]
 	dxs <- spDistsN1(coords, coords[i,], longlat=longlat)
-	if (!is.finite(dxs[i])) dxs[i] <- 0
+	if (!is.finite(dxs[i])) dxs[i] <- .Machine$double.xmax/2
 	w.i <- gweight(dxs^2, bw[i])
         w.i[i] <- 0
 	w.i <- w.i * weights

@@ -1,330 +1,320 @@
-2010-10-05 22:18  rsbivand
+2011-03-13 12:57  rsbivand
 
-	* DESCRIPTION, data/gSRouter.rda, man/georgia.Rd, man/gw.cov.Rd,
-	  man/gwr.Rd: removing gpclib request
+	* DESCRIPTION, src/gwe.c: hypot for pythag in C code
 
-2010-08-28 16:51  rsbivand
+2011-03-03 10:35  rsbivand
 
-	* R/gwe.R, ChangeLog, inst/ChangeLog: as.double to storage.mode
+	* R/gwe.R, R/gwr.R, R/gwr.cv.R, R/gwr1.R, R/gwr1.cv.R: longlat
+	  handling
 
-2010-05-12 17:41  rsbivand
+2011-02-22 16:38  rsbivand
 
-	* R/gwr.R, ChangeLog, inst/ChangeLog: error on non-numeric adapt in
-	  gwr
+	* inst/shapes/georgia.dbf, inst/shapes/georgia.shp,
+	  inst/shapes/georgia.shx: tidy
 
-2010-05-11 19:10  rsbivand
+2011-02-22 16:38  rsbivand
 
-	* R/gwr.R, ChangeLog, inst/ChangeLog: adding quasi-global R2
+	* inst/shapes/georgia.dbf, inst/shapes/georgia.shp,
+	  inst/shapes/georgia.shx: tidy
 
-2010-05-11 19:03  rsbivand
+2011-02-22 16:24  rsbivand
 
-	* DESCRIPTION, R/gwr.R, ChangeLog, inst/ChangeLog: adding
-	  quasi-global R2
+	* oChangeLog, svn2cl.xsl: tidy
 
-2010-04-03 21:23  rsbivand
+2011-02-22 16:18  rsbivand
 
-	* ChangeLog, inst/ChangeLog: maptools gpclib changes
+	* .: tidy
 
-2010-04-03 20:58  rsbivand
+2011-02-12 11:33  rsbivand
 
-	* DESCRIPTION, man/gw.cov.Rd, man/gwr.Rd: maptools gpclib changes
+	* clearup after sourceforge outage
 
-2010-03-22 15:32  rsbivand
+2011-02-12 11:26  rsbivand
 
-	* DESCRIPTION, R/gwr.R: add timing
+	* clearup after sourceforge outage
 
-2010-03-22 14:53  rsbivand
+2010-10-05 20:18  rsbivand
 
-	* DESCRIPTION, R/gwr.R, ChangeLog, inst/ChangeLog: fix cluster bug
+	* removing gpclib request
 
-2010-03-22 13:36  rsbivand
+2010-08-28 14:53  rsbivand
 
-	* R/gwr.R: fix cluster bug
+	* as.double to storage.mode
 
-2010-02-03 15:47  rsbivand
+2010-05-12 15:42  rsbivand
 
-	* INDEX: adding tricube
+	* error on non-numeric adapt in gwr
 
-2010-02-03 15:30  rsbivand
+2010-05-11 17:11  rsbivand
 
-	* ChangeLog, inst/ChangeLog: adding tricube
+	* adding quasi-global R2
 
-2010-02-03 15:22  rsbivand
+2010-05-11 17:03  rsbivand
 
-	* DESCRIPTION, R/tricube.R, man/gwr.tricube.Rd: adding tricube
+	* adding quasi-global R2
 
-2009-06-29 14:15  rsbivand
+2010-04-03 19:23  rsbivand
 
-	* DESCRIPTION, R/gwr.R, ChangeLog, inst/ChangeLog: changed text in
-	  gwr print method
+	* maptools gpclib changes
 
-2009-06-24 13:03  rsbivand
+2010-04-03 18:58  rsbivand
 
-	* DESCRIPTION, R/gwr.R, man/ggwr.Rd, man/gwr.cv.Rd, ChangeLog:
-	  updated localR2 to GWR4
+	* maptools gpclib changes
 
-2009-06-23 14:08  rsbivand
+2010-03-22 14:32  rsbivand
 
-	* R/gwr.R: firmed up local R2
+	* add timing
 
-2009-06-22 22:38  rsbivand
+2010-03-22 13:54  rsbivand
 
-	* DESCRIPTION, R/gwr.R, man/LMZ.F3GWR.test.Rd, man/gwr.Rd,
-	  ChangeLog, inst/ChangeLog: changed SE to use CC^t, added EDF SE
+	* fix cluster bug
 
-2009-06-18 13:42  rsbivand
+2010-03-22 12:36  rsbivand
 
-	* DESCRIPTION, R/gwr.R, R/gwr.whole.test.R, man/LMZ.F3GWR.test.Rd,
-	  ChangeLog, inst/ChangeLog: checking against GWR3.0.1
+	* fix cluster bug
 
-2009-06-05 15:44  rsbivand
+2010-02-03 14:47  rsbivand
 
-	* DESCRIPTION, R/gwr.cv.R, R/gwr1.cv.R, man/ggwr.sel.Rd,
-	  man/gwr.cv.Rd: pass tol= to optimize
+	* adding tricube
 
-2009-06-05 14:39  rsbivand
+2010-02-03 14:30  rsbivand
 
-	* ChangeLog, DESCRIPTION, inst/ChangeLog: tidy
+	* adding tricube
 
-2009-05-31 20:24  rsbivand
+2010-02-03 14:22  rsbivand
 
-	* DESCRIPTION, R/gwr.R, man/gwr.Rd, ChangeLog, inst/ChangeLog:
-	  adding prediction to gwr()
+	* adding tricube
 
-2009-05-29 15:54  rsbivand
+2009-06-29 12:16  rsbivand
 
-	* ChangeLog, inst/ChangeLog: tidy
+	* changed text in gwr print method
 
-2009-05-29 13:40  rsbivand
+2009-06-24 11:04  rsbivand
 
-	* DESCRIPTION: don't assign residuals when fit points given
+	* updated localR2 to GWR4
 
-2009-05-29 13:34  rsbivand
+2009-06-23 12:08  rsbivand
 
-	* R/gwr.R: don't assign residuals when fit points given
+	* firmed up local R2
 
-2009-04-19 11:53  rsbivand
+2009-06-22 20:39  rsbivand
 
-	* DESCRIPTION, R/gwr.R: added ommitted n*log(2*pi) term in AICc.b
+	* changed SE to use CC^t, added EDF SE
 
-2009-03-24 12:53  rsbivand
+2009-06-18 11:44  rsbivand
 
-	* ChangeLog, inst/ChangeLog: tidy
+	* checking against GWR3.0.1
 
-2009-03-24 09:40  rsbivand
+2009-06-05 13:44  rsbivand
 
-	* DESCRIPTION, R/gwr.whole.test.R: R version >= 2.6
+	* pass tol= to optimize
 
-2009-01-16 10:38  rsbivand
+2009-06-05 12:40  rsbivand
 
-	* DESCRIPTION, R/gwr.R, man/gwr.Rd, ChangeLog, inst/ChangeLog:
-	  fixing rss
+	* tidy
 
-2009-01-13 20:15  rsbivand
+2009-05-31 18:27  rsbivand
 
-	* ChangeLog, DESCRIPTION, R/gwr.R, inst/ChangeLog: move rss outside
-	  if()
+	* adding prediction to gwr()
 
-2008-10-02 17:04  rsbivand
+2009-05-29 13:54  rsbivand
 
-	* R/gwr.R: correcting DF order
+	* tidy
 
-2008-08-07 18:59  rsbivand
+2009-05-29 11:40  rsbivand
 
-	* ChangeLog, DESCRIPTION, INDEX, R/gwr1.R, inst/ChangeLog,
-	  man/ggwr.Rd: ggwr residual types
+	* don't assign residuals when fit points given
 
-2008-06-23 10:28  rsbivand
+2009-05-29 11:34  rsbivand
 
-	* ChangeLog, DESCRIPTION, R/gwr.R, R/gwr.cv.R, R/zzz.R,
-	  inst/ChangeLog, man/gwr.Rd, man/gwr.cv.Rd: 0.5-3 release
+	* don't assign residuals when fit points given
 
-2008-06-19 06:09  rsbivand
+2009-04-19 09:53  rsbivand
 
-	* R/: gwr.R, gwr1.R: spurious gwr.e
+	* added ommitted n*log(2*pi) term in AICc.b
 
-2008-06-15 03:47  rsbivand
+2009-03-24 11:53  rsbivand
 
-	* DESCRIPTION, INDEX, R/gwr.whole.test.R: bug in single coefficient
-	  tests
+	* tidy
 
-2008-02-18 20:43  rsbivand
+2009-03-24 08:41  rsbivand
 
-	* DESCRIPTION, R/gwr.R, R/gwr.cv.R, R/gwr.gauss.R, R/gwr1.R,
-	  R/gwr1.cv.R, R/zzz.R, man/ggwr.Rd, man/ggwr.sel.Rd, man/gwr.Rd,
-	  man/gwr.bisquare.Rd, man/gwr.cv.Rd, man/gwr.gauss.Rd, ChangeLog:
-	  RMSE and gwr.Gauss fixes, note default kernel changed and default
+	* R version >= 2.6
+
+2009-01-16 09:39  rsbivand
+
+	* fixing rss
+
+2009-01-13 19:16  rsbivand
+
+	* move rss outside if()
+
+2009-01-13 19:16  rsbivand
+
+	* move rss outside if()
+
+2008-10-02 15:04  rsbivand
+
+	* correcting DF order
+
+2008-08-07 16:59  rsbivand
+
+	* ggwr residual types
+
+2008-06-23 08:28  rsbivand
+
+	* 0.5-3 release
+
+2008-06-19 04:09  rsbivand
+
+	* spurious gwr.e
+
+2008-06-15 01:47  rsbivand
+
+	* bug in single coefficient tests
+
+2008-02-18 19:43  rsbivand
+
+	* RMSE and gwr.Gauss fixes, note default kernel changed and default
 	  CV score changed
 
-2007-10-31 14:39  rsbivand
+2007-10-31 13:41  rsbivand
 
-	* DESCRIPTION, R/gwe.R, R/gwr.R, R/gwr1.R, man/gw.cov.Rd,
-	  man/gwr.Rd, ChangeLog, inst/ChangeLog: thingy to slot
+	* thingy to slot
 
-2007-09-04 14:55  rsbivand
+2007-10-31 13:41  rsbivand
 
-	* ChangeLog, inst/ChangeLog: Changelog
+	* thingy to slot
 
-2007-08-23 11:16  rsbivand
+2007-09-04 12:55  rsbivand
 
-	* ChangeLog, R/gwr.whole.test.R, inst/ChangeLog, man/gw.adapt.Rd:
-	  weights
+	* Changelog
 
-2007-08-23 09:41  rsbivand
+2007-08-23 09:16  rsbivand
 
-	* ChangeLog, DESCRIPTION, INDEX, R/gwr.R, R/gwr.whole.test.R,
-	  inst/ChangeLog, man/gwr.Rd: gwr weights
+	* weights
 
-2007-08-08 20:41  rsbivand
+2007-08-23 07:41  rsbivand
 
-	* DESCRIPTION, R/gwr.whole.test.R: df1 in BFC99
+	* gwr weights
 
-2007-04-21 06:27  rsbivand
+2007-08-08 18:41  rsbivand
 
-	* DESCRIPTION, INDEX, R/gwr.R, R/gwr.morantest.R, R/gwr1.R,
-	  man/gwr.morantest.Rd: GE dimnames
+	* df1 in BFC99
 
-2007-03-23 20:21  rsbivand
+2007-04-21 04:27  rsbivand
 
-	* DESCRIPTION, INDEX, R/gwr.R: snow
+	* GE dimnames
 
-2007-03-09 19:44  rsbivand
+2007-03-23 19:21  rsbivand
 
-	* R/gwr.whole.test.R, man/LMZ.F3GWR.test.Rd: new tests
+	* snow
 
-2007-02-28 20:52  rsbivand
+2007-03-09 18:44  rsbivand
 
-	* DESCRIPTION, R/gwr.morantest.R, man/gwr.morantest.Rd: GWR moran
+	* new tests
 
-2007-02-28 13:27  rsbivand
+2007-02-28 19:55  rsbivand
 
-	* R/gwr.R, man/gwr.Rd: cluster GWR
+	* GWR moran
 
-2007-02-01 15:14  rsbivand
+2007-02-28 19:53  rsbivand
 
-	* DESCRIPTION, man/ggwr.Rd, man/ggwr.sel.Rd, man/gwr.Rd, ChangeLog,
-	  inst/ChangeLog: 0.4-01 release
+	* GWR moran
 
-2007-01-31 15:53  rsbivand
+2007-02-28 12:27  rsbivand
 
-	* DESCRIPTION, INDEX, R/gwr.R, R/gwr.cv.R, R/gwr1.R, R/gwr1.cv.R,
-	  man/gwr.Rd, man/gwr.cv.Rd, man/ggwr.Rd, man/ggwr.sel.Rd,
-	  ChangeLog, inst/ChangeLog: generalised GWR
+	* cluster GWR
 
-2007-01-09 08:58  rsbivand
+2007-02-01 14:15  rsbivand
 
-	* ChangeLog, DESCRIPTION, R/gwr.R, R/gwr.cv.R, inst/ChangeLog:
-	  ChangeLog
+	* 0.4-01 release
 
-2006-05-02 09:08  rsbivand
+2007-01-31 14:55  rsbivand
 
-	* R/gwr.R, man/georgia.Rd, R/gwr1.R, R/gwr1.cv.R: glm extension
+	* generalised GWR
 
-2006-01-08 19:30  rsbivand
+2007-01-09 07:58  rsbivand
 
-	* DESCRIPTION, R/gwe.R, R/gwr.R, R/gwr.cv.R, man/gw.cov.Rd: release
+	* ChangeLog
 
-2006-01-02 20:54  rsbivand
+2006-05-02 07:09  rsbivand
 
-	* R/: gwe.R, gwr.cv.R, gwr.whole.test.R: release
+	* glm extension
 
-2006-01-02 20:31  rsbivand
+2006-01-08 18:30  rsbivand
 
-	* DESCRIPTION, INDEX, R/gwe.R, R/gwr.R, R/gwr.cv.R,
-	  R/gwr.whole.test.R, man/gw.adapt.Rd, man/gw.cov.Rd, man/gwr.Rd,
-	  man/gwr.cv.Rd, src/gwe.c, R/gwr.morantest.R, man/gw.dists.Rd,
-	  man/gwr.morantest.Rd: release
+	* release
 
-2005-09-27 19:29  rsbivand
+2006-01-02 19:54  rsbivand
 
-	* DESCRIPTION, data/georgia.R, man/gwr.bisquare.Rd,
-	  man/gwr.gauss.Rd: 0.3-6, remove spmaptools
+	* release
 
-2005-09-05 11:02  rsbivand
+2006-01-02 19:32  rsbivand
 
-	* data/georgia.R: _ changes
+	* release
 
-2005-08-29 15:21  rsbivand
+2005-09-27 17:29  rsbivand
 
-	* R/gwe.R, R/gwr.R, R/gwr.cv.R, man/georgia.Rd, man/gw.cov.Rd,
-	  man/gwr.Rd, man/gwr.cv.Rd: new Polygons
+	* 0.3-6, remove spmaptools
 
-2005-08-29 14:25  rsbivand
+2005-09-05 09:02  rsbivand
 
-	* DESCRIPTION, R/gwe.R, R/gwr.R, R/gwr.cv.R, data/georgia.R,
-	  inst/shapes/georgia.dbf, inst/shapes/georgia.shp,
-	  inst/shapes/georgia.shx, man/georgia.Rd: adding Georgia shapefile
+	* _ changes
 
-2005-08-23 11:40  rsbivand
+2005-08-29 13:21  rsbivand
 
-	* R/: gwr.R, gwr.cv.R: return adaptive bw
+	* new Polygons
 
-2005-07-27 20:00  rsbivand
+2005-08-29 12:25  rsbivand
 
-	* DESCRIPTION, R/gwr.R, man/gwr.cv.Rd: remove n by n matrix for
-	  hatmatrix=FALSE
+	* adding Georgia shapefile
 
-2005-06-25 15:13  rsbivand
+2005-08-23 09:40  rsbivand
 
-	* DESCRIPTION, R/gwr.R, src/gwe.c: fix infinite zero latlon
-	  distance
+	* return adaptive bw
 
-2005-05-27 21:13  rsbivand
+2005-07-27 18:01  rsbivand
 
-	* DESCRIPTION, R/gwe.R, R/gwr.R: to 0.7-7
+	* remove n by n matrix for hatmatrix=FALSE
 
-2005-05-07 21:55  rsbivand
+2005-06-25 13:14  rsbivand
 
-	* INDEX: release candidate
+	* fix infinite zero latlon distance
 
-2005-05-07 21:52  rsbivand
+2005-05-27 19:13  rsbivand
 
-	* DESCRIPTION, R/gwe.R, R/gwr.R, man/LMZ.F3GWR.test.Rd,
-	  man/display.gw.cov.Rd, man/gw.adapt.Rd, man/gw.cov.Rd,
-	  man/gw.dists.Rd, man/gwr.Rd, man/gwr.cv.Rd, man/sem.gw.cov.Rd:
-	  release candidate
+	* to 0.7-7
 
-2005-05-05 21:40  rsbivand
+2005-05-07 19:55  rsbivand
 
-	* R/gwe.R, R/gwr.R, R/gwr.cv.R, R/gwr.mc.R, man/fp.grid.Rd,
-	  man/georgia.Rd, man/gwr.mc.Rd, src/gwe.c: lonlat
+	* release candidate
 
-2005-04-07 10:14  rsbivand
+2005-05-05 19:40  rsbivand
 
-	* R/gwr.R: merging older changes
+	* lonlat
 
-2005-03-18 16:19  rsbivand
+2005-04-07 08:14  rsbivand
 
-	* DESCRIPTION, R/gwr.R, R/gwr.cv.R, data/georgia.R,
-	  man/display.gw.cov.Rd, man/fp.grid.Rd, man/georgia.Rd,
-	  man/gw.adapt.Rd, man/gw.cov.Rd, man/gw.dists.Rd, man/gwr.Rd,
-	  man/gwr.morantest.Rd, man/sem.gw.cov.Rd: matching sp
+	* merging older changes
 
-2004-11-01 16:15  rsbivand
+2005-03-18 15:21  rsbivand
 
-	* src/gwe.c: pre lancs
+	* matching sp
 
-2004-06-10 08:33  rsbivand
+2005-03-18 15:19  rsbivand
 
-	* DESCRIPTION, INDEX, TITLE, data/00Index, data/columbus.R,
-	  data/georgia.R, man/LMZ.F3GWR.test.Rd, man/columbus.Rd,
-	  man/display.gw.cov.Rd, man/fp.grid.Rd, man/georgia.Rd,
-	  man/gw.adapt.Rd, man/gw.cov.Rd, man/gw.dists.Rd, man/gwr.Rd,
-	  man/gwr.bisquare.Rd, man/gwr.cv.Rd, man/gwr.gauss.Rd,
-	  man/gwr.mc.Rd, man/gwr.morantest.Rd, man/sem.gw.cov.Rd, R/gwe.R,
-	  R/gwr.R, R/gwr.bisquare.R, R/gwr.cv.R, R/gwr.gauss.R, R/gwr.mc.R,
-	  R/gwr.morantest.R, R/gwr.whole.test.R, R/zzz.R, src/gwe.c:
-	  Initial import.
+	* matching sp
 
-2004-06-10 08:33  rsbivand
+2004-11-01 15:15  rsbivand
 
-	* DESCRIPTION, INDEX, TITLE, data/00Index, data/columbus.R,
-	  data/georgia.R, man/LMZ.F3GWR.test.Rd, man/columbus.Rd,
-	  man/display.gw.cov.Rd, man/fp.grid.Rd, man/georgia.Rd,
-	  man/gw.adapt.Rd, man/gw.cov.Rd, man/gw.dists.Rd, man/gwr.Rd,
-	  man/gwr.bisquare.Rd, man/gwr.cv.Rd, man/gwr.gauss.Rd,
-	  man/gwr.mc.Rd, man/gwr.morantest.Rd, man/sem.gw.cov.Rd, R/gwe.R,
-	  R/gwr.R, R/gwr.bisquare.R, R/gwr.cv.R, R/gwr.gauss.R, R/gwr.mc.R,
-	  R/gwr.morantest.R, R/gwr.whole.test.R, R/zzz.R, src/gwe.c:
-	  Initial revision
+	* pre lancs
+
+2004-06-10 06:35  rsbivand
+
+	* Initial revision
+
+1999-12-15 10:41  
+
+	* New repository initialized by cvs2svn.
 

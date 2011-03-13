@@ -13,7 +13,7 @@ bandwidth minimizing this quantity.
 }
 \usage{
 gwr.sel(formula, data=list(), coords, adapt=FALSE, gweight=gwr.Gauss,
- method = "cv", verbose = TRUE, longlat=FALSE, RMSE=FALSE, weights,
+ method = "cv", verbose = TRUE, longlat=NULL, RMSE=FALSE, weights,
  tol=.Machine$double.eps^0.25)
 }
 \arguments{
@@ -26,7 +26,7 @@ gwr.sel(formula, data=list(), coords, adapt=FALSE, gweight=gwr.Gauss,
   \code{gwr.Gauss()} default, or \code{gwr.gauss()}, the previous default or \code{gwr.bisquare()}}
   \item{method}{default "cv" for drop-1 cross-validation, or "aic" for AIC optimisation (depends on assumptions about AIC degrees of freedom)}
   \item{verbose}{if TRUE (default), reports the progress of search for bandwidth}
-  \item{longlat}{if TRUE, use distances on an ellipse with WGS84 parameters}
+  \item{longlat}{TRUE if point coordinates are longitude-latitude decimal degrees, in which case distances are measured in kilometers; if x is a SpatialPoints object, the value is taken from the object itself}
   \item{RMSE}{default FALSE to correspond with CV scores in newer references (sum of squared CV errors), if TRUE the previous behaviour of scoring by LOO CV RMSE}
   \item{weights}{case weights used as in weighted least squares, beware of scaling issues --- only used with the cross-validation method, probably unsafe}
   \item{tol}{the desired accuracy to be passed to \code{optimize}}

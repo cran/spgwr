@@ -6,7 +6,7 @@
   The function provides an implementation of geographically weighted local statistics based on Chapter 7 of the GWR book - see references. Local means, local standard deviations, local standard errors of the mean, standardised differences of the global and local means, and local covariances and if requested correlations, are reported for the chosed fixed or adaptive bandwidth and weighting function.
 }
 \usage{
-gw.cov(x, vars, fp, adapt = NULL, bw, gweight = gwr.bisquare, cor = TRUE, var.term = FALSE, longlat = FALSE)
+gw.cov(x, vars, fp, adapt = NULL, bw, gweight = gwr.bisquare, cor = TRUE, var.term = FALSE, longlat = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,7 +18,7 @@ gw.cov(x, vars, fp, adapt = NULL, bw, gweight = gwr.bisquare, cor = TRUE, var.te
   \item{gweight}{ \code{gweight} default gwr.bisquare - the weighting function to use }
   \item{cor}{ \code{cor} default TRUE, report correlations in addition to covariances }
   \item{var.term}{ \code{var.term} default FALSE, if TRUE apply a correction to the variance term }
-  \item{longlat}{if TRUE, use distances on an ellipse with WGS84 parameters}
+  \item{longlat}{TRUE if point coordinates are longitude-latitude decimal degrees, in which case distances are measured in kilometers; if x is a SpatialPoints object, the value is taken from the object itself}
 }
 
 \value{

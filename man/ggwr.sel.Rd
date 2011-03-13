@@ -12,7 +12,7 @@ bandwidth minimizing this quantity.
 }
 \usage{
 ggwr.sel(formula, data = list(), coords, adapt = FALSE, gweight = gwr.Gauss,
- family = gaussian, verbose = TRUE, longlat = FALSE, RMSE=FALSE,
+ family = gaussian, verbose = TRUE, longlat = NULL, RMSE=FALSE,
  tol=.Machine$double.eps^0.25)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -27,7 +27,7 @@ ggwr.sel(formula, data = list(), coords, adapt = FALSE, gweight = gwr.Gauss,
   \item{family}{a description of the error distribution and link function to
           be used in the model, see \code{glm}}
   \item{verbose}{if TRUE (default), reports the progress of search for bandwidth}
-  \item{longlat}{if TRUE, use distances on an ellipse with WGS84 parameters}
+  \item{longlat}{TRUE if point coordinates are longitude-latitude decimal degrees, in which case distances are measured in kilometers; if x is a SpatialPoints object, the value is taken from the object itself}
   \item{RMSE}{default FALSE to correspond with CV scores in newer references (sum of squared CV errors), if TRUE the previous behaviour of scoring by LOO CV RMSE}
   \item{tol}{the desired accuracy to be passed to \code{optimize}}
 }

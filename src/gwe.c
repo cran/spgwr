@@ -39,7 +39,7 @@ void gw_dists(double *u, double *v, double *uout, double *vout,
 		
 	if (lonlat[0] == 0) {
 		for (j=0; j<N; j++) {
-			res = pythag((u[j]-uout[0]), (v[j]-vout[0]));
+			res = hypot((u[j]-uout[0]), (v[j]-vout[0]));
 			if (R_FINITE(res)) dists[j] = res;
 			else dists[j] = (double) 0;
 		}

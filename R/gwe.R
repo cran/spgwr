@@ -50,7 +50,7 @@ gw.adapt <- function(dp, fp, quant, longlat=FALSE) {
 
 
 gw.cov <- function(x, vars, fp, adapt=NULL, bw, gweight=gwr.bisquare, 
-		cor=TRUE, var.term=FALSE, longlat=FALSE) {
+		cor=TRUE, var.term=FALSE, longlat=NULL) {
 	p4s <- as.character(NA)
 	Polys <- NULL
 	fp.missing <- missing(fp)
@@ -60,12 +60,21 @@ gw.cov <- function(x, vars, fp, adapt=NULL, bw, gweight=gwr.bisquare,
 		dp <- coordinates(x)
 		p4s <- proj4string(x)
 		data <- as(x, "data.frame")
+                if ((is.null(longlat) || !is.logical(longlat)) 
+	            && !is.na(is.projected(x)) && !is.projected(x)) {
+                    longlat <- TRUE
+                } else longlat <- FALSE
 	} else if (is(x, "SpatialPointsDataFrame")) {
 		gridded <- gridded(x)
 		dp <- coordinates(x)
 		p4s <- proj4string(x)
 		data <- as(x, "data.frame")
+                if ((is.null(longlat) || !is.logical(longlat)) 
+	            && !is.na(is.projected(x)) && !is.projected(x)) {
+                    longlat <- TRUE
+                } else longlat <- FALSE
 	} else stop("x must be a Spatial Polygons or Points DataFrame")
+        if (is.null(longlat) || !is.logical(longlat)) longlat <- FALSE
 	x <- as.matrix(data[, vars])
 	if (any(is.na(x))) stop("x contains NAs")
 	nc <- ncol(x)
@@ -86,7 +95,7 @@ gw.cov <- function(x, vars, fp, adapt=NULL, bw, gweight=gwr.bisquare,
 	for (i in 1:n1) { # establish residuals for data points and 
 			# calculate hat matrix trace
 		dxs <- spDistsN1(dp, dp[i,], longlat=longlat)
-		if (!is.finite(dxs[i])) dxs[i] <- 0
+		if (!is.finite(dxs[i])) dxs[i] <- .Machine$double.xmax/2
 		wts <- gweight(dist2=dxs^2, bw0[i])
 		if (any(wts < 0 | is.na(wts))) {
 			print(dxs)

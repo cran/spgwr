@@ -9,7 +9,7 @@ weighting scheme.
 }
 \usage{
 ggwr(formula, data = list(), coords, bandwidth, gweight = gwr.Gauss,
- adapt = NULL, fit.points, family = gaussian, longlat = FALSE, type = 
+ adapt = NULL, fit.points, family = gaussian, longlat = NULL, type = 
 c("working", "deviance", "pearson", "response"))
 }
 %- maybe also 'usage' for other objects documented here.
@@ -26,7 +26,7 @@ c("working", "deviance", "pearson", "response"))
   \item{fit.points}{an object containing the coordinates of fit points; often an object from package \pkg{sp}; if missing, the coordinates given through the data argument object, or the coords argument are used}
   \item{family}{a description of the error distribution and link function to
           be used in the model, see \code{glm}}
-  \item{longlat}{if TRUE, use distances on an ellipse with WGS84 parameters}
+  \item{longlat}{TRUE if point coordinates are longitude-latitude decimal degrees, in which case distances are measured in kilometers; if x is a SpatialPoints object, the value is taken from the object itself}
   \item{type}{the type of residuals which should be returned. The alternatives are: "working" (default), "pearson", "deviance" and "response"}
 }
 

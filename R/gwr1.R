@@ -3,7 +3,7 @@
 
 ggwr <- function(formula, data = list(), coords, bandwidth, 
 	gweight=gwr.Gauss, adapt=NULL, fit.points, family=gaussian,
-	longlat=FALSE, type=c("working", "deviance", "pearson", "response")) {
+	longlat=NULL, type=c("working", "deviance", "pearson", "response")) {
 	type <- match.arg(type)
 	resid_name <- paste(type, "resids", sep="_")
 	this.call <- match.call()
@@ -16,8 +16,13 @@ ggwr <- function(formula, data = list(), coords, bandwidth,
 		    warning("data is Spatial* object, ignoring coords argument")
 		coords <- coordinates(data)
 		p4s <- proj4string(data)
+                if ((is.null(longlat) || !is.logical(longlat)) 
+	            && !is.na(is.projected(data)) && !is.projected(data)) {
+                    longlat <- TRUE
+                } else longlat <- FALSE
 		data <- as(data, "data.frame")
 	}
+        if (is.null(longlat) || !is.logical(longlat)) longlat <- FALSE
 	if (missing(coords))
 		stop("Observation coordinates have to be given")
 	if (is.null(colnames(coords))) 
@@ -94,7 +99,7 @@ ggwr <- function(formula, data = list(), coords, bandwidth,
 	for (i in 1:n) {
 		dxs <- spDistsN1(coords, fit.points[i,], longlat=longlat)
 		if (any(!is.finite(dxs)))
-			dxs[which(!is.finite(dxs))] <- 0
+			dxs[which(!is.finite(dxs))] <- .Machine$double.xmax/2
 		w.i <- gweight(dxs^2, bandwidth[i])
 		if (any(w.i < 0 | is.na(w.i)))
         		stop(paste("Invalid weights for i:", i))

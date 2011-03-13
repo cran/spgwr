@@ -3,7 +3,7 @@
 
 gwr <- function(formula, data = list(), coords, bandwidth, 
 	gweight=gwr.Gauss, adapt=NULL, hatmatrix=FALSE, fit.points, 
-	longlat=FALSE, se.fit=FALSE, weights, cl=NULL, predictions=FALSE,
+	longlat=NULL, se.fit=FALSE, weights, cl=NULL, predictions=FALSE,
         fittedGWRobject=NULL, se.fit.CCT=TRUE) {
         timings <- list()
         .ptime_start <- proc.time()
@@ -17,9 +17,13 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 		    warning("data is Spatial* object, ignoring coords argument")
 		coords <- coordinates(data)
 		p4s <- proj4string(data)
+                if ((is.null(longlat) || !is.logical(longlat)) 
+	            && !is.na(is.projected(data)) && !is.projected(data)) {
+                    longlat <- TRUE
+                } else longlat <- FALSE
 		data <- as(data, "data.frame")
 	}
-
+        if (is.null(longlat) || !is.logical(longlat)) longlat <- FALSE
 	if (missing(coords))
 		stop("Observation coordinates have to be given")
 	if (is.null(colnames(coords))) 
@@ -255,7 +259,7 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 		dxs <- spDistsN1(coords, fit.points[i,1:2], 
 		    longlat=GWR_args$longlat)
 		if (any(!is.finite(dxs)))
-			dxs[which(!is.finite(dxs))] <- 0
+			dxs[which(!is.finite(dxs))] <- .Machine$double.xmax/2
 #		if (!is.finite(dxs[i])) dxs[i] <- 0
 		w.i <- gweight(dxs^2, bandwidthR2[i])
 		w.i <- w.i * weights
@@ -352,7 +356,12 @@ print.gwr <- function(x, ...) {
 		floor(x$adapt*n), " of ", n, ")\n", sep="")
 	m <- length(x$lm$coefficients)
 	cat("Summary of GWR coefficient estimates:\n")
-	CM <- t(apply(as(x$SDF, "data.frame")[,(1+(1:m)), drop=FALSE], 2, summary))[,c(1:3,5,6)]
+        df0 <- as(x$SDF, "data.frame")[,(1+(1:m)), drop=FALSE]
+        if (any(is.na(df0))) {
+            df0 <- na.omit(df0)
+            warning("NAs in coefficients dropped")
+        }
+	CM <- t(apply(df0, 2, summary))[,c(1:3,5,6)]
 	if (is.null(dim(CM))) CM <- t(as.matrix(CM))
 	CM <- cbind(CM, coefficients(x$lm))
 	colnames(CM) <- c(colnames(CM)[1:5], "Global")
@@ -464,32 +473,36 @@ print.gwr <- function(x, ...) {
 
 	        if (GWR_args$se.fit) {
 		    p <- lm.i$rank
-		    p1 <- 1:p
-		    inv.Z <- chol2inv(lm.i$qr$qr[p1, p1, drop=FALSE])
+                    if (p != m) {
+                      warning(paste("OLS fit not full rank at fit point", i))
+                    } else {
+		      p1 <- 1:p
+		      inv.Z <- chol2inv(lm.i$qr$qr[p1, p1, drop=FALSE])
 # p. 55 CC definition 
-                    if (GWR_args$se.fit.CCT) {
+                      if (GWR_args$se.fit.CCT) {
                         C <- inv.Z %*% t(x) %*% diag(w.i)
                         CC <- C %*% t(C)
 # only return coefficient covariance matrix diagonal raw values
 # for post-processing
                         betase[i,] <- diag(CC)
-                    } else {
+                      } else {
                         betase[i,] <- diag(inv.Z)
-                    }
+                      }
 # prediction "standard errors"
 # only return raw values for post-processing
-                    if (GWR_args$predictions) {
+                    if (GWR_args$predictions && (p==m)) {
                         if (GWR_args$se.fit.CCT) {
                             pred.se[i] <- t(predx[i,]) %*% CC %*% predx[i,]
                         } else {
                             pred.se[i] <- t(predx[i,]) %*% inv.Z %*% predx[i,]
                         }
 		    }
+                  }
 		}
 # assigning residual bug Torleif Markussen Lunde 090529
 		if (!GWR_args$fp.given) gwr.e[i] <- ei[i]
 
-		if (!GWR_args$fp.given && GWR_args$hatmatrix) 
+		if (!GWR_args$fp.given && GWR_args$hatmatrix && (p==m)) 
 			lhat[i,] <- t(x[i,]) %*% inv.Z %*% t(x) %*% diag(w.i)
 	    }
 	    df <- cbind(sum.w, betas, betase, gwr.e, pred, pred.se, localR2)
