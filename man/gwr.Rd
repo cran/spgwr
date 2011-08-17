@@ -75,13 +75,16 @@ col.bisq <- gwr(crime ~ income + housing, data=columbus,
   gweight=gwr.bisquare, hatmatrix=TRUE)
 col.bisq
 data(georgia)
-g.adapt.gauss <- gwr.sel(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov + PctBlack, data=gSRDF, adapt=TRUE)
-res.adpt <- gwr(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov + PctBlack, data=gSRDF, adapt=g.adapt.gauss)
+g.adapt.gauss <- gwr.sel(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + 
+ PctPov + PctBlack, data=gSRDF, adapt=TRUE)
+res.adpt <- gwr(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov + 
+ PctBlack, data=gSRDF, adapt=g.adapt.gauss)
 res.adpt
 pairs(as(res.adpt$SDF, "data.frame")[,2:8], pch=".")
 brks <- c(-0.25, 0, 0.01, 0.025, 0.075)
 cols <- grey(5:2/6)
-plot(res.adpt$SDF, col=cols[findInterval(res.adpt$SDF$PctBlack, brks, all.inside=TRUE)])
+plot(res.adpt$SDF, col=cols[findInterval(res.adpt$SDF$PctBlack, brks,
+ all.inside=TRUE)])
 data(meuse)
 coordinates(meuse) <- c("x", "y")
 meuse$ffreq <- factor(meuse$ffreq)
@@ -91,17 +94,22 @@ meuse.grid$ffreq <- factor(meuse.grid$ffreq)
 gridded(meuse.grid) <- TRUE
 xx <- gwr(cadmium ~ dist, meuse, bandwidth = 228, hatmatrix=TRUE)
 xx
-x <- gwr(cadmium ~ dist, meuse, bandwidth = 228, fit.points = meuse.grid, predict=TRUE, se.fit=TRUE, fittedGWRobject=xx)
+x <- gwr(cadmium ~ dist, meuse, bandwidth = 228, fit.points = meuse.grid,
+ predict=TRUE, se.fit=TRUE, fittedGWRobject=xx)
 x
 spplot(x$SDF, "pred")
 spplot(x$SDF, "pred.se")
 \dontrun{
-  g.bw.gauss <- gwr.sel(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov + PctBlack, data=gSRDF)
-  res.bw <- gwr(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov + PctBlack, data=gSRDF, bandwidth=g.bw.gauss)
+  g.bw.gauss <- gwr.sel(PctBach ~ TotPop90 + PctRural + PctEld + PctFB +
+    PctPov + PctBlack, data=gSRDF)
+  res.bw <- gwr(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov +
+    PctBlack, data=gSRDF, bandwidth=g.bw.gauss)
   res.bw
   pairs(as(res.bw$SDF, "data.frame")[,2:8], pch=".")
-  plot(res.bw$SDF, col=cols[findInterval(res.bw$SDF$PctBlack, brks, all.inside=TRUE)])
-  g.bw.gauss <- gwr.sel(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov + PctBlack, data=gSRDF, longlat=TRUE)
+  plot(res.bw$SDF, col=cols[findInterval(res.bw$SDF$PctBlack, brks,
+    all.inside=TRUE)])
+  g.bw.gauss <- gwr.sel(PctBach ~ TotPop90 + PctRural + PctEld + PctFB +
+    PctPov + PctBlack, data=gSRDF, longlat=TRUE)
   data(gSRouter)
   SG <- GE_SpatialGrid(gSRouter, maxPixels = 100)
   SPxMASK0 <- overlay(gSRouter, SG$SG)

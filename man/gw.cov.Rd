@@ -6,7 +6,8 @@
   The function provides an implementation of geographically weighted local statistics based on Chapter 7 of the GWR book - see references. Local means, local standard deviations, local standard errors of the mean, standardised differences of the global and local means, and local covariances and if requested correlations, are reported for the chosed fixed or adaptive bandwidth and weighting function.
 }
 \usage{
-gw.cov(x, vars, fp, adapt = NULL, bw, gweight = gwr.bisquare, cor = TRUE, var.term = FALSE, longlat = NULL)
+gw.cov(x, vars, fp, adapt = NULL, bw, gweight = gwr.bisquare,
+ cor = TRUE, var.term = FALSE, longlat = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
