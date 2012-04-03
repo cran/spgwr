@@ -32,9 +32,9 @@ c("working", "deviance", "pearson", "response"))
 
 \value{
 A list of class \dQuote{gwr}:
-  \item{SDF}{a SpatialPointsDataFrame (may be gridded) or SpatialPolygonsDataFrame object (see package "sp") with fit.points, weights, GWR coefficient estimates, R-squared, and coefficient standard errors in its "data" slot.}
-  \item{lhat}{Leung et al. L matrix}
-  \item{lm}{Ordinary least squares global regression on the same model formula.}  \item{bandwidth}{the bandwidth used.}
+  \item{SDF}{a SpatialPointsDataFrame (may be gridded) or SpatialPolygonsDataFrame object (see package "sp") with fit.points, weights, GWR coefficient estimates, dispersion if a "quasi"-family is used, and the residuals of type "type" in its "data" slot.}
+  \item{lhat}{Leung et al. L matrix, here set to NA}
+  \item{lm}{GLM global regression on the same model formula.}  \item{bandwidth}{the bandwidth used.}
   \item{this.call}{the function call used.}
 
 }

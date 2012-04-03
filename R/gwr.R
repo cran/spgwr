@@ -129,7 +129,7 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 
 	    clusterExport_l <- function(cl, list) {
                     gets <- function(n, v) {
-                        assign(n, v, env = .GlobalEnv)
+                        assign(n, v, envir = .GlobalEnv)
                         NULL
                     }
                     for (name in list) {

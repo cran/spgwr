@@ -112,7 +112,7 @@ spplot(x$SDF, "pred.se")
     PctPov + PctBlack, data=gSRDF, longlat=TRUE)
   data(gSRouter)
   SG <- GE_SpatialGrid(gSRouter, maxPixels = 100)
-  SPxMASK0 <- overlay(gSRouter, SG$SG)
+  SPxMASK0 <- over(SG$SG, gSRouter)
   SGDF <- SpatialGridDataFrame(slot(SG$SG, "grid"),
     data=data.frame(SPxMASK0=SPxMASK0),
     proj4string=CRS(proj4string(gSRouter)))
