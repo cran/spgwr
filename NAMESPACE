@@ -5,7 +5,7 @@ importFrom(stats, anova)
 
 export(gw.cov, gwr.bisquare, gwr.sel, gwr.Gauss, gwr.morantest, gwr,
  LMZ.F1GWR.test, LMZ.F2GWR.test, BFC99.gwr.test, anova.gwr, BFC02.gwr.test,
- LMZ.F3GWR.test, ggwr.sel, ggwr, gwr.tricube)
+ LMZ.F3GWR.test, ggwr.sel, ggwr, gwr.tricube, gw.adapt)
 
 S3method(print, gwr)
 S3method(anova, gwr)

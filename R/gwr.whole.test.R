@@ -71,13 +71,14 @@ BFC99.gwr.test <- function(x) {
 # reported by Deny Kurniawan 070804
 	k <- as.integer(x$lm$qr$rank)
 	do.coef <- FALSE
-	res <- .Fortran("lminfl", x$lm$qr$qr, n, n, k, as.integer(do.coef), 
-          x$lm$qr$qraux, wt.res = e, hat = double(n), coefficients = 
-	  if (do.coef) matrix(0, n, k) else double(0), sigma = double(n), 
-          tol = 10 * .Machine$double.eps, DUP = FALSE, 
-          PACKAGE = "stats")[c("hat", "coefficients", "sigma", "wt.res")]
+# 120822 RSB avoid cross-package calls
+#	res <- .Fortran("lminfl", x$lm$qr$qr, n, n, k, as.integer(do.coef), 
+#         x$lm$qr$qraux, wt.res = e, hat = double(n), coefficients = 
+#	  if (do.coef) matrix(0, n, k) else double(0), sigma = double(n), 
+#          tol = 10 * .Machine$double.eps, DUP = FALSE, 
+#          PACKAGE = "stats")[c("hat", "coefficients", "sigma", "wt.res")]
 	
-	hatvalues <- res$hat
+	hatvalues <- hatvalues(lm(x$lm$y ~ x$lm$x, weights=x$lm$weights))
 	parameter <- c(((DFo-DFg1)^2)/(sum(((1-hatvalues) - diag(R))^2)),
 		(DFg1^2)/DFg2)
 	names(parameter) <- c("df1", "df2")

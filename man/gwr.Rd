@@ -11,7 +11,7 @@ weighting scheme.
 gwr(formula, data=list(), coords, bandwidth, gweight=gwr.Gauss, 
 	adapt=NULL, hatmatrix = FALSE, fit.points, longlat=NULL, 
 	se.fit=FALSE, weights, cl=NULL, predictions = FALSE, 
-        fittedGWRobject = NULL, se.fit.CCT = TRUE)
+        fittedGWRobject = NULL, se.fit.CCT = TRUE, use_snow=FALSE)
 \method{print}{gwr}(x, \dots)
 }
 
@@ -30,17 +30,18 @@ gwr(formula, data=list(), coords, bandwidth, gweight=gwr.Gauss,
   \item{longlat}{TRUE if point coordinates are longitude-latitude decimal degrees, in which case distances are measured in kilometers; if x is a SpatialPoints object, the value is taken from the object itself}
   \item{se.fit}{if TRUE, return local coefficient standard errors - if \code{hatmatrix} is TRUE and no fit.points are given, two effective degrees of freedom sigmas will be used to generate alternative coefficient standard errors}
   \item{weights}{case weights used as in weighted least squares, beware of scaling issues, probably unsafe}
-  \item{cl}{if NULL, ignored, otherwise \code{cl} must be an object describing a \dQuote{cluster} created using \code{makeCluster} in the snow package. The cluster will then be used to hand off the calculation of local coefficients to cluster nodes, if fit points have been given as an argument, and \code{hatmatrix=FALSE}}
+  \item{cl}{if NULL, ignored, otherwise \code{cl} must be an object describing a \dQuote{cluster} created using \code{makeCluster} in the \pkg{parallel} package. The cluster will then be used to hand off the calculation of local coefficients to cluster nodes, if fit points have been given as an argument, and \code{hatmatrix=FALSE}}
   \item{predictions}{default FALSE; if TRUE and no fit points given, return GW fitted values at data points, if fit points given and are a Spatial*DataFrame object containing the RHS variables in the formula, return GW predictions at the fit points}
   \item{fittedGWRobject}{a fitted \code{gwr} object with a hatmatrix (optional), if given, and if fit.points are given and if \code{se.fit} is TRUE, two effective degrees of freedom sigmas will be used to generate alternative coefficient standard errors}
   \item{se.fit.CCT}{default TRUE, compute local coefficient standard errors using formula (2.14), p. 55, in the GWR book}
+  \item{use_snow}{default FALSE, use \pkg{parallel}; if \dQuote{cl} is given, and \code{use_snow=TRUE}, use \pkg{snow} instead of \pkg{parallel} to access more types of cluster}
   \item{x}{an object of class "gwr" returned by the \code{gwr} function}
   \item{...}{arguments to be passed to other functions}
 }
 \details{
 The function applies the weighting function in turn to each of the 
 observations, or fit points if given, calculating a weighted regression 
-for each point. The results may be explored to see if coefficient values vary over space. The local coefficient estimates may be made on a multi-node cluster using the \code{cl} argument to pass through a \dQuote{snow} cluster. The function will then divide the fit points (which must be given separately) between the clusters for fitting. Note that each node will need to have the \dQuote{spgwr} package present, so initiating by \code{clusterEvalQ(cl, library(spgwr))} may save a little time per node. The function clears the global environment on the node of objects sent. Using two nodes reduces timings to a little over half the time for a single node.}
+for each point. The results may be explored to see if coefficient values vary over space. The local coefficient estimates may be made on a multi-node cluster using the \code{cl} argument to pass through a \pkg{parallel} cluster. The function will then divide the fit points (which must be given separately) between the clusters for fitting. Note that each node will need to have the \dQuote{spgwr} package present, so initiating by \code{clusterEvalQ(cl, library(spgwr))} may save a little time per node. The function clears the global environment on the node of objects sent. Using two nodes reduces timings to a little over half the time for a single node.}
 
 \value{
 A list of class \dQuote{gwr}:
@@ -121,7 +122,15 @@ spplot(x$SDF, "pred.se")
     PctBlack, data=gSRDF, bandwidth=g.bw.gauss, fit.points=SPxDF,
     longlat=TRUE)
   res.bw
+  res.bw$timings
   spplot(res.bw$SDF, "PctBlack")
+  cl <- makeCluster(detectCores())
+  res.bwc <- gwr(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov +
+    PctBlack, data=gSRDF, bandwidth=g.bw.gauss, fit.points=SPxDF,
+    longlat=TRUE, cl=cl)
+  res.bwc
+  res.bwc$timings
+  stopCluster(cl)
 }
 }
 \keyword{spatial}
