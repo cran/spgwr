@@ -35,6 +35,7 @@ Geographically Weighted Regression, Chichester: Wiley (chapter 7);
 \seealso{\code{\link{gwr}}}
 
 \examples{
+\donttest{
 data(georgia)
 SRgwls <- gw.cov(gSRDF, vars=6:11, bw=2, longlat=FALSE)
 names(SRgwls$SDF)
@@ -61,6 +62,7 @@ spplot(SGgwls$SDF, "sd.PctPov")
 spplot(SGgwls$SDF, "sem.PctPov")
 spplot(SGgwls$SDF, "diff.PctPov")
 spplot(SGgwls$SDF, "cor.PctPov.PctBlack.")
+}
 }
 \keyword{spatial}
 

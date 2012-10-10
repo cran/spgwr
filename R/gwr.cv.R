@@ -1,9 +1,10 @@
-# Copyright 2001-2008 Roger Bivand and Danlin Yu
+# Copyright 2001-2012 Roger Bivand and Danlin Yu
 # 
 
 gwr.sel <- function(formula, data = list(), coords, adapt=FALSE, 
 	gweight=gwr.Gauss, method="cv", verbose=TRUE, longlat=NULL,
-        RMSE=FALSE, weights, tol=.Machine$double.eps^0.25) {
+        RMSE=FALSE, weights, tol=.Machine$double.eps^0.25,
+        show.error.messages=FALSE) {
 	if (!is.logical(adapt)) stop("adapt must be logical")
 	if (is(data, "Spatial")) {
 		if (!missing(coords))
@@ -51,13 +52,16 @@ gwr.sel <- function(formula, data = list(), coords, adapt=FALSE,
 			opt <- optimize(gwr.cv.f, lower=beta1, upper=beta2, 
 				maximum=FALSE, y=y, x=x, coords=coords, 
 				gweight=gweight, verbose=verbose, 
-				longlat=longlat, RMSE=RMSE, weights=weights,
+				longlat=longlat, RMSE=RMSE, weights=weights, 
+                                show.error.messages=show.error.messages,
 				tol=tol)
 		} else {
 			opt <- optimize(gwr.aic.f, lower=beta1, upper=beta2, 
 				maximum=FALSE, y=y, x=x, coords=coords, 
 				gweight=gweight, verbose=verbose, 
-				longlat=longlat, tol=tol)
+				longlat=longlat, 
+                                show.error.messages=show.error.messages,
+                                tol=tol)
 		}
 		bdwt <- opt$minimum
 		res <- bdwt
@@ -69,25 +73,31 @@ gwr.sel <- function(formula, data = list(), coords, adapt=FALSE,
 				upper=beta2, maximum=FALSE, y=y, x=x, 
 				coords=coords, gweight=gweight, 
 				verbose=verbose, longlat=longlat, RMSE=RMSE, 
-				weights=weights, tol=tol)
+				weights=weights, 
+                                show.error.messages=show.error.messages,
+                                tol=tol)
 		} else {
 			opt <- optimize(gwr.aic.adapt.f, lower=beta1, 
 				upper=beta2, maximum=FALSE, y=y, x=x, 
 				coords=coords, gweight=gweight, 
-				verbose=verbose, longlat=longlat, tol=tol)
+				verbose=verbose, longlat=longlat, 
+                                show.error.messages=show.error.messages,
+                                tol=tol)
 		}
 		q <- opt$minimum
 		res <- q
 	}
+        if (isTRUE(all.equal(beta2, res, tolerance=.Machine$double.eps^(1/4))))
+            warning("Bandwidth converged to upper bound:", beta2)
 	res
 }
 
-gwr.aic.f <- function(bandwidth, y, x, coords, gweight, verbose=TRUE, longlat=FALSE) {
+gwr.aic.f <- function(bandwidth, y, x, coords, gweight, verbose=TRUE, longlat=FALSE, show.error.messages=TRUE) {
     n <- NROW(x)
 #    m <- NCOL(x)
     lhat <- matrix(nrow=n, ncol=n)
     flag <- 0
-    options(show.error.messages = FALSE)
+    options(show.error.messages = show.error.messages)
     for (i in 1:n) {
 #        xx <- x[i, ]
 	dxs <- spDistsN1(coords, coords[i,], longlat=longlat)
@@ -117,17 +127,17 @@ gwr.aic.f <- function(bandwidth, y, x, coords, gweight, verbose=TRUE, longlat=FA
     } else {
 	score <- as.numeric(NA)
     }
-    options(show.error.messages = TRUE)
+    if (!show.error.messages) options(show.error.messages = TRUE)
     if (verbose) cat("Bandwidth:", bandwidth, "AIC:", score, "\n")
     score
 }
 
 gwr.cv.f <- function(bandwidth, y, x, coords, gweight, verbose=TRUE, 
-    longlat=FALSE, RMSE=FALSE, weights) {
+    longlat=FALSE, RMSE=FALSE, weights, show.error.messages=TRUE) {
     n <- NROW(x)
 #    m <- NCOL(x)
     cv <- numeric(n)
-    options(show.error.messages = FALSE)
+    options(show.error.messages = show.error.messages)
     for (i in 1:n) {
         xx <- x[i, ]
 	dxs <- spDistsN1(coords, coords[i,], longlat=longlat)
@@ -147,18 +157,18 @@ gwr.cv.f <- function(bandwidth, y, x, coords, gweight, verbose=TRUE,
     score <- sum(t(cv) %*% cv)
     if (RMSE) score <- sqrt(score/n)
 #    score <- sqrt(sum(t(cv) %*% cv)/n)
-    options(show.error.messages = TRUE)
+    if (!show.error.messages) options(show.error.messages = TRUE)
     if (verbose) cat("Bandwidth:", bandwidth, "CV score:", score, "\n")
     score
 }
 
-gwr.aic.adapt.f <- function(q, y, x, coords, gweight, verbose=TRUE, longlat=FALSE) {
+gwr.aic.adapt.f <- function(q, y, x, coords, gweight, verbose=TRUE, longlat=FALSE, show.error.messages=TRUE) {
     n <- NROW(x)
 #    m <- NCOL(x)
     lhat <- matrix(nrow=n, ncol=n)
     bw <- gw.adapt(dp=coords, fp=coords, quant=q, longlat=longlat)
     flag <- 0
-    options(show.error.messages = FALSE)
+    options(show.error.messages = show.error.messages)
     for (i in 1:n) {
 #        xx <- x[i, ]
 	dxs <- spDistsN1(coords, coords[i,], longlat=longlat)
@@ -188,18 +198,18 @@ gwr.aic.adapt.f <- function(q, y, x, coords, gweight, verbose=TRUE, longlat=FALS
     } else {
 	score <- as.numeric(NA)
     }
-    options(show.error.messages = TRUE)
+    if (!show.error.messages) options(show.error.messages = TRUE)
     if (verbose) cat("Bandwidth:", q, "AIC:", score, "\n")
     score
 }
 
 gwr.cv.adapt.f <- function(q, y, x, coords, gweight, verbose=TRUE, 
-    longlat=FALSE, RMSE=FALSE, weights) {
+    longlat=FALSE, RMSE=FALSE, weights, show.error.messages=TRUE) {
     n <- NROW(x)
 #    m <- NCOL(x)
     cv <- real(n)
     bw <- gw.adapt(dp=coords, fp=coords, quant=q, longlat=longlat)
-    options(show.error.messages = FALSE)
+    options(show.error.messages = show.error.messages)
     for (i in 1:n) {
         xx <- x[i, ]
 	dxs <- spDistsN1(coords, coords[i,], longlat=longlat)
@@ -218,7 +228,7 @@ gwr.cv.adapt.f <- function(q, y, x, coords, gweight, verbose=TRUE,
     score <- sum(t(cv) %*% cv)
     if (RMSE) score <- sqrt(score/n)
 #    score <- sqrt(sum(t(cv) %*% cv)/n)
-    options(show.error.messages = TRUE)
+    if (!show.error.messages) options(show.error.messages = TRUE)
     if (verbose) cat("Adaptive q:", q, "CV score:", score, "\n")
     score
 }

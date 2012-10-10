@@ -44,12 +44,14 @@ Geographically Weighted Regression, Chichester: Wiley;
 }
 \seealso{\code{\link{gwr.sel}}, \code{\link{ggwr}}}
 \examples{
+\donttest{
 library(maptools)
 xx <- readShapePoly(system.file("shapes/sids.shp", package="maptools")[1], 
   IDvar="FIPSNO", proj4string=CRS("+proj=longlat +ellps=clrk66"))
 bw <- ggwr.sel(SID74 ~ I(NWBIR74/BIR74) + offset(log(BIR74)), data=xx,
   family=poisson(), longlat=TRUE)
 bw
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
