@@ -207,7 +207,7 @@ gwr.cv.adapt.f <- function(q, y, x, coords, gweight, verbose=TRUE,
     longlat=FALSE, RMSE=FALSE, weights, show.error.messages=TRUE) {
     n <- NROW(x)
 #    m <- NCOL(x)
-    cv <- real(n)
+    cv <- numeric(n)
     bw <- gw.adapt(dp=coords, fp=coords, quant=q, longlat=longlat)
     options(show.error.messages = show.error.messages)
     for (i in 1:n) {

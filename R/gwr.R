@@ -138,25 +138,36 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	    l_fp <- lapply(splitIndices(nrow(fit.points), length(cl)), 
 	        function(i) fit.points[i,])
 	    clusterEvalQ(cl, library(spgwr))
+            varlist <- list("GWR_args", "coords", "gweight", "y",
+	        "x", "weights", "yhat")
+            env <- new.env()
+            assign("GWR_args", GWR_args, envir = env)
+            assign("coords", coords, envir = env)
+            assign("gweight", gweight, envir = env)
+            assign("y", y, envir = env)
+            assign("x", x, envir = env)
+            assign("weights", weights, envir = env)
+            assign("yhat", yhat, envir = env)
+#	    clusterExport_l <- function(cl, list) {
+#                    gets <- function(n, v) {
+#                        assign(n, v, envir = .GlobalEnv)
+#                        NULL
+#                    }
+#                    for (name in list) {
+#                        clusterCall(cl, gets, name, get(name))
+#                    }
+#	    }
+#
+#	    clusterExport_l(cl, list("GWR_args", "coords", "gweight", "y",
+#	        "x", "weights", "yhat"))
 
-	    clusterExport_l <- function(cl, list) {
-                    gets <- function(n, v) {
-                        assign(n, v, envir = .GlobalEnv)
-                        NULL
-                    }
-                    for (name in list) {
-                        clusterCall(cl, gets, name, get(name))
-                    }
-	    }
-
-	    clusterExport_l(cl, list("GWR_args", "coords", "gweight", "y",
-	        "x", "weights", "yhat"))
+            clusterExport(cl, varlist, env)
 
 	    res <- parLapply(cl, l_fp, function(fp) .GWR_int(fit.points=fp,
 	        coords=coords, gweight=gweight, y=y, x=x,
 	        weights=weights, yhat=yhat, GWR_args=GWR_args))
-	    clusterEvalQ(cl, rm(list=c("GWR_args", "coords", "gweight", "y",
-	        "x", "weights", "yhat")))
+	    clusterEvalQ(cl, rm(varlist))
+            rm(env)
             df <- list()
 	    df$df <- as.data.frame(do.call("rbind", 
 	        lapply(res, function(x) x$df)))

@@ -1,3 +1,11 @@
+2013-01-10 18:30  rsbivand
+
+	* DESCRIPTION, R/gwr.cv.R: remove real() in gwr.sel()
+
+2012-11-05 18:08  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2012-11-05 18:08  rsbivand
 
 	* man/ggwr.sel.Rd, man/gw.cov.Rd, man/gwr.Rd: donttest some
