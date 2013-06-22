@@ -1,3 +1,40 @@
+2013-06-22 11:08  rsbivand
+
+	* DESCRIPTION, vignettes/GWR.pdf: vignette
+
+2013-06-21 19:21  rsbivand
+
+	* inst/backstore, vignettes/GWR.Rnw, vignettes/backstore: vignette
+
+2013-06-21 14:12  rsbivand
+
+	* vignettes, vignettes/GWR.Rnw, vignettes/backstore,
+	  vignettes/backstore/nyGWR.RData: add vignette to spgwr
+
+2013-04-24 12:48  rsbivand
+
+	* DESCRIPTION, man/LMZ.F3GWR.test.Rd, man/georgia.Rd, man/ggwr.Rd,
+	  man/ggwr.sel.Rd, man/gw.cov.Rd, man/gwr.Rd, man/gwr.bisquare.Rd,
+	  man/gwr.cv.Rd, man/gwr.gauss.Rd, man/gwr.tricube.Rd: update GWR
+	  URL
+
+2013-04-22 11:34  rsbivand
+
+	* DESCRIPTION, R/gwe.R, R/gwr.R, R/gwr.cv.R, R/gwr1.R, R/gwr1.cv.R:
+	  tidy
+
+2013-03-30 13:26  rsbivand
+
+	* src/gwe.c: remove clang warning
+
+2013-01-22 20:17  rsbivand
+
+	* R/gwr.R, R/zzz.R: tidy
+
+2013-01-10 18:35  rsbivand
+
+	* ChangeLog, inst/ChangeLog: remove real() in gwr.sel()
+
 2013-01-10 18:30  rsbivand
 
 	* DESCRIPTION, R/gwr.cv.R: remove real() in gwr.sel()

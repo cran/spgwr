@@ -28,7 +28,7 @@ gw.cov(x, vars, fp, adapt = NULL, bw, gweight = gwr.bisquare,
 
 \references{Fotheringham, A.S., Brunsdon, C., and Charlton, M.E., 2002,
 Geographically Weighted Regression, Chichester: Wiley (chapter 7);
-\url{http://www.nuim.ie/ncg/GWR/index.htm}}
+\url{http://gwr.nuim.ie/}}
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
 
 

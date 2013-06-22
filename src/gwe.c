@@ -19,7 +19,7 @@ void gw_adapt(double *u, double *v, double *uout, double *vout, int *n1,
 	double q = *qin;
 	double uo[1], vo[1];
 	
-	index = floor((N1-1)*q + 0.5); /* + 1 */
+	index = (int) floor((N1-1)*q + 0.5); /* + 1 */
 
 	for (i=0; i<N2; i++) {
 	    	uo[0] = uout[i];

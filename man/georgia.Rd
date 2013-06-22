@@ -32,7 +32,7 @@
 Variables are from GWR3 file GeorgiaData.csv.
 }
 \source{
-  \url{http://www.census.gov/geo/cob/bdy/co/co90shp/co13_d90_shp.zip}; \url{http://www.nuim.ie/ncg/GWR/index.htm}
+  \url{http://www.census.gov/geo/cob/bdy/co/co90shp/co13_d90_shp.zip}; \url{http://gwr.nuim.ie/}
 }
 \references{
   Fotheringham, A.S., Brunsdon, C., and Charlton, M.E., 2002, Geographically Weighted Regression: The Analysis of Spatially Varying Relationships, Chichester: Wiley.

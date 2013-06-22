@@ -40,7 +40,7 @@ returns the cross-validation bandwidth.
 \references{Fotheringham, A.S., Brunsdon, C., and Charlton, M.E., 2002,
 Geographically Weighted Regression, Chichester: Wiley; Paez A, Farber S, Wheeler D, 2011, "A simulation-based study of geographically weighted regression as a method for investigating spatially varying relationships", Environment and
 Planning A 43(12) 2992-3010;
-\url{http://www.nuim.ie/ncg/GWR/index.htm}}
+\url{http://gwr.nuim.ie/}}
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
 \seealso{\code{\link{gwr.bisquare}}, \code{\link{gwr.gauss}}}
 

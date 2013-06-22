@@ -37,7 +37,7 @@ ggwr.sel(formula, data = list(), coords, adapt = FALSE, gweight = gwr.Gauss,
 }
 \references{Fotheringham, A.S., Brunsdon, C., and Charlton, M.E., 2002,
 Geographically Weighted Regression, Chichester: Wiley;
-\url{http://www.nuim.ie/ncg/GWR/index.htm}}
+\url{http://gwr.nuim.ie/}}
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
 \note{
   The use of GWR on GLM is only at the initial proof of concept stage, nothing should be treated as an accepted method at this stage.

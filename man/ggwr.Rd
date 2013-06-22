@@ -41,7 +41,7 @@ A list of class \dQuote{gwr}:
 
 \references{Fotheringham, A.S., Brunsdon, C., and Charlton, M.E., 2002,
 Geographically Weighted Regression, Chichester: Wiley;
-\url{http://www.nuim.ie/ncg/GWR/index.htm}}
+\url{http://gwr.nuim.ie/}}
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
 
 \note{

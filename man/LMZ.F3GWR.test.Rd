@@ -33,7 +33,7 @@ LMZ.F3GWR.test a matrix of test results.
 }
 \references{Fotheringham, A.S., Brunsdon, C., and Charlton, M.E., 2002,
 Geographically Weighted Regression, Chichester: Wiley;
-\url{http://www.nuim.ie/ncg/GWR/index.htm}}
+\url{http://gwr.nuim.ie/}}
 
 \author{Roger Bivand \email{Roger.Bivand@nhh.no} and Danlin Yu}
 

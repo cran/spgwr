@@ -60,19 +60,25 @@ gw.cov <- function(x, vars, fp, adapt=NULL, bw, gweight=gwr.bisquare,
 		dp <- coordinates(x)
 		p4s <- proj4string(x)
 		data <- as(x, "data.frame")
-                if ((is.null(longlat) || !is.logical(longlat)) 
-	            && !is.na(is.projected(x)) && !is.projected(x)) {
-                    longlat <- TRUE
-                } else longlat <- FALSE
+                if (is.null(longlat) || !is.logical(longlat)) {
+	            if (!is.na(is.projected(x)) && !is.projected(x)) {
+                        longlat <- TRUE
+                    } else {
+                        longlat <- FALSE
+                    }
+                }
 	} else if (is(x, "SpatialPointsDataFrame")) {
 		gridded <- gridded(x)
 		dp <- coordinates(x)
 		p4s <- proj4string(x)
 		data <- as(x, "data.frame")
-                if ((is.null(longlat) || !is.logical(longlat)) 
-	            && !is.na(is.projected(x)) && !is.projected(x)) {
-                    longlat <- TRUE
-                } else longlat <- FALSE
+                if (is.null(longlat) || !is.logical(longlat)) {
+	            if (!is.na(is.projected(data)) && !is.projected(data)) {
+                        longlat <- TRUE
+                    } else {
+                        longlat <- FALSE
+                    }
+                }
 	} else stop("x must be a Spatial Polygons or Points DataFrame")
         if (is.null(longlat) || !is.logical(longlat)) longlat <- FALSE
 	x <- as.matrix(data[, vars])

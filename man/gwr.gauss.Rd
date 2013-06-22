@@ -33,7 +33,7 @@ vector of weights.
 Quantitative Geography, London: Sage; C. Brunsdon, A.Stewart Fotheringham
 and M.E. Charlton, 1996, "Geographically Weighted Regression: A Method for
 Exploring Spatial Nonstationarity", Geographical Analysis, 28(4), 281-298;
-\url{http://ncg.nuim.ie/ncg/GWR/index.htm}}
+\url{http://gwr.nuim.ie/}}
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
 
 

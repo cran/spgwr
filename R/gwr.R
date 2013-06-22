@@ -17,10 +17,13 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 		    warning("data is Spatial* object, ignoring coords argument")
 		coords <- coordinates(data)
 		p4s <- proj4string(data)
-                if ((is.null(longlat) || !is.logical(longlat)) 
-	            && !is.na(is.projected(data)) && !is.projected(data)) {
-                    longlat <- TRUE
-                } else longlat <- FALSE
+                if (is.null(longlat) || !is.logical(longlat)) {
+	            if (!is.na(is.projected(data)) && !is.projected(data)) {
+                        longlat <- TRUE
+                    } else {
+                        longlat <- FALSE
+                    }
+                }
 		data <- as(data, "data.frame")
 	}
         if (is.null(longlat) || !is.logical(longlat)) longlat <- FALSE
