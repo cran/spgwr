@@ -1,3 +1,23 @@
+2013-07-02 18:13  rsbivand
+
+	* vignettes/GWR.Rnw: tidy
+
+2013-07-02 18:09  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2013-07-02 18:09  rsbivand
+
+	* DESCRIPTION: tidy
+
+2013-06-25 17:20  rsbivand
+
+	* vignettes/GWR.Rnw, vignettes/GWR.pdf: adding footnote
+
+2013-06-22 11:31  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2013-06-22 11:08  rsbivand
 
 	* DESCRIPTION, vignettes/GWR.pdf: vignette

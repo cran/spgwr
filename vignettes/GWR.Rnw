@@ -1,4 +1,4 @@
-%\VignetteIndexEntry{The Problem of Spatial Autocorrelation}
+%\VignetteIndexEntry{Geographically Weighted Regression}
 %\VignetteDepends{}
 %\VignetteKeywords{spatial}
 %\VignettePackage{spdep}
@@ -28,7 +28,11 @@
 \def\SS{\texttt{S}\xspace}
 \SweaveOpts{keep.source=FALSE}
 
-\title{Geographically Weighted Regression} 
+\title{Geographically Weighted Regression\footnote{This vignette formed pp. 305--308 of the first edition of Bivand, R. S.,
+Pebesma, E. and G\'{o}mez-Rubio V. (2008) Applied Spatial Data Analysis with R,
+Springer-Verlag, New York. It was retired from the second edition (2013) to
+accommodate material on other topics, and is made available in this form
+with the understanding of the publishers.}} 
 \author{Roger Bivand} 
 
 \begin{document} 
@@ -188,7 +192,7 @@ data set are replicated here.
 \begin{figure}[p]
 \centering
 <<results=tex,echo=FALSE>>= 
-<<afig>>
+<<bfig>>
 spplot(ggwrG$SDF, "PEXPOSURE", col.regions=grey.colors(7, 0.95, 0.55, 2.2), cuts=6)
 <<zfig>>
 @ 
@@ -196,7 +200,7 @@ spplot(ggwrG$SDF, "PEXPOSURE", col.regions=grey.colors(7, 0.95, 0.55, 2.2), cuts
 local coefficient estimates for the exposure to TCE site
 covariate} \label{fig:PEXPOSURE}\vspace*{12pt}
 <<results=tex,echo=FALSE>>= 
-<<afig>>
+<<bfig>>
 pairs(as(ggwrG$SDF, "data.frame")[,2:5])
 <<zfig>>
 @ 
