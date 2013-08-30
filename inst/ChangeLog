@@ -1,3 +1,23 @@
+2013-08-30 14:02  rsbivand
+
+	* .Rbuildignore: tidy
+
+2013-08-30 13:52  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2013-08-30 13:51  rsbivand
+
+	* DESCRIPTION: tidy
+
+2013-07-28 19:37  rsbivand
+
+	* DESCRIPTION: thinning load depends
+
+2013-07-02 18:14  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2013-07-02 18:13  rsbivand
 
 	* vignettes/GWR.Rnw: tidy

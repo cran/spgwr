@@ -136,8 +136,10 @@ gwr <- function(formula, data = list(), coords, bandwidth,
         .ptime_start <- proc.time()
 
 	if (!is.null(cl) && length(cl) > 1 && fp.given && !hatmatrix) {
-            if (use_snow) require(snow)
-            else require(parallel)
+            if (use_snow) {
+                require(snow)
+                warning("As parallel now supports MPI clusters, support\nfor snow will be withdrawn at the next release")
+            } else require(parallel)
 	    l_fp <- lapply(splitIndices(nrow(fit.points), length(cl)), 
 	        function(i) fit.points[i,])
 	    clusterEvalQ(cl, library(spgwr))
