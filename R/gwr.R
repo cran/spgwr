@@ -1,4 +1,4 @@
-# Copyright 2001-2009 Roger Bivand and Danlin Yu
+# Copyright 2001-2013 Roger Bivand and Danlin Yu
 # 
 
 gwr <- function(formula, data = list(), coords, bandwidth, 
@@ -80,7 +80,7 @@ gwr <- function(formula, data = list(), coords, bandwidth,
                 }
 		Polys <- NULL
 		if (is(fit.points, "SpatialPolygonsDataFrame")) {
-			Polys <- Polygons(fit.points)
+			Polys <- as(fit.points, "SpatialPolygons")
 			fit.points <- coordinates(fit.points)
 		} else {
 			griddedObj <- gridded(fit.points)
@@ -119,6 +119,8 @@ gwr <- function(formula, data = list(), coords, bandwidth,
             stopifnot(is.numeric(adapt))
             stopifnot((adapt >= 0))
             stopifnot((adapt <= 1))
+        } else {
+            stopifnot(length(bandwidth) == 1)
         }
 	if (missing(bandwidth)) bandwidth <- NULL
 	lhat <- NA
@@ -141,7 +143,7 @@ gwr <- function(formula, data = list(), coords, bandwidth,
                 warning("As parallel now supports MPI clusters, support\nfor snow will be withdrawn at the next release")
             } else require(parallel)
 	    l_fp <- lapply(splitIndices(nrow(fit.points), length(cl)), 
-	        function(i) fit.points[i,])
+	        function(i) fit.points[i,, drop=FALSE])
 	    clusterEvalQ(cl, library(spgwr))
             varlist <- list("GWR_args", "coords", "gweight", "y",
 	        "x", "weights", "yhat")
@@ -280,8 +282,9 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 		    bw <- bandwidth
 		    bandwidthR2 <- rep(bandwidth, n)
 	    } else {
-		bandwidthR2 <- gw.adapt(dp=coords, fp=fit.points[,1:2], 
-		    quant=adapt, longlat=longlat)
+		bandwidthR2 <- gw.adapt(dp=coords, fp=fit.points[,1:2,
+                    drop=FALSE], quant=adapt, longlat=longlat)
+# Maciej Kryza 130906 drop issue
 		bw <- bandwidthR2
 	    }
 	    if (any(bandwidth < 0)) stop("Invalid bandwidth")
@@ -349,7 +352,8 @@ gwr <- function(formula, data = list(), coords, bandwidth,
         }
 
 	df <- as.data.frame(df$df)
-	if (predictions) fit.points <- fit.points[,1:2]
+	if (predictions) fit.points <- fit.points[,1:2, drop=FALSE]
+# Maciej Kryza 130906 drop issue
         row.names(fit.points) <- row.names(df)
 	SDF <- SpatialPointsDataFrame(coords=fit.points, 
 		data=df, proj4string=CRS(p4s))
@@ -368,7 +372,7 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	z <- list(SDF=SDF, lhat=lhat, lm=lm, results=results, 
 		bandwidth=bw, adapt=adapt, hatmatrix=hatmatrix, 
 		gweight=deparse(substitute(gweight)), gTSS=gTSS,
-                this.call=this.call,
+                this.call=this.call, fp.given=fp.given,
                 timings=do.call("rbind", timings)[, c(1, 3)])
 	class(z) <- "gwr"
 	invisible(z)
@@ -380,12 +384,14 @@ print.gwr <- function(x, ...) {
 	cat("Call:\n")
 	print(x$this.call)
 	cat("Kernel function:", x$gweight, "\n")
-	n <- nrow(coordinates(x$SDF))
+	n <- length(x$lm$residuals)
 	if (is.null(x$adapt)) cat("Fixed bandwidth:", x$bandwidth, "\n")
 	else cat("Adaptive quantile: ", x$adapt, " (about ", 
-		floor(x$adapt*n), " of ", n, ")\n", sep="")
+		floor(x$adapt*n), " of ", n, " data points)\n", sep="")
+        if (x$fp.given) cat("Fit points: ", nrow(x$SDF), "\n", sep="")
 	m <- length(x$lm$coefficients)
-	cat("Summary of GWR coefficient estimates:\n")
+	cat("Summary of GWR coefficient estimates at ",
+            ifelse(x$fp.given, "fit", "data"), " points:\n", sep="")
         df0 <- as(x$SDF, "data.frame")[,(1+(1:m)), drop=FALSE]
         if (any(is.na(df0))) {
             df0 <- na.omit(df0)
@@ -393,8 +399,10 @@ print.gwr <- function(x, ...) {
         }
 	CM <- t(apply(df0, 2, summary))[,c(1:3,5,6)]
 	if (is.null(dim(CM))) CM <- t(as.matrix(CM))
-	CM <- cbind(CM, coefficients(x$lm))
-	colnames(CM) <- c(colnames(CM)[1:5], "Global")
+        if (!x$fp.given) {
+	    CM <- cbind(CM, coefficients(x$lm))
+	    colnames(CM) <- c(colnames(CM)[1:5], "Global")
+        }
 	printCoefmat(CM)
 	if (x$hatmatrix) {
 		cat("Number of data points:", n, "\n")
@@ -422,8 +430,9 @@ print.gwr <- function(x, ...) {
 .GWR_int <- function(fit.points, coords, gweight, y, x, weights, yhat, 
 	GWR_args) {
 	    if (GWR_args$predictions) {
-                predx <- fit.points[, -c(1,2)]
-                fit.points <- fit.points[, c(1,2)]
+                predx <- fit.points[, -c(1,2), drop=FALSE]
+                fit.points <- fit.points[, c(1,2), drop=FALSE]
+# Maciej Kryza 130906 drop issue
             }
             
 	    n <- nrow(fit.points)

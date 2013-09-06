@@ -1,319 +1,415 @@
+2013-09-06 10:51  rsbivand
+
+	* DESCRIPTION,
+	  R/gwr.R: fix drop issue for single fit.point and prediction
+	  in gwr
+
+2013-09-04 09:46  rsbivand
+
+	* DESCRIPTION,
+	  R/gwr.R, R/gwr1.R, inst/backstore/nyGWR.RData,
+	  vignettes/GWR.pdf: show whether fit or data points used
+
+2013-09-03 19:44  rsbivand
+
+	* R/gwr.R:
+	  fit.points Polygons
+
+2013-09-01 09:14  rsbivand
+
+	* R/gwr.R:
+	  tidy
+
+2013-08-30 14:03  rsbivand
+
+	* ChangeLog,
+	  inst/ChangeLog: tidy
+
 2013-08-30 14:02  rsbivand
 
-	* .Rbuildignore: tidy
+	* .Rbuildignore:
+	  tidy
 
 2013-08-30 13:52  rsbivand
 
-	* ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog,
+	  inst/ChangeLog: tidy
 
 2013-08-30 13:51  rsbivand
 
-	* DESCRIPTION: tidy
+	* DESCRIPTION:
+	  tidy
 
 2013-07-28 19:37  rsbivand
 
-	* DESCRIPTION: thinning load depends
+	* DESCRIPTION:
+	  thinning load depends
 
 2013-07-02 18:14  rsbivand
 
-	* ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog,
+	  inst/ChangeLog: tidy
 
 2013-07-02 18:13  rsbivand
 
-	* vignettes/GWR.Rnw: tidy
+	* vignettes/GWR.Rnw:
+	  tidy
 
 2013-07-02 18:09  rsbivand
 
-	* ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog,
+	  inst/ChangeLog: tidy
 
 2013-07-02 18:09  rsbivand
 
-	* DESCRIPTION: tidy
+	* DESCRIPTION:
+	  tidy
 
 2013-06-25 17:20  rsbivand
 
-	* vignettes/GWR.Rnw, vignettes/GWR.pdf: adding footnote
+	* vignettes/GWR.Rnw,
+	  vignettes/GWR.pdf: adding footnote
 
 2013-06-22 11:31  rsbivand
 
-	* ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog,
+	  inst/ChangeLog: tidy
 
 2013-06-22 11:08  rsbivand
 
-	* DESCRIPTION, vignettes/GWR.pdf: vignette
+	* DESCRIPTION,
+	  vignettes/GWR.pdf: vignette
 
 2013-06-21 19:21  rsbivand
 
-	* inst/backstore, vignettes/GWR.Rnw, vignettes/backstore: vignette
+	* inst/backstore,
+	  vignettes/GWR.Rnw, vignettes/backstore: vignette
 
 2013-06-21 14:12  rsbivand
 
-	* vignettes, vignettes/GWR.Rnw, vignettes/backstore,
+	* vignettes,
+	  vignettes/GWR.Rnw, vignettes/backstore,
 	  vignettes/backstore/nyGWR.RData: add vignette to spgwr
 
 2013-04-24 12:48  rsbivand
 
-	* DESCRIPTION, man/LMZ.F3GWR.test.Rd, man/georgia.Rd, man/ggwr.Rd,
+	* DESCRIPTION,
+	  man/LMZ.F3GWR.test.Rd, man/georgia.Rd, man/ggwr.Rd,
 	  man/ggwr.sel.Rd, man/gw.cov.Rd, man/gwr.Rd, man/gwr.bisquare.Rd,
-	  man/gwr.cv.Rd, man/gwr.gauss.Rd, man/gwr.tricube.Rd: update GWR
-	  URL
+	  man/gwr.cv.Rd, man/gwr.gauss.Rd, man/gwr.tricube.Rd: update
+	  GWR URL
 
 2013-04-22 11:34  rsbivand
 
-	* DESCRIPTION, R/gwe.R, R/gwr.R, R/gwr.cv.R, R/gwr1.R, R/gwr1.cv.R:
-	  tidy
+	* DESCRIPTION,
+	  R/gwe.R, R/gwr.R, R/gwr.cv.R, R/gwr1.R, R/gwr1.cv.R: tidy
 
 2013-03-30 13:26  rsbivand
 
-	* src/gwe.c: remove clang warning
+	* src/gwe.c:
+	  remove clang warning
 
 2013-01-22 20:17  rsbivand
 
-	* R/gwr.R, R/zzz.R: tidy
+	* R/gwr.R,
+	  R/zzz.R: tidy
 
 2013-01-10 18:35  rsbivand
 
-	* ChangeLog, inst/ChangeLog: remove real() in gwr.sel()
+	* ChangeLog,
+	  inst/ChangeLog: remove real() in gwr.sel()
 
 2013-01-10 18:30  rsbivand
 
-	* DESCRIPTION, R/gwr.cv.R: remove real() in gwr.sel()
+	* DESCRIPTION,
+	  R/gwr.cv.R: remove real() in gwr.sel()
 
 2012-11-05 18:08  rsbivand
 
-	* ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog,
+	  inst/ChangeLog: tidy
 
 2012-11-05 18:08  rsbivand
 
-	* man/ggwr.sel.Rd, man/gw.cov.Rd, man/gwr.Rd: donttest some
-	  examples
+	* man/ggwr.sel.Rd,
+	  man/gw.cov.Rd, man/gwr.Rd: donttest some examples
 
 2012-11-05 17:52  rsbivand
 
-	* ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog,
+	  inst/ChangeLog: tidy
 
 2012-10-12 02:34  rsbivand
 
-	* ChangeLog, inst/ChangeLog: show.error.messages
+	* ChangeLog,
+	  inst/ChangeLog: show.error.messages
 
 2012-10-12 02:34  rsbivand
 
-	* ChangeLog, DESCRIPTION, R/gwr.cv.R, man/gwr.cv.Rd:
-	  show.error.messages
+	* ChangeLog,
+	  DESCRIPTION, R/gwr.cv.R, man/gwr.cv.Rd: show.error.messages
 
 2012-09-10 08:15  rsbivand
 
-	* R/gwr.cv.R, man/gwr.Rd, man/gwr.cv.Rd: added Paez et al. (2011)
-	  reference, warning for max out bandwidth
+	* R/gwr.cv.R,
+	  man/gwr.Rd, man/gwr.cv.Rd: added Paez et al.	(2011) reference,
+	  warning for max out bandwidth
 
 2012-09-09 09:21  rsbivand
 
-	* R/zzz.R, man/gwr.Rd: GWR simulation example
+	* R/zzz.R,
+	  man/gwr.Rd: GWR simulation example
 
 2012-08-22 20:50  rsbivand
 
-	* ChangeLog, DESCRIPTION, R/gwr.whole.test.R, inst/ChangeLog: tidy
+	* ChangeLog,
+	  DESCRIPTION, R/gwr.whole.test.R, inst/ChangeLog: tidy
 
 2012-08-22 12:17  rsbivand
 
-	* R/gwr.whole.test.R: remove .Fortran(..., PACKAGE=stats)
+	* R/gwr.whole.test.R:
+	  remove .Fortran(..., PACKAGE=stats)
 
 2012-07-16 13:25  rsbivand
 
-	* DESCRIPTION, NAMESPACE: expose gw.adapt in NAMESPACE
+	* DESCRIPTION,
+	  NAMESPACE: expose gw.adapt in NAMESPACE
 
 2012-05-07 12:59  rsbivand
 
-	* DESCRIPTION, R/gwr.R, man/gwr.Rd: adding back snow for GWR
-	  clusters
+	* DESCRIPTION,
+	  R/gwr.R, man/gwr.Rd: adding back snow for GWR clusters
 
 2012-05-05 15:16  rsbivand
 
-	* DESCRIPTION, R/gwr.R, man/gwr.Rd: change snow to parallel
+	* DESCRIPTION,
+	  R/gwr.R, man/gwr.Rd: change snow to parallel
 
 2012-05-05 14:16  rsbivand
 
-	* DESCRIPTION, R/gwr.R: use data = fit points logic for cluster
+	* DESCRIPTION,
+	  R/gwr.R: use data = fit points logic for cluster
 
 2012-04-03 15:57  rsbivand
 
-	* ChangeLog, inst/ChangeLog: env in gwr
+	* ChangeLog,
+	  inst/ChangeLog: env in gwr
 
 2012-04-03 15:57  rsbivand
 
-	* DESCRIPTION: env in gwr
+	* DESCRIPTION:
+	  env in gwr
 
 2012-04-03 15:55  rsbivand
 
-	* R/gwr.R: env in gwr
+	* R/gwr.R:
+	  env in gwr
 
 2012-03-28 10:26  rsbivand
 
-	* man/ggwr.Rd: option warn replace CRS
+	* man/ggwr.Rd:
+	  option warn replace CRS
 
 2011-09-19 08:28  rsbivand
 
-	* man/gwr.Rd: update overlay to over in man page
+	* man/gwr.Rd:
+	  update overlay to over in man page
 
 2011-08-17 10:55  rsbivand
 
-	* ChangeLog, inst/ChangeLog: adding NAMESPACE, .onLoad()
+	* ChangeLog,
+	  inst/ChangeLog: adding NAMESPACE, .onLoad()
 
 2011-08-17 10:44  rsbivand
 
-	* DESCRIPTION: adding NAMESPACE, .onLoad()
+	* DESCRIPTION:
+	  adding NAMESPACE, .onLoad()
 
 2011-08-17 10:41  rsbivand
 
-	* NAMESPACE, R/zzz.R: adding NAMESPACE, .onLoad()
+	* NAMESPACE,
+	  R/zzz.R: adding NAMESPACE, .onLoad()
 
 2011-08-17 09:37  rsbivand
 
-	* ChangeLog, inst/ChangeLog: adding NAMESPACE, onLoad()
+	* ChangeLog,
+	  inst/ChangeLog: adding NAMESPACE, onLoad()
 
 2011-08-17 09:37  rsbivand
 
-	* ChangeLog, inst/ChangeLog: adding NAMESPACE, onLoad()
+	* ChangeLog,
+	  inst/ChangeLog: adding NAMESPACE, onLoad()
 
 2011-08-17 09:35  rsbivand
 
-	* NAMESPACE: adding NAMESPACE, onLoad()
+	* NAMESPACE:
+	  adding NAMESPACE, onLoad()
 
 2011-08-17 09:35  rsbivand
 
-	* data/columbus.rda, data/georgia.rda: adding NAMESPACE, onLoad()
+	* data/columbus.rda,
+	  data/georgia.rda: adding NAMESPACE, onLoad()
 
 2011-08-17 09:34  rsbivand
 
-	* DESCRIPTION, R/zzz.R, data/00Index, data/columbus.R,
-	  data/georgia.R: adding NAMESPACE, onLoad()
+	* DESCRIPTION,
+	  R/zzz.R, data/00Index, data/columbus.R, data/georgia.R: adding
+	  NAMESPACE, onLoad()
 
 2011-04-20 14:56  rsbivand
 
-	* DESCRIPTION, man/gw.cov.Rd, man/gwr.Rd: tidy manuals
+	* DESCRIPTION,
+	  man/gw.cov.Rd, man/gwr.Rd: tidy manuals
 
 2011-03-13 13:21  rsbivand
 
-	* INDEX: hypot for pythag in C code
+	* INDEX:
+	  hypot for pythag in C code
 
 2011-03-13 12:59  rsbivand
 
-	* inst/ChangeLog: hypot for pythag in C code
+	* inst/ChangeLog:
+	  hypot for pythag in C code
 
 2011-03-13 12:59  rsbivand
 
-	* ChangeLog: hypot for pythag in C code
+	* ChangeLog:
+	  hypot for pythag in C code
 
 2011-03-13 12:57  rsbivand
 
-	* DESCRIPTION, src/gwe.c: hypot for pythag in C code
+	* DESCRIPTION,
+	  src/gwe.c: hypot for pythag in C code
 
 2011-03-03 10:35  rsbivand
 
-	* R/gwe.R, R/gwr.R, R/gwr.cv.R, R/gwr1.R, R/gwr1.cv.R: longlat
-	  handling
+	* R/gwe.R,
+	  R/gwr.R, R/gwr.cv.R, R/gwr1.R, R/gwr1.cv.R: longlat handling
 
 2011-02-22 16:38  rsbivand
 
-	* inst/shapes/georgia.dbf, inst/shapes/georgia.shp,
-	  inst/shapes/georgia.shx: tidy
+	* inst/shapes/georgia.dbf,
+	  inst/shapes/georgia.shp, inst/shapes/georgia.shx: tidy
 
 2011-02-22 16:38  rsbivand
 
-	* inst/shapes/georgia.dbf, inst/shapes/georgia.shp,
-	  inst/shapes/georgia.shx: tidy
+	* inst/shapes/georgia.dbf,
+	  inst/shapes/georgia.shp, inst/shapes/georgia.shx: tidy
 
 2011-02-22 16:24  rsbivand
 
-	* oChangeLog, svn2cl.xsl: tidy
+	* oChangeLog,
+	  svn2cl.xsl: tidy
 
 2011-02-22 16:18  rsbivand
 
-	* .: tidy
+	* .:
+	  tidy
 
 2011-02-12 11:33  rsbivand
 
-	* clearup after sourceforge outage
+	* clearup
+	  after sourceforge outage
 
 2011-02-12 11:26  rsbivand
 
-	* clearup after sourceforge outage
+	* clearup
+	  after sourceforge outage
 
 2010-10-05 20:18  rsbivand
 
-	* removing gpclib request
+	* removing
+	  gpclib request
 
 2010-08-28 14:53  rsbivand
 
-	* as.double to storage.mode
+	* as.double
+	  to storage.mode
 
 2010-05-12 15:42  rsbivand
 
-	* error on non-numeric adapt in gwr
+	* error
+	  on non-numeric adapt in gwr
 
 2010-05-11 17:11  rsbivand
 
-	* adding quasi-global R2
+	* adding
+	  quasi-global R2
 
 2010-05-11 17:03  rsbivand
 
-	* adding quasi-global R2
+	* adding
+	  quasi-global R2
 
 2010-04-03 19:23  rsbivand
 
-	* maptools gpclib changes
+	* maptools
+	  gpclib changes
 
 2010-04-03 18:58  rsbivand
 
-	* maptools gpclib changes
+	* maptools
+	  gpclib changes
 
 2010-03-22 14:32  rsbivand
 
-	* add timing
+	* add
+	  timing
 
 2010-03-22 13:54  rsbivand
 
-	* fix cluster bug
+	* fix
+	  cluster bug
 
 2010-03-22 12:36  rsbivand
 
-	* fix cluster bug
+	* fix
+	  cluster bug
 
 2010-02-03 14:47  rsbivand
 
-	* adding tricube
+	* adding
+	  tricube
 
 2010-02-03 14:30  rsbivand
 
-	* adding tricube
+	* adding
+	  tricube
 
 2010-02-03 14:22  rsbivand
 
-	* adding tricube
+	* adding
+	  tricube
 
 2009-06-29 12:16  rsbivand
 
-	* changed text in gwr print method
+	* changed
+	  text in gwr print method
 
 2009-06-24 11:04  rsbivand
 
-	* updated localR2 to GWR4
+	* updated
+	  localR2 to GWR4
 
 2009-06-23 12:08  rsbivand
 
-	* firmed up local R2
+	* firmed
+	  up local R2
 
 2009-06-22 20:39  rsbivand
 
-	* changed SE to use CC^t, added EDF SE
+	* changed
+	  SE to use CC^t, added EDF SE
 
 2009-06-18 11:44  rsbivand
 
-	* checking against GWR3.0.1
+	* checking
+	  against GWR3.0.1
 
 2009-06-05 13:44  rsbivand
 
-	* pass tol= to optimize
+	* pass
+	  tol= to optimize
 
 2009-06-05 12:40  rsbivand
 
@@ -321,7 +417,8 @@
 
 2009-05-31 18:27  rsbivand
 
-	* adding prediction to gwr()
+	* adding
+	  prediction to gwr()
 
 2009-05-29 13:54  rsbivand
 
@@ -329,15 +426,18 @@
 
 2009-05-29 11:40  rsbivand
 
-	* don't assign residuals when fit points given
+	* don't
+	  assign residuals when fit points given
 
 2009-05-29 11:34  rsbivand
 
-	* don't assign residuals when fit points given
+	* don't
+	  assign residuals when fit points given
 
 2009-04-19 09:53  rsbivand
 
-	* added ommitted n*log(2*pi) term in AICc.b
+	* added
+	  ommitted n*log(2*pi) term in AICc.b
 
 2009-03-24 11:53  rsbivand
 
@@ -345,52 +445,64 @@
 
 2009-03-24 08:41  rsbivand
 
-	* R version >= 2.6
+	* R
+	  version >= 2.6
 
 2009-01-16 09:39  rsbivand
 
-	* fixing rss
+	* fixing
+	  rss
 
 2009-01-13 19:16  rsbivand
 
-	* move rss outside if()
+	* move
+	  rss outside if()
 
 2009-01-13 19:16  rsbivand
 
-	* move rss outside if()
+	* move
+	  rss outside if()
 
 2008-10-02 15:04  rsbivand
 
-	* correcting DF order
+	* correcting
+	  DF order
 
 2008-08-07 16:59  rsbivand
 
-	* ggwr residual types
+	* ggwr
+	  residual types
 
 2008-06-23 08:28  rsbivand
 
-	* 0.5-3 release
+	* 0.5-3
+	  release
 
 2008-06-19 04:09  rsbivand
 
-	* spurious gwr.e
+	* spurious
+	  gwr.e
 
 2008-06-15 01:47  rsbivand
 
-	* bug in single coefficient tests
+	* bug
+	  in single coefficient tests
 
 2008-02-18 19:43  rsbivand
 
-	* RMSE and gwr.Gauss fixes, note default kernel changed and default
+	* RMSE
+	  and gwr.Gauss fixes, note default kernel changed and default
 	  CV score changed
 
 2007-10-31 13:41  rsbivand
 
-	* thingy to slot
+	* thingy
+	  to slot
 
 2007-10-31 13:41  rsbivand
 
-	* thingy to slot
+	* thingy
+	  to slot
 
 2007-09-04 12:55  rsbivand
 
@@ -402,15 +514,18 @@
 
 2007-08-23 07:41  rsbivand
 
-	* gwr weights
+	* gwr
+	  weights
 
 2007-08-08 18:41  rsbivand
 
-	* df1 in BFC99
+	* df1
+	  in BFC99
 
 2007-04-21 04:27  rsbivand
 
-	* GE dimnames
+	* GE
+	  dimnames
 
 2007-03-23 19:21  rsbivand
 
@@ -418,27 +533,33 @@
 
 2007-03-09 18:44  rsbivand
 
-	* new tests
+	* new
+	  tests
 
 2007-02-28 19:55  rsbivand
 
-	* GWR moran
+	* GWR
+	  moran
 
 2007-02-28 19:53  rsbivand
 
-	* GWR moran
+	* GWR
+	  moran
 
 2007-02-28 12:27  rsbivand
 
-	* cluster GWR
+	* cluster
+	  GWR
 
 2007-02-01 14:15  rsbivand
 
-	* 0.4-01 release
+	* 0.4-01
+	  release
 
 2007-01-31 14:55  rsbivand
 
-	* generalised GWR
+	* generalised
+	  GWR
 
 2007-01-09 07:58  rsbivand
 
@@ -446,7 +567,8 @@
 
 2006-05-02 07:09  rsbivand
 
-	* glm extension
+	* glm
+	  extension
 
 2006-01-08 18:30  rsbivand
 
@@ -462,39 +584,48 @@
 
 2005-09-27 17:29  rsbivand
 
-	* 0.3-6, remove spmaptools
+	* 0.3-6,
+	  remove spmaptools
 
 2005-09-05 09:02  rsbivand
 
-	* _ changes
+	* _
+	  changes
 
 2005-08-29 13:21  rsbivand
 
-	* new Polygons
+	* new
+	  Polygons
 
 2005-08-29 12:25  rsbivand
 
-	* adding Georgia shapefile
+	* adding
+	  Georgia shapefile
 
 2005-08-23 09:40  rsbivand
 
-	* return adaptive bw
+	* return
+	  adaptive bw
 
 2005-07-27 18:01  rsbivand
 
-	* remove n by n matrix for hatmatrix=FALSE
+	* remove
+	  n by n matrix for hatmatrix=FALSE
 
 2005-06-25 13:14  rsbivand
 
-	* fix infinite zero latlon distance
+	* fix
+	  infinite zero latlon distance
 
 2005-05-27 19:13  rsbivand
 
-	* to 0.7-7
+	* to
+	  0.7-7
 
 2005-05-07 19:55  rsbivand
 
-	* release candidate
+	* release
+	  candidate
 
 2005-05-05 19:40  rsbivand
 
@@ -502,25 +633,31 @@
 
 2005-04-07 08:14  rsbivand
 
-	* merging older changes
+	* merging
+	  older changes
 
 2005-03-18 15:21  rsbivand
 
-	* matching sp
+	* matching
+	  sp
 
 2005-03-18 15:19  rsbivand
 
-	* matching sp
+	* matching
+	  sp
 
 2004-11-01 15:15  rsbivand
 
-	* pre lancs
+	* pre
+	  lancs
 
 2004-06-10 06:35  rsbivand
 
-	* Initial revision
+	* Initial
+	  revision
 
-1999-12-15 10:41  
+1999-12-15 10:41
 
-	* New repository initialized by cvs2svn.
+	* New
+	  repository initialized by cvs2svn.
 

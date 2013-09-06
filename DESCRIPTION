@@ -1,6 +1,6 @@
 Package: spgwr
-Version: 0.6-23
-Date: 2013-08-30
+Version: 0.6-24
+Date: 2013-09-06
 Title: Geographically weighted regression
 Authors@R: c(
 	person("Roger", "Bivand", role = c("cre", "aut"), email = "Roger.Bivand@nhh.no"),
@@ -16,7 +16,7 @@ Description: Functions for computing geographically weighted
   Brunsdon, Martin Charlton and Stewart Fortheringham,
   http://gwr.nuim.ie/
 License: GPL (>= 2)
-Packaged: 2013-09-01 18:43:39 UTC; rsb
+Packaged: 2013-09-16 10:29:23 UTC; rsb
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2013-09-01 21:22:17
+Date/Publication: 2013-09-16 14:49:35

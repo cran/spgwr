@@ -142,7 +142,8 @@ ggwr <- function(formula, data = list(), coords, bandwidth,
 	}
 	z <- list(SDF=SDF, lhat=lhat, lm=glm_fit, results=NULL, 
 		bandwidth=bw, adapt=adapt, hatmatrix=FALSE, 
-		gweight=deparse(substitute(gweight)), this.call=this.call)
+		gweight=deparse(substitute(gweight)), fp.given=fp.given,
+                this.call=this.call)
 	class(z) <- "gwr"
 	invisible(z)
 }
