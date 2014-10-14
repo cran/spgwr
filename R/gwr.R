@@ -4,7 +4,7 @@
 gwr <- function(formula, data = list(), coords, bandwidth, 
 	gweight=gwr.Gauss, adapt=NULL, hatmatrix=FALSE, fit.points, 
 	longlat=NULL, se.fit=FALSE, weights, cl=NULL, predictions=FALSE,
-        fittedGWRobject=NULL, se.fit.CCT=TRUE, use_snow=FALSE) {
+        fittedGWRobject=NULL, se.fit.CCT=TRUE) {
         timings <- list()
         .ptime_start <- proc.time()
 	this.call <- match.call()
@@ -138,23 +138,20 @@ gwr <- function(formula, data = list(), coords, bandwidth,
         .ptime_start <- proc.time()
 
 	if (!is.null(cl) && length(cl) > 1 && fp.given && !hatmatrix) {
-            if (use_snow) {
-                require(snow)
-                warning("As parallel now supports MPI clusters, support\nfor snow will be withdrawn at the next release")
-            } else require(parallel)
-	    l_fp <- lapply(splitIndices(nrow(fit.points), length(cl)), 
+            if (requireNamespace("parallel", quietly = TRUE)) {
+	      l_fp <- lapply(parallel::splitIndices(nrow(fit.points), length(cl)), 
 	        function(i) fit.points[i,, drop=FALSE])
-	    clusterEvalQ(cl, library(spgwr))
-            varlist <- list("GWR_args", "coords", "gweight", "y",
+	      parallel::clusterEvalQ(cl, library(spgwr))
+              varlist <- list("GWR_args", "coords", "gweight", "y",
 	        "x", "weights", "yhat")
-            env <- new.env()
-            assign("GWR_args", GWR_args, envir = env)
-            assign("coords", coords, envir = env)
-            assign("gweight", gweight, envir = env)
-            assign("y", y, envir = env)
-            assign("x", x, envir = env)
-            assign("weights", weights, envir = env)
-            assign("yhat", yhat, envir = env)
+              env <- new.env()
+              assign("GWR_args", GWR_args, envir = env)
+              assign("coords", coords, envir = env)
+              assign("gweight", gweight, envir = env)
+              assign("y", y, envir = env)
+              assign("x", x, envir = env)
+              assign("weights", weights, envir = env)
+              assign("yhat", yhat, envir = env)
 #	    clusterExport_l <- function(cl, list) {
 #                    gets <- function(n, v) {
 #                        assign(n, v, envir = .GlobalEnv)
@@ -168,18 +165,21 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 #	    clusterExport_l(cl, list("GWR_args", "coords", "gweight", "y",
 #	        "x", "weights", "yhat"))
 
-            clusterExport(cl, varlist, env)
+              parallel::clusterExport(cl, varlist, env)
 
-	    res <- parLapply(cl, l_fp, function(fp) .GWR_int(fit.points=fp,
+	      res <- parallel::parLapply(cl, l_fp, function(fp) .GWR_int(fit.points=fp,
 	        coords=coords, gweight=gweight, y=y, x=x,
 	        weights=weights, yhat=yhat, GWR_args=GWR_args))
-	    clusterEvalQ(cl, rm(varlist))
-            rm(env)
-            df <- list()
-	    df$df <- as.data.frame(do.call("rbind", 
+	      parallel::clusterEvalQ(cl, rm(varlist))
+              rm(env)
+              df <- list()
+	      df$df <- as.data.frame(do.call("rbind", 
 	        lapply(res, function(x) x$df)))
-	    bw <- do.call("c", lapply(res, function(x) x$bw))
-	    results <- NULL
+	      bw <- do.call("c", lapply(res, function(x) x$bw))
+	      results <- NULL
+          } else {
+            stop("parallel not available")
+          }
 	} else { # cl
 
 	    df <- .GWR_int(fit.points=fit.points, coords=coords, 

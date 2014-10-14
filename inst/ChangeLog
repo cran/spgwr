@@ -1,3 +1,29 @@
+2014-10-14 13:42  rsbivand
+
+	* DESCRIPTION:
+	  tidy
+
+2014-10-14 13:38  rsbivand
+
+	* ChangeLog,
+	  inst/ChangeLog: tidy
+
+2014-10-14 13:37  rsbivand
+
+	* DESCRIPTION,
+	  man/LMZ.F3GWR.test.Rd, man/gwr.Rd: requireNamespace spgwr
+
+2014-10-13 20:11  rsbivand
+
+	* DESCRIPTION,
+	  R/gwr.R, R/gwr.morantest.R, man/georgia.Rd, man/gwr.Rd:
+	  requireNamespace spgwr
+
+2013-09-16 10:28  rsbivand
+
+	* ChangeLog,
+	  inst/ChangeLog: tidy
+
 2013-09-06 10:51  rsbivand
 
 	* DESCRIPTION,

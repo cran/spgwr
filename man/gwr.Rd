@@ -11,7 +11,7 @@ weighting scheme.
 gwr(formula, data=list(), coords, bandwidth, gweight=gwr.Gauss, 
 	adapt=NULL, hatmatrix = FALSE, fit.points, longlat=NULL, 
 	se.fit=FALSE, weights, cl=NULL, predictions = FALSE, 
-        fittedGWRobject = NULL, se.fit.CCT = TRUE, use_snow=FALSE)
+        fittedGWRobject = NULL, se.fit.CCT = TRUE)
 \method{print}{gwr}(x, \dots)
 }
 
@@ -34,7 +34,6 @@ gwr(formula, data=list(), coords, bandwidth, gweight=gwr.Gauss,
   \item{predictions}{default FALSE; if TRUE and no fit points given, return GW fitted values at data points, if fit points given and are a Spatial*DataFrame object containing the RHS variables in the formula, return GW predictions at the fit points}
   \item{fittedGWRobject}{a fitted \code{gwr} object with a hatmatrix (optional), if given, and if fit.points are given and if \code{se.fit} is TRUE, two effective degrees of freedom sigmas will be used to generate alternative coefficient standard errors}
   \item{se.fit.CCT}{default TRUE, compute local coefficient standard errors using formula (2.14), p. 55, in the GWR book}
-  \item{use_snow}{default FALSE, use \pkg{parallel}; if \dQuote{cl} is given, and \code{use_snow=TRUE}, use \pkg{snow} instead of \pkg{parallel} to access more types of cluster}
   \item{x}{an object of class "gwr" returned by the \code{gwr} function}
   \item{...}{arguments to be passed to other functions}
 }
@@ -160,6 +159,7 @@ spplot(x$SDF, "pred.se")
   g.bw.gauss <- gwr.sel(PctBach ~ TotPop90 + PctRural + PctEld + PctFB +
     PctPov + PctBlack, data=gSRDF, longlat=TRUE)
   data(gSRouter)
+  require(maptools)
   SG <- GE_SpatialGrid(gSRouter, maxPixels = 100)
   SPxMASK0 <- over(SG$SG, gSRouter)
   SGDF <- SpatialGridDataFrame(slot(SG$SG, "grid"),
@@ -172,6 +172,7 @@ spplot(x$SDF, "pred.se")
   res.bw
   res.bw$timings
   spplot(res.bw$SDF, "PctBlack")
+  require(parallel)
   cl <- makeCluster(detectCores())
   res.bwc <- gwr(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov +
     PctBlack, data=gSRDF, bandwidth=g.bw.gauss, fit.points=SPxDF,

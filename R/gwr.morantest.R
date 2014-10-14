@@ -8,7 +8,11 @@ gwr.morantest <- function(x, lw, zero.policy = FALSE) {
 	if (n != length(lw$neighbours)) stop("objects of different length")
 	if (lw$style != "W") warning(deparse(substitute(lw)),
 		"not row standardised")
-	W <- listw2mat(listw2U(lw))
+        if (requireNamespace("spdep", quietly = TRUE)) {
+	    W <- spdep::listw2mat(spdep::listw2U(lw))
+        } else {
+            stop("spdep not available")
+        }
 	N <- diag(n) - x$lhat
 	e.gwr <- N %*% x$lm$y
 	I0.gwr <- c((t(e.gwr) %*% W %*% e.gwr) / (t(e.gwr) %*% e.gwr))

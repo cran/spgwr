@@ -51,6 +51,11 @@ BFC02.gwr.test(col.gauss, approx=TRUE)
 anova(col.gauss)
 anova(col.gauss, approx=TRUE)
 \dontrun{
+col.d <- gwr.sel(crime ~ income + housing, data=columbus,
+  coords=cbind(columbus$x, columbus$y), gweight=gwr.bisquare)
+col.bisq <- gwr(crime ~ income + housing, data=columbus,
+  coords=cbind(columbus$x, columbus$y), bandwidth=col.d, 
+  gweight=gwr.bisquare, hatmatrix=TRUE)
 BFC99.gwr.test(col.bisq)
 }
 }
