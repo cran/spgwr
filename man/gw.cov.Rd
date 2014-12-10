@@ -52,7 +52,8 @@ spplot(SRgwls$SDF, "sem.PctPov")
 spplot(SRgwls$SDF, "diff.PctPov")
 spplot(SRgwls$SDF, "cor.PctPov.PctBlack.")
 data(gSRouter)
-gGrid <- sample.Polygons(slot(gSRouter, "polygons")[[1]], 5000,
+#gGrid <- sample.Polygons(slot(gSRouter, "polygons")[[1]], 5000,
+gGrid <- spsample(slot(gSRouter, "polygons")[[1]], 5000,
   type="regular")
 gridded(gGrid) <- TRUE
 SGgwls <- gw.cov(gSRDF, vars=6:11, fp=gGrid, bw=150, longlat=TRUE)
