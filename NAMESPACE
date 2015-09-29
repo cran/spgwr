@@ -1,7 +1,8 @@
 useDynLib(spgwr)
 
 import(sp)
-importFrom(stats, anova)
+importFrom(stats, anova, printCoefmat, coefficients, na.omit, optimize, model.matrix, model.extract, pchisq, lm.wfit, weighted.mean, delete.response, cov.wt, residuals, pf, lm, gaussian, model.offset, glm.fit, residuals.glm, glm, predict)
+importFrom(methods, as, is, slot)
 
 export(gw.cov, gwr.bisquare, gwr.sel, gwr.Gauss, gwr.morantest, gwr,
  LMZ.F1GWR.test, LMZ.F2GWR.test, BFC99.gwr.test, anova.gwr, BFC02.gwr.test,

@@ -12,8 +12,8 @@ gw.cov(x, vars, fp, adapt = NULL, bw, gweight = gwr.bisquare,
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ \code{x} should be a SpatialPolygonsDataFrame object or a SpatialPointsDataFrame object }
-  \item{vars}{ \code{vars} is a vector of column numbers or a vector of column names applied to the columns of the data frame in the data slot of x }
-  \item{fp}{ \code{fp} if given contains the fit points to be used, for example a SpatialPixels object describing the grid of points to be used }
+  \item{vars}{ \code{vars} is a vector of column names of the data frame in the data slot of x }
+  \item{fp}{ \code{fp} if given an object inheriting from \dQuote{Spatial} that contains the fit points to be used, for example a SpatialPixels object describing the grid of points to be used }
   \item{adapt}{ \code{adapt} if given should lie between 0 and 1, and indicates the proportion of observations to be included in the weighted window - it cannot be selected automatically}
   \item{bw}{ \code{bw} when adapt is not given, the bandwidth chosen to suit the data set - it cannot be selected automatically}
   \item{gweight}{ \code{gweight} default gwr.bisquare - the weighting function to use }
@@ -64,6 +64,14 @@ spplot(SGgwls$SDF, "sem.PctPov")
 spplot(SGgwls$SDF, "diff.PctPov")
 spplot(SGgwls$SDF, "cor.PctPov.PctBlack.")
 }
+set.seed(1)
+pts <- data.frame(x=runif(100, 0, 5), y=runif(100, 0, 5), z=rnorm(100))
+coordinates(pts) <- c("x", "y")
+proj4string(pts) <- CRS("+proj=longlat +ellps=WGS84")
+fps <- SpatialPoints(cbind(x=runif(100, 0, 5), y=runif(100, 0, 5)),
+ proj4string=CRS("+proj=longlat +ellps=WGS84"))
+t0 <- gw.cov(pts, "z", fp=fps, adapt=0.2, longlat=TRUE)
 }
+
 \keyword{spatial}
 

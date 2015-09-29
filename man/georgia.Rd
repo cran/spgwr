@@ -32,7 +32,7 @@
 Variables are from GWR3 file GeorgiaData.csv.
 }
 \source{
-  Originally: \url{http://www.census.gov/geo/cob/bdy/co/co90shp/co13_d90_shp.zip}, currently behind: https://www.census.gov/geo/maps-data/data/cbf/cbf_counties.html choosing 1990 Census and Georgia; \url{http://gwr.nuim.ie/}
+  Originally: http://www.census.gov/geo/cob/bdy/co/co90shp/co13_d90_shp.zip, currently behind: \url{https://www.census.gov/geo/maps-data/data/cbf/cbf_counties.html} choosing 1990 Census and Georgia; \url{http://gwr.nuim.ie/}
 }
 \references{
   Fotheringham, A.S., Brunsdon, C., and Charlton, M.E., 2002, Geographically Weighted Regression: The Analysis of Spatially Varying Relationships, Chichester: Wiley.

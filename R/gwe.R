@@ -81,6 +81,8 @@ gw.cov <- function(x, vars, fp, adapt=NULL, bw, gweight=gwr.bisquare,
                 }
 	} else stop("x must be a Spatial Polygons or Points DataFrame")
         if (is.null(longlat) || !is.logical(longlat)) longlat <- FALSE
+        if (is.integer(vars)) vars <- names(x)[vars]
+        stopifnot(is.character(vars))
 	x <- as.matrix(data[, vars])
 	if (any(is.na(x))) stop("x contains NAs")
 	nc <- ncol(x)
@@ -126,11 +128,13 @@ gw.cov <- function(x, vars, fp, adapt=NULL, bw, gweight=gwr.bisquare,
 		colnames(fp) <- colnames(dp)
 	} else {
 #		fp.given <- TRUE
+                stopifnot(is(fp, "Spatial"))
 		gridded <- gridded(fp)
 	}
-	if (gridded) fp <- coordinates(fp)
+        fp <- coordinates(fp)
 
 	# prepare bandwidths for fitting/estimation points
+        
 	n2 <- nrow(fp)
 	if (is.null(adapt)) {
 		if (!missing(bw)) bw <- rep(bw, n2)

@@ -1,25 +1,25 @@
 Package: spgwr
-Version: 0.6-26
-Date: 2014-12-10
-Title: Geographically weighted regression
+Version: 0.6-28
+Date: 2015-09-27
+Title: Geographically Weighted Regression
 Authors@R: c(
 	person("Roger", "Bivand", role = c("cre", "aut"), email = "Roger.Bivand@nhh.no"),
 	person("Danlin", "Yu", role = "aut"),
 	person("Tomoki", "Nakaya", role = "ctb"),
 	person("Miquel-Angel", "Garcia-Lopez", role = "ctb"))
 Depends: R (>= 2.14), sp (>= 0.8-3)
+Imports: stats, methods
 Suggests: spdep, parallel, maptools (>= 0.7-32)
 Description: Functions for computing geographically weighted
-  regressions based on work by Chris
-  Brunsdon, Martin Charlton and Stewart Fotheringham,
-  http://gwr.nuim.ie/
+  regressions are provided, based on work by Chris
+  Brunsdon, Martin Charlton and Stewart Fotheringham. 
 License: GPL (>= 2)
-Packaged: 2014-12-09 18:45:16 UTC; rsb
+NeedsCompilation: yes
+Packaged: 2015-09-28 18:08:51 UTC; rsb
 Author: Roger Bivand [cre, aut],
   Danlin Yu [aut],
   Tomoki Nakaya [ctb],
   Miquel-Angel Garcia-Lopez [ctb]
 Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
-NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2014-12-09 22:06:55
+Date/Publication: 2015-09-29 01:14:33
