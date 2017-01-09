@@ -1,5 +1,5 @@
-5ec1d68d5a072cb3a7335d5904478bef *ChangeLog
-840f431f71472a63b28b55e6a10e912a *DESCRIPTION
+827f5122db7709673d7fffc56cb9da11 *ChangeLog
+1eb0df243900f191d8d5dc0756ce37c3 *DESCRIPTION
 57ea4b8a0824ae3c0310869b523bf5ab *NAMESPACE
 5f5e63cffe0030612bb1cd270a9f1885 *R/gwe.R
 be39db5b1b39fedc15efea56fe40f5ae *R/gwr.R
@@ -12,15 +12,15 @@ f26cafc92e44e02204941c6e56490ece *R/gwr.morantest.R
 d2f2a09812c34b4b52ba372234027991 *R/gwr1.cv.R
 da7238a5237f906cba856d72756f604e *R/tricube.R
 e772d61613f3f1be0360247a3a2b75c2 *R/zzz.R
-a4fe0a7c6346ebce40e9c6920e014ee0 *build/vignette.rds
+cc69755c3b3a8899d70cc2fccdf67dfe *build/vignette.rds
 1ad928daea95947a9d350a4b43220f9f *data/columbus.rda
 01863137edaaf384d6a023dd3036d639 *data/gSRouter.rda
 162422de36c2c1c8fec9490b30885c2b *data/georgia.rda
-5ec1d68d5a072cb3a7335d5904478bef *inst/ChangeLog
+827f5122db7709673d7fffc56cb9da11 *inst/ChangeLog
 20d783d04148b77f66495a88430c1e63 *inst/backstore/nyGWR.RData
 449e1ec913e7a765b70773fbc2f23e8c *inst/doc/GWR.R
 a2146a5475c5a3bb8b875093f3a6c457 *inst/doc/GWR.Rnw
-09ec92e6099acdcb10eef92c686d65ed *inst/doc/GWR.pdf
+7bbb9d22419c0b08327d2ea87e39e60e *inst/doc/GWR.pdf
 e62dc84cdef2ef073fc8f1bb91714705 *inst/shapes/georgia.dbf
 72e683a32aa82e1ab1192d044e1f5a71 *inst/shapes/georgia.shp
 08726a40d5494b315514f47622bc58e2 *inst/shapes/georgia.shx
@@ -37,5 +37,5 @@ fac8907aeeeb199b0aacd218966d26ec *man/gwr.bisquare.Rd
 9d5773236e015bd88b746e2ae5ed3164 *man/gwr.gauss.Rd
 830325fc7434a012134d35c1c93774f9 *man/gwr.morantest.Rd
 f3d80941dfcf6abcc831949c0bdcb0b6 *man/gwr.tricube.Rd
-9e53295da10f84cf5d799320b49f418e *src/gwe.c
+807c03dc9fb7676139163c5197cba205 *src/gwe.c
 a2146a5475c5a3bb8b875093f3a6c457 *vignettes/GWR.Rnw
