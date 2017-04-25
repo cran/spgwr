@@ -1,3 +1,12 @@
+2017-04-22 11:25  rsbivand
+
+	* DESCRIPTION, R/gwr.R: drop bugs with one covariate and no
+	  intercept
+
+2017-04-14 10:47  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2017-04-14 10:45  rsbivand
 
 	* src/init.c: added registration

@@ -328,10 +328,10 @@ gwr <- function(formula, data = list(), coords, bandwidth,
             }
             ses <- grep("_se", colnames(df$df))
             senms <- colnames(df$df)[ses]
-            betase <- df$df[, ses]
+            betase <- df$df[, ses, drop=FALSE]
             df$df[, ses] <- NA
             if (predictions) {
-                pred.se <- df$df[, "pred.se"]
+                pred.se <- df$df[, "pred.se", drop=FALSE]
 		df$df[, "pred.se"] <- NA
             }
             if (!is.null(EDF)) {
