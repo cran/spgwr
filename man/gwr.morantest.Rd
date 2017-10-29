@@ -23,8 +23,8 @@ a \dQuote{htest} object with the results of testing the GWR residuals
 \author{Roger Bivand}
 
 \examples{
-if (suppressWarnings(require(spdep)) ){
-  data(columbus)
+if (suppressWarnings(require(spData)) && suppressWarnings(require(spdep))) {
+  data(columbus, package="spData")
   bw <- gwr.sel(CRIME ~ INC + HOVAL, data=columbus, coords=coords)
   col0 <- gwr(CRIME ~ INC + HOVAL, data=columbus, coords=coords,
     bandwidth=bw, hatmatrix=TRUE)

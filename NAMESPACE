@@ -1,6 +1,7 @@
 useDynLib(spgwr)
 
 import(sp)
+import(spData)
 importFrom(stats, anova, printCoefmat, coefficients, na.omit, optimize, model.matrix, model.extract, pchisq, lm.wfit, weighted.mean, delete.response, cov.wt, residuals, pf, lm, gaussian, model.offset, glm.fit, residuals.glm, glm, predict)
 importFrom(methods, as, is, slot)
 

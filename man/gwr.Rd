@@ -64,18 +64,18 @@ Planning A 43(12) 2992-3010;
 \code{\link{gwr.bisquare}}}
 
 \examples{
-data(columbus)
-col.lm <- lm(crime ~ income + housing, data=columbus)
+data(columbus, package="spData")
+col.lm <- lm(CRIME ~ INC + HOVAL, data=columbus)
 summary(col.lm)
-col.bw <- gwr.sel(crime ~ income + housing, data=columbus,
-  coords=cbind(columbus$x, columbus$y))
-col.gauss <- gwr(crime ~ income + housing, data=columbus,
-  coords=cbind(columbus$x, columbus$y), bandwidth=col.bw, hatmatrix=TRUE)
+col.bw <- gwr.sel(CRIME ~ INC + HOVAL, data=columbus,
+  coords=cbind(columbus$X, columbus$Y))
+col.gauss <- gwr(CRIME ~ INC + HOVAL, data=columbus,
+  coords=cbind(columbus$X, columbus$Y), bandwidth=col.bw, hatmatrix=TRUE)
 col.gauss
-col.d <- gwr.sel(crime ~ income + housing, data=columbus,
-  coords=cbind(columbus$x, columbus$y), gweight=gwr.bisquare)
-col.bisq <- gwr(crime ~ income + housing, data=columbus,
-  coords=cbind(columbus$x, columbus$y), bandwidth=col.d, 
+col.d <- gwr.sel(CRIME ~ INC + HOVAL, data=columbus,
+  coords=cbind(columbus$X, columbus$Y), gweight=gwr.bisquare)
+col.bisq <- gwr(CRIME ~ INC + HOVAL, data=columbus,
+  coords=cbind(columbus$X, columbus$Y), bandwidth=col.d, 
   gweight=gwr.bisquare, hatmatrix=TRUE)
 col.bisq
 data(georgia)

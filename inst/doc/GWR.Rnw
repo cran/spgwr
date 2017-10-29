@@ -104,13 +104,10 @@ GWR is discussed by \citet[][pp. 316--317]{schabenberger+gotway:2005} and
 \citet[][pp. 79--86]{lloyd:07}.
 
 \begin{footnotesize}
-<<echo=TRUE>>= 
-library(maptools)
-library(spdep)
-owd <- getwd()
-setwd(system.file("etc/shapes", package="spdep"))
-NY8 <- readShapeSpatial("NY8_utm18")
-setwd(owd)
+<<echo=TRUE, eval=FALSE>>= 
+if (require(rgdal, quietly=TRUE)) {
+  NY8 <- readOGR(system.file("shapes/NY8_utm18.shp", package="spData"))
+}
 @
 \end{footnotesize}
 

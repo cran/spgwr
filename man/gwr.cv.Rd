@@ -45,11 +45,11 @@ Planning A 43(12) 2992-3010;
 \seealso{\code{\link{gwr.bisquare}}, \code{\link{gwr.gauss}}}
 
 \examples{
-data(columbus)
-gwr.sel(crime ~ income + housing, data=columbus,
-  coords=cbind(columbus$x, columbus$y))
-gwr.sel(crime ~ income + housing, data=columbus,
-  coords=cbind(columbus$x, columbus$y), gweight=gwr.bisquare)
+data(columbus, package="spData")
+gwr.sel(CRIME ~ INC + HOVAL, data=columbus,
+  coords=cbind(columbus$X, columbus$Y))
+gwr.sel(CRIME ~ INC + HOVAL, data=columbus,
+  coords=cbind(columbus$X, columbus$Y), gweight=gwr.bisquare)
 \dontrun{
 data(georgia)
 set.seed(1)

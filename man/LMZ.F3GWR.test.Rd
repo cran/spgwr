@@ -40,21 +40,21 @@ Geographically Weighted Regression, Chichester: Wiley;
 \seealso{\code{\link{gwr}}}
 
 \examples{
-data(columbus)
-col.bw <- gwr.sel(crime ~ income + housing, data=columbus,
-  coords=cbind(columbus$x, columbus$y))
-col.gauss <- gwr(crime ~ income + housing, data=columbus,
-  coords=cbind(columbus$x, columbus$y), bandwidth=col.bw, hatmatrix=TRUE)
+data(columbus, package="spData")
+col.bw <- gwr.sel(CRIME ~ INC + HOVAL, data=columbus,
+  coords=cbind(columbus$X, columbus$Y))
+col.gauss <- gwr(CRIME ~ INC + HOVAL, data=columbus,
+  coords=cbind(columbus$X, columbus$Y), bandwidth=col.bw, hatmatrix=TRUE)
 BFC99.gwr.test(col.gauss)
 BFC02.gwr.test(col.gauss)
 BFC02.gwr.test(col.gauss, approx=TRUE)
 anova(col.gauss)
 anova(col.gauss, approx=TRUE)
 \dontrun{
-col.d <- gwr.sel(crime ~ income + housing, data=columbus,
-  coords=cbind(columbus$x, columbus$y), gweight=gwr.bisquare)
-col.bisq <- gwr(crime ~ income + housing, data=columbus,
-  coords=cbind(columbus$x, columbus$y), bandwidth=col.d, 
+col.d <- gwr.sel(CRIME ~ INC + HOVAL, data=columbus,
+  coords=cbind(columbus$X, columbus$Y), gweight=gwr.bisquare)
+col.bisq <- gwr(CRIME ~ INC + HOVAL, data=columbus,
+  coords=cbind(columbus$X, columbus$Y), bandwidth=col.d, 
   gweight=gwr.bisquare, hatmatrix=TRUE)
 BFC99.gwr.test(col.bisq)
 }
