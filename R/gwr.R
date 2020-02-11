@@ -70,10 +70,10 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 	if (is(fit.points, "Spatial")) {
 		if (predictions) {
                     t1 <- try(slot(fit.points, "data"), silent=TRUE)
-		    if (class(t1) == "try-error") 
+		    if (inherits(t1, "try-error")) 
 			stop("No data slot in fit.points")
                     predx <- try(model.matrix(delete.response(mt), fit.points))
-                    if (class(predx) == "try-error") 
+                    if (inherits(predx, "try-error")) 
 			stop("missing RHS variable in fit.points")
                     if (ncol(predx) != ncol(x))
 			stop("new data matrix columns mismatch")

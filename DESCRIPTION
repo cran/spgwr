@@ -1,6 +1,6 @@
 Package: spgwr
-Version: 0.6-32
-Date: 2017-10-28
+Version: 0.6-33
+Date: 2020-02-10
 Title: Geographically Weighted Regression
 Authors@R: c(
 	person("Roger", "Bivand", role = c("cre", "aut"), email = "Roger.Bivand@nhh.no", comment=c(ORCID="0000-0003-2392-6140")),
@@ -14,12 +14,13 @@ Description: Functions for computing geographically weighted
   regressions are provided, based on work by Chris
   Brunsdon, Martin Charlton and Stewart Fotheringham. 
 License: GPL (>= 2)
+RoxygenNote: 6.1.1
 NeedsCompilation: yes
-Packaged: 2017-10-29 19:15:54 UTC; rsb
-Author: Roger Bivand [cre, aut] (0000-0003-2392-6140),
+Packaged: 2020-02-11 07:39:33 UTC; rsb
+Author: Roger Bivand [cre, aut] (<https://orcid.org/0000-0003-2392-6140>),
   Danlin Yu [aut],
   Tomoki Nakaya [ctb],
   Miquel-Angel Garcia-Lopez [ctb]
 Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
 Repository: CRAN
-Date/Publication: 2017-10-29 20:03:59 UTC
+Date/Publication: 2020-02-11 08:40:02 UTC
