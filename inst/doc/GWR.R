@@ -1,5 +1,4 @@
 ### R code from vignette source 'GWR.Rnw'
-### Encoding: UTF-8
 
 ###################################################
 ### code chunk number 1: GWR.Rnw:42-47
