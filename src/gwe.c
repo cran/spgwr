@@ -63,12 +63,12 @@ void gw_gcdist(double *lon1, double *lon2, double *lat1, double *lat2,
     double lat1R, lat2R, lon1R, lon2R, DE2RA;
 // Maeel Le Noc bug 2017-04-12
 
-    if (fabs(lat1[0] - lat2[0]) < DOUBLE_EPS) {
-        if (fabs(lon1[0] - lon2[0]) < DOUBLE_EPS) {
+    if (fabs(lat1[0] - lat2[0]) < DBL_EPSILON) {
+        if (fabs(lon1[0] - lon2[0]) < DBL_EPSILON) {
             dist[0] = 0.0;
             return;
 /* Wouter Buytaert bug caught 100211 */
-        } else if (fabs((fabs(lon1[0]) + fabs(lon2[0])) - 360.0) < DOUBLE_EPS) {
+        } else if (fabs((fabs(lon1[0]) + fabs(lon2[0])) - 360.0) < DBL_EPSILON) {
             dist[0] = 0.0;
             return;
         }
