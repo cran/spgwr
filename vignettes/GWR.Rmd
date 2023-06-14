@@ -1,0 +1,141 @@
+---
+title: "Geographically Weighted Regression"
+author: "Roger Bivand"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 2
+bibliography: refs.bib
+link-citations: yes
+vignette: >
+  %\VignetteIndexEntry{Geographically Weighted Regression}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+# Geographically Weighted Regression [^1]
+
+Geographically weighted regression (GWR) is an exploratory
+technique mainly intended to indicate where non-stationarity is
+taking place on the map, that is where locally weighted
+regression coefficients move away from their global values. Its
+basis is the concern that the fitted coefficient values of a
+global model, fitted to all the data, may not represent detailed
+local variations in the data adequately - in this it follows
+other local regression implementations. It differs, however, in
+not looking for local variation in _data_ space, but by moving a
+weighted window over the data, estimating one set of coefficient
+values at every chosen _fit_ point. The fit points are very often
+the points at which observations were made, but do not have to
+be. If the local coefficients vary in space, it can be taken as
+an indication of non-stationarity.
+
+The technique is fully described by @fotheringhametal:02
+and involves first selecting a bandwidth for an isotropic spatial
+weights kernel, typically a Gaussian kernel with a fixed
+bandwidth chosen by leave-one-out cross-validation. Choice of the
+bandwidth can be very demanding, as $n$ regressions must be
+fitted at each step. Alternative techniques are available, for
+example for adaptive bandwidths, but they may often be even more
+compute-intensive.
+GWR is discussed by @schabenberger+gotway:2005 and
+@WallerGotway:2004, and presented with examples by
+@lloyd:07.
+
+```{r, echo=FALSE, results="hide"}
+load(system.file("backstore/nyGWR.RData", package="spgwr"))
+```
+
+```{r}
+library(spgwr)
+```
+
+
+```{r, eval=FALSE}
+NY8 <- as(st_read(system.file("shapes/NY8_utm18.shp", package="spData")), "Spatial")
+```
+
+
+```{r, eval=FALSE}
+bwG <- gwr.sel(Z~PEXPOSURE+PCTAGE65P+PCTOWNHOME, data=NY8, gweight=gwr.Gauss, verbose=FALSE)
+gwrG <- gwr(Z~PEXPOSURE+PCTAGE65P+PCTOWNHOME, data=NY8, bandwidth=bwG, gweight=gwr.Gauss, hatmatrix=TRUE)
+```
+
+```{r}
+gwrG
+```
+
+Once the bandwidth has been found, or chosen by hand, the
+`gwr` function may be used to fit the model with the chosen
+local kernel and bandwidth. If the `data` argument is passed
+a `SpatialPolygonsDataFrame` or a
+`SpatialPointsDataFrame` object, the output object will
+contain a component, which is an object of the same geometry
+populated with the local coefficient estimates. If the input
+objects have polygon support, the centroids of the spatial
+entities are taken as the basis for analysis. The function also
+takes a `fit.points` argument, which permits local
+coefficients to be created by geographically weighted regression
+for other support than the data points.
+
+
+The basic GWR results are uninteresting for this data set, with
+very little local variation in coefficient values; the bandwidth
+is almost 180 km. Neither `gwr` nor `gwr.sel` yet take
+a `weights` argument, as it is unclear how non-spatial and
+geographical weights should be combined. A further issue that has
+arisen is that it seems that local collinearity can be induced,
+or at least observed, in GWR applications. A discussion of the
+issues raised is given by @wheeler+tiefelsdorf:05.
+
+As @fotheringhametal:02 describe, GWR can also be applied in a GLM
+framework, and a provisional implementation permitting this has been added
+to the `spgwr` package providing both cross-validation bandwidth
+selection and geographically weighted fitting of GLM models.
+
+
+```{r, eval=FALSE}
+gbwG <- ggwr.sel(Cases~PEXPOSURE+PCTAGE65P+PCTOWNHOME+offset(log(POP8)), data=NY8, family="poisson", gweight=gwr.Gauss, verbose=FALSE)
+ggwrG <- ggwr(Cases~PEXPOSURE+PCTAGE65P+PCTOWNHOME+offset(log(POP8)), data=NY8, family="poisson", bandwidth=gbwG, gweight=gwr.Gauss)
+```
+
+```{r}
+ggwrG
+```
+
+
+```{r, fig.caption="GWR local coefficient estimates for the exposure to TCE site covariate"}
+spplot(ggwrG$SDF, "PEXPOSURE", col.regions=grey.colors(7, 0.95, 0.55, 2.2), cuts=6)
+```
+
+The local coefficient variation seen in this fit is not large
+either, although from the figure above, it appears that
+slightly larger local coefficients for the closeness to TCE site
+covariate are found farther away from TCE sites than close to
+them. 
+
+
+```{r, fig.caption="plots of GWR local coefficient estimates showing the effects of GWR collinearity forcing"}
+pairs(as(ggwrG$SDF, "data.frame")[,2:5])
+```
+
+If, on the other hand, we consider this indication in the
+light of the figure above, it is clear that the forcing
+artefacts found by @wheeler+tiefelsdorf:05 in a different
+data set are replicated here.
+
+
+
+## References
+
+
+[^1]: This vignette formed pp. 305-308 of the first edition of Bivand, R. S.,
+Pebesma, E. and Gómez-Rubio V. (2008) Applied Spatial Data Analysis with R,
+Springer-Verlag, New York. It was retired from the second edition (2013) to
+accommodate material on other topics, and is made available in this form
+with the understanding of the publishers.

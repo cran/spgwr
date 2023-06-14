@@ -2,7 +2,7 @@
 # 
 
 LMZ.F1GWR.test <- function(x) {
-	if(class(x) != "gwr") stop("not a gwr object")
+	if (!inherits(x, "gwr")) stop("not a gwr object")
 	if (!x$hatmatrix) stop("Fit GWR model with argument hatmatrix=TRUE")
 	n <- ncol(x$lhat)
 	R <- t(diag(n) - x$lhat) %*% (diag(n) - x$lhat)
@@ -26,7 +26,7 @@ LMZ.F1GWR.test <- function(x) {
 }
 
 LMZ.F2GWR.test <- function(x) {
-	if(class(x) != "gwr") stop("not a gwr object")
+	if (!inherits(x, "gwr")) stop("not a gwr object")
 	if (!x$hatmatrix) stop("Fit GWR model with argument hatmatrix=TRUE")
 	n <- ncol(x$lhat)
 	R <- t(diag(n) - x$lhat) %*% (diag(n) - x$lhat)
@@ -51,7 +51,7 @@ LMZ.F2GWR.test <- function(x) {
 }
 
 BFC99.gwr.test <- function(x) {
-	if(class(x) != "gwr") stop("not a gwr object")
+	if (!inherits(x, "gwr")) stop("not a gwr object")
 	if (!x$hatmatrix) stop("Fit GWR model with argument hatmatrix=TRUE")
 	n <- ncol(x$lhat)
 	R <- t(diag(n) - x$lhat) %*% (diag(n) - x$lhat)
@@ -94,7 +94,7 @@ BFC99.gwr.test <- function(x) {
 }
 
 anova.gwr <- function(object, ..., approx=FALSE) {
-    if(class(object) != "gwr") stop("not a gwr object")
+    if (!inherits(object, "gwr")) stop("not a gwr object")
     if (!object$hatmatrix) stop("Fit GWR model with argument hatmatrix=TRUE")
     n <- ncol(object$lhat)
     R <- t(diag(n) - object$lhat) %*% (diag(n) - object$lhat)
@@ -128,7 +128,7 @@ anova.gwr <- function(object, ..., approx=FALSE) {
 # implemented from 2002 book pp. 91-2
 
 BFC02.gwr.test <- function(x, approx=FALSE) {
-  if(class(x) != "gwr") stop("not a gwr object")
+  if (!inherits(x, "gwr")) stop("not a gwr object")
   if (!x$hatmatrix) stop("Fit GWR model with argument hatmatrix=TRUE")
   n <- ncol(x$lhat)
   R <- t(diag(n) - x$lhat) %*% (diag(n) - x$lhat)
@@ -182,7 +182,7 @@ BFC02.gwr.test <- function(x, approx=FALSE) {
 
 LMZ.F3GWR.test <- function(go) {
 
-	if (class(go) != "gwr") stop ("Not a GWR object")
+	if (!inherits(go, "gwr")) stop ("Not a GWR object")
 	if (!go$hatmatrix) stop("Fit GWR model with argument hatmatrix=TRUE")
 	
 #	this.call <- match.call()

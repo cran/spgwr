@@ -380,7 +380,7 @@ gwr <- function(formula, data = list(), coords, bandwidth,
 
 
 print.gwr <- function(x, ...) {
-	if(class(x) != "gwr") stop("not a gwr object")
+	if(!inherits(x, "gwr")) stop("not a gwr object")
 	cat("Call:\n")
 	print(x$this.call)
 	cat("Kernel function:", x$gweight, "\n")

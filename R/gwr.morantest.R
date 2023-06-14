@@ -1,5 +1,5 @@
 gwr.morantest <- function(x, lw, zero.policy = FALSE) {
-	if(class(x) != "gwr") stop(paste(deparse(substitute(x)),
+	if (!inherits(x, "gwr")) stop(paste(deparse(substitute(x)),
 		"not a gwr object"))
 	if (is.null(x$lhat)) stop("hatmatrix=TRUE needed in gwr fit")
 	if (!inherits(lw, "listw")) 

@@ -159,27 +159,31 @@ spplot(x$SDF, "pred.se")
   g.bw.gauss <- gwr.sel(PctBach ~ TotPop90 + PctRural + PctEld + PctFB +
     PctPov + PctBlack, data=gSRDF, longlat=TRUE)
   data(gSRouter)
-  require(maptools)
-  SG <- GE_SpatialGrid(gSRouter, maxPixels = 100)
-  SPxMASK0 <- over(SG$SG, gSRouter)
-  SGDF <- SpatialGridDataFrame(slot(SG$SG, "grid"),
-    data=data.frame(SPxMASK0=SPxMASK0),
-    proj4string=CRS(proj4string(gSRouter)))
-  SPxDF <- as(SGDF, "SpatialPixelsDataFrame")
-  res.bw <- gwr(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov +
-    PctBlack, data=gSRDF, bandwidth=g.bw.gauss, fit.points=SPxDF,
-    longlat=TRUE)
-  res.bw
-  res.bw$timings
-  spplot(res.bw$SDF, "PctBlack")
-  require(parallel)
-  cl <- makeCluster(detectCores())
-  res.bwc <- gwr(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov +
-    PctBlack, data=gSRDF, bandwidth=g.bw.gauss, fit.points=SPxDF,
-    longlat=TRUE, cl=cl)
-  res.bwc
-  res.bwc$timings
-  stopCluster(cl)
+#  require(maptools)
+#  SG <- GE_SpatialGrid(gSRouter, maxPixels = 100)
+  if (require(sf, quietly=TRUE) && require(stars, quietly=TRUE)) {
+    SG_0 <- st_as_stars(st_bbox(st_as_sf(gSRouter)), nx=87, ny=100)
+    SG <- as(SG_0, "Spatial")
+    SPxMASK0 <- over(SG, gSRouter)
+    SGDF <- SpatialGridDataFrame(slot(SG, "grid"),
+      data=data.frame(SPxMASK0=SPxMASK0),
+      proj4string=CRS(proj4string(gSRouter)))
+    SPxDF <- as(SGDF, "SpatialPixelsDataFrame")
+    res.bw <- gwr(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov +
+      PctBlack, data=gSRDF, bandwidth=g.bw.gauss, fit.points=SPxDF,
+      longlat=TRUE)
+    res.bw
+    res.bw$timings
+    spplot(res.bw$SDF, "PctBlack")
+    require(parallel)
+    cl <- makeCluster(detectCores())
+    res.bwc <- gwr(PctBach ~ TotPop90 + PctRural + PctEld + PctFB + PctPov +
+      PctBlack, data=gSRDF, bandwidth=g.bw.gauss, fit.points=SPxDF,
+      longlat=TRUE, cl=cl)
+    res.bwc
+    res.bwc$timings
+    stopCluster(cl)
+  }
 }
 }
 \keyword{spatial}
