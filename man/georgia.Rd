@@ -5,11 +5,11 @@
 \docType{data}
 \title{Georgia census data set (SpatialDataFramePolygons)}
 \description{
-  The Georgia census data set from Fotheringham et al. (2002) in shapefile format.
+  The Georgia census data set from Fotheringham et al. (2002) in GPKG format.
 }
 \usage{data(georgia)}
 \format{
- A SpatialPolygonsDataFrame object (proj4string set to "+proj=longlat +datum=NAD27").
+ A SpatialPolygonsDataFrame object.
 
   The "data" slot is a data frame with 159 observations on the following 13 variables.
   \describe{

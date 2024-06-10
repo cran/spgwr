@@ -46,7 +46,7 @@ Geographically Weighted Regression, Chichester: Wiley;
 \examples{
 \donttest{
 if (require(sf)) {
-xx <- as(st_read(system.file("shapes/sids.shp", package="spData")[1]), "Spatial")
+xx <- as(st_read(system.file("shapes/sids.gpkg", package="spData")[1]), "Spatial")
 bw <- ggwr.sel(SID74 ~ I(NWBIR74/BIR74) + offset(log(BIR74)), data=xx,
   family=poisson(), longlat=TRUE)
 bw
